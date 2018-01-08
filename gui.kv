@@ -1,0 +1,40 @@
+#:kivy 1.10.0
+
+<Py3GestaltGUI>:
+    interface_lt: interface_layout
+    interface_lt_lb: interface_layout_label
+    btn1: btnI
+    btn2: btn2
+
+    orientation : 'vertical'
+    size_hint: (None, None)
+    size: (500,100)
+
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+
+        id: interface_layout
+        orientation: 'horizontal'
+        height: 200
+
+        Label:
+            id: interface_layout_label
+            font_size: 18
+            color: (0,0,0,1)
+            text: 'Select interface:'
+
+        Button:
+            id:btnI
+            #size_hint:1,1
+            text: 'aa'
+
+    Button:
+        id:btn2
+        #size_hint:1,1
+        text: 'bb'
