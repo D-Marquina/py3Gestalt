@@ -3,6 +3,8 @@
 This module extends Gestalt Framework for Python 3's usability by creating a
 GUI that allows the user to select a defined virtual machine, available
 interface and test communication status.
+
+Copyright (c) 2018 Daniel Marquina
 """
 
 import kivy
@@ -12,7 +14,6 @@ from kivy.uix.popup import Popup
 from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.filechooser import FileChooserListView
 from kivy.properties import StringProperty, ObjectProperty
 import serial
 import shutil
@@ -50,28 +51,16 @@ class Py3GestaltGUI(BoxLayout):
         - Debugger output
 
     Attributes:
-        vm_lt (BoxLayout): Virtual machine section's main layout
-        vm_lb (Label): Virtual machine section's label
-        vm_bt_search (Button): Virtual machine section's 'Search' button
         vm_bt_load (Button): Virtual machine section's 'Load' button
         vm_fb (VirtualMachineBrowser): Virtual machine section's file browser
         vm_vm_source_file (str): Virtual machine's definition file's direction
-        inf_lt (BoxLayout): Interface section's main layout
-        inf_lb (Label): Interface section's label
         inf_sp (Spinner): Interface section's spinner
         inf_bt_connect (Button): Interface section's 'Connect' button
-        debugger_lb = ObjectProperty(Label())
+        debugger_lb (Label): Debugger output
     """
-    vm_lt = ObjectProperty(BoxLayout())
-    vm_lb = ObjectProperty(Label())
-    vm_bt_search = ObjectProperty(Button())
     vm_bt_load = ObjectProperty(Button())
-
-    inf_lt = ObjectProperty(BoxLayout())
-    inf_lb = ObjectProperty(Label())
     inf_sp = ObjectProperty(Spinner())
     inf_bt_connect = ObjectProperty(Button())
-
     debugger_lb = ObjectProperty(Label())
 
     def __init__(self):
@@ -128,29 +117,20 @@ class Py3GestaltGUI(BoxLayout):
         self.inf_sp.values = available_ports
 
     def connect_to_machine(self):
-        """Open specified serial port."""
+        """initialize virtual machine."""
         print(self.inf_sp.text)
+
+    def check_status(self):
+        """Checks status of real machine."""
+        pass
 
 
 class VirtualMachineBrowser(Popup):
     """File browser class
 
     Definition of a file browser based on kivy's FileChooserListView.
-
-    Attributes:
-        fb_lt (BoxLayout) Main layout.
-        fb_fc (FileChooserListView): Base file chooser.
-        fb_bt_lt (BoxLayout): Buttons' layout.
-        fb_bt_select (Button): 'Select' button.
-        fb_bt_cancel (Cancel): 'Cancel' button.
-        parent_gui (Py3GestaltGUI): GUI that instantiated this object.
     """
     title = StringProperty('Select your virtual machine definition')
-    fb_lt = ObjectProperty(BoxLayout())
-    fb_fc = ObjectProperty(FileChooserListView())
-    fb_bt_lt = ObjectProperty(BoxLayout())
-    fb_bt_select = ObjectProperty(Button())
-    fb_bt_cancel = ObjectProperty(Button())
 
     def __init__(self):
         super(VirtualMachineBrowser, self).__init__()

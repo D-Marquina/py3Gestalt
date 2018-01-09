@@ -1,12 +1,7 @@
 #:kivy 1.10.0
 
 <Py3GestaltGUI>:
-    vm_lt : virtual_machine_layout
-    vm_lb : vm_label
-    vm_bt_search : vm_button_search
     vm_bt_load : vm_button_load
-    inf_lt: interface_layout
-    inf_lb: inf_label
     inf_sp: inf_spinner
     inf_bt_connect: inf_button_connect
     debugger_lb: debugger_label
@@ -20,20 +15,17 @@
             size: self.size
 
     BoxLayout:
-        id: virtual_machine_layout
         size_hint: (0.98, 0.1)
         pos_hint: {'x': 0.01}
         orientation: 'horizontal'
 
         Label:
-            id: vm_label
             size_hint_x: 0.4
             font_size: 18
             color: (1,1,1,1)
             text: 'Select virtual machine file:'
 
         Button:
-            id: vm_button_search
             size_hint_x: 0.2
             text: 'Search file'
             color: (1,1,1,1)
@@ -47,13 +39,11 @@
             on_release: root.load_virtual_machine()
 
     BoxLayout:
-        id: interface_layout
         size_hint: (0.98, 0.1)
         pos_hint: {'x': 0.01}
         orientation: 'horizontal'
 
         Label:
-            id: inf_label
             size_hint_x: 0.4
             font_size: 18
             color: (1,1,1,1)
@@ -73,41 +63,52 @@
             disabled: True
             on_release: root.connect_to_machine()
 
-    Label:
-        id: debugger_label
-        size_hint: (0.95,0.8)
-        pos_hint: {'x': 0.03}
-        text_size: self.size
-        halign: 'left'
-        valign: 'top'
-        text: 'Py3Gestalt Tester Version 0.1' + '\n' + '\n'
+    BoxLayout:
+        size_hint: (0.98, 0.1)
+        pos_hint: {'x': 0.01}
+        orientation: 'horizontal'
+
+        Button:
+            text: 'Check status'
+
+    ScrollView:
+        size_hint: (0.98, 0.8)
+        pos_hint: {'x': 0.01}
+        canvas:
+            Color:
+                rgba: 0.6431, 0.8784, 0.9176, 0.2
+            Rectangle:
+                pos: (self.x, self.y)
+                size: self.size
+
+        Label:
+            id: debugger_label
+            size_hint_y: None #
+            height: self.texture_size[1] #
+            text_size: self.width, None
+            halign: 'left'
+            valign: 'top'
+            padding_x: 10
+            padding_y: 10
+            text: 'Py3Gestalt Tester Version 0.1' + '\n' + '\n'
 
 <VirtualMachineBrowser>:
-    fb_lt : fb_layout
-    fb_fc : fb_file_chooser
-    fb_bt_lt : fb_buttons_layout
-    fb_bt_select : fb_button_select
-    fb_bt_cancel : fb_button_cancel
 
     BoxLayout:
-        id: fb_layout
         orientation: 'vertical'
 
         FileChooserListView:
             id: fb_file_chooser
 
         BoxLayout:
-            id: fb_buttons_layout
             size_hint: (0.98, 0.1)
             pos_hint: {'x':0.01}
 
             Button:
-                id: fb_button_select
                 text: 'Load file'
                 on_release: root.select_virtual_machine(fb_file_chooser.path, fb_file_chooser.selection[0])
 
             Button:
-                id: fb_button_cancel
                 text: 'Cancel'
                 on_release: root.dismiss()
 
