@@ -1,40 +1,110 @@
 #:kivy 1.10.0
 
 <Py3GestaltGUI>:
+    virtual_machine_lt : virtual_machine_layout
+    virtual_machine_lt_lb : virtual_machine_layout_label
+    virtual_machine_lt_fbb : virtual_machine_layout_filebrowser_button
+    virtual_machine_lt_bt : virtual_machine_layout_button
     interface_lt: interface_layout
     interface_lt_lb: interface_layout_label
-    btn1: btnI
-    btn2: btn2
+    interface_lt_sp: interface_layout_spinner
+    interface_lt_bt: interface_layout_button
+    #btn2: btn2
 
     orientation : 'vertical'
-    size_hint: (None, None)
-    size: (500,100)
-
     canvas:
         Color:
-            rgba: 1, 1, 1, 1
+            rgba: 0.1215, 0.2078, 0.2431, 0.75
         Rectangle:
             pos: self.pos
             size: self.size
 
     BoxLayout:
-
-        id: interface_layout
+        id: virtual_machine_layout
+        size_hint: (0.98, 0.1)
+        pos_hint: {'x': 0.01}
         orientation: 'horizontal'
-        height: 200
+
+        Label:
+            id: virtual_machine_layout_label
+            size_hint_x: 0.4
+            font_size: 18
+            color: (1,1,1,1)
+            text: 'Select virtual machine file:'
+
+        Button:
+            id: virtual_machine_layout_filebrowser_button
+            size_hint_x: 0.2
+            text: '...'
+            color: (1,1,1,1)
+            on_release: root.select_virtual_machine()
+
+        Button:
+            id:virtual_machine_layout_button
+            size_hint_x: 0.3
+            text: 'Load virtual machine'
+            on_release: root.connect_to_machine()
+
+    BoxLayout:
+        id: interface_layout
+        size_hint: (0.98, 0.1)
+        pos_hint: {'x': 0.01}
+        orientation: 'horizontal'
 
         Label:
             id: interface_layout_label
+            size_hint_x: 0.4
             font_size: 18
-            color: (0,0,0,1)
+            color: (1,1,1,1)
             text: 'Select interface:'
 
-        Button:
-            id:btnI
-            #size_hint:1,1
-            text: 'aa'
+        Spinner:
+            id: interface_layout_spinner
+            size_hint_x: 0.2
+            text: '/dev/ttyUSB0'
+            color: (1,1,1,1)
+            on_release: root.load_ports()
 
-    Button:
-        id:btn2
-        #size_hint:1,1
-        text: 'bb'
+        Button:
+            id:interface_layout_button
+            size_hint_x: 0.3
+            text: 'Connect to Machine'
+            on_release: root.connect_to_machine()
+
+    Label:
+        #id:btn2
+        size_hint: (0.95,0.8)
+        text_size: self.size
+        halign: 'left'
+        valign: 'top'
+        text: 'Debugger'
+
+<FileBrowser>:
+    filebrowser_lt : filebrowser_layout
+    filebrowser_fc : filebrowser_filechooser
+    filebrowser_bt_lt : filebrowser_button_layout
+    filebrowser_bt_load : filebrowser_button_load
+    filebrowser_bt_cancel : filebrowser_button_cancel
+
+    BoxLayout:
+        id: filebrowser_layout
+        orientation: 'vertical'
+
+        FileChooserListView:
+            id: filebrowser_filechooser
+
+        BoxLayout:
+            id: filebrowser_button_layout
+            size_hint: (0.98, 0.1)
+            pos_hint: {'x':0.01}
+
+            Button:
+                id: filebrowser_button_load
+                text: 'Load file'
+                on_release: root.load_virtual_machine(filebrowser_filechooser.path, filebrowser_filechooser.selection)
+
+            Button:
+                id: filebrowser_button_cancel
+                text: 'Cancel'
+                on_release: root.dismiss()
+
