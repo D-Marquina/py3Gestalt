@@ -1,15 +1,15 @@
 #:kivy 1.10.0
 
 <Py3GestaltGUI>:
-    virtual_machine_lt : virtual_machine_layout
-    virtual_machine_lt_lb : virtual_machine_layout_label
-    virtual_machine_lt_fbb : virtual_machine_layout_filebrowser_button
-    virtual_machine_lt_bt : virtual_machine_layout_button
-    interface_lt: interface_layout
-    interface_lt_lb: interface_layout_label
-    interface_lt_sp: interface_layout_spinner
-    interface_lt_bt: interface_layout_button
-    #btn2: btn2
+    vm_lt : virtual_machine_layout
+    vm_lb : vm_label
+    vm_bt_search : vm_button_search
+    vm_bt_load : vm_button_load
+    inf_lt: interface_layout
+    inf_lb: inf_label
+    inf_sp: inf_spinner
+    inf_bt_connect: inf_button_connect
+    debugger_lb: debugger_label
 
     orientation : 'vertical'
     canvas:
@@ -26,24 +26,25 @@
         orientation: 'horizontal'
 
         Label:
-            id: virtual_machine_layout_label
+            id: vm_label
             size_hint_x: 0.4
             font_size: 18
             color: (1,1,1,1)
             text: 'Select virtual machine file:'
 
         Button:
-            id: virtual_machine_layout_filebrowser_button
+            id: vm_button_search
             size_hint_x: 0.2
-            text: '...'
+            text: 'Search file'
             color: (1,1,1,1)
-            on_release: root.select_virtual_machine()
+            on_release: root.open_file_browser()
 
         Button:
-            id:virtual_machine_layout_button
+            id:vm_button_load
             size_hint_x: 0.3
             text: 'Load virtual machine'
-            on_release: root.connect_to_machine()
+            disabled: True
+            on_release: root.load_virtual_machine()
 
     BoxLayout:
         id: interface_layout
@@ -52,59 +53,61 @@
         orientation: 'horizontal'
 
         Label:
-            id: interface_layout_label
+            id: inf_label
             size_hint_x: 0.4
             font_size: 18
             color: (1,1,1,1)
             text: 'Select interface:'
 
         Spinner:
-            id: interface_layout_spinner
+            id: inf_spinner
             size_hint_x: 0.2
             text: '/dev/ttyUSB0'
             color: (1,1,1,1)
             on_release: root.load_ports()
 
         Button:
-            id:interface_layout_button
+            id:inf_button_connect
             size_hint_x: 0.3
             text: 'Connect to Machine'
+            disabled: True
             on_release: root.connect_to_machine()
 
     Label:
-        #id:btn2
+        id: debugger_label
         size_hint: (0.95,0.8)
+        pos_hint: {'x': 0.03}
         text_size: self.size
         halign: 'left'
         valign: 'top'
-        text: 'Debugger'
+        text: 'Py3Gestalt Tester Version 0.1' + '\n' + '\n'
 
-<FileBrowser>:
-    filebrowser_lt : filebrowser_layout
-    filebrowser_fc : filebrowser_filechooser
-    filebrowser_bt_lt : filebrowser_button_layout
-    filebrowser_bt_load : filebrowser_button_load
-    filebrowser_bt_cancel : filebrowser_button_cancel
+<VirtualMachineBrowser>:
+    fb_lt : fb_layout
+    fb_fc : fb_file_chooser
+    fb_bt_lt : fb_buttons_layout
+    fb_bt_select : fb_button_select
+    fb_bt_cancel : fb_button_cancel
 
     BoxLayout:
-        id: filebrowser_layout
+        id: fb_layout
         orientation: 'vertical'
 
         FileChooserListView:
-            id: filebrowser_filechooser
+            id: fb_file_chooser
 
         BoxLayout:
-            id: filebrowser_button_layout
+            id: fb_buttons_layout
             size_hint: (0.98, 0.1)
             pos_hint: {'x':0.01}
 
             Button:
-                id: filebrowser_button_load
+                id: fb_button_select
                 text: 'Load file'
-                on_release: root.load_virtual_machine(filebrowser_filechooser.path, filebrowser_filechooser.selection)
+                on_release: root.select_virtual_machine(fb_file_chooser.path, fb_file_chooser.selection[0])
 
             Button:
-                id: filebrowser_button_cancel
+                id: fb_button_cancel
                 text: 'Cancel'
                 on_release: root.dismiss()
 
