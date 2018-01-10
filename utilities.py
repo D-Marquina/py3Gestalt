@@ -3,37 +3,34 @@ import ast
 import datetime
 
 
-# def notice(source=None, message=""):
-#     ''' Sends a notice to the user.
-#
-#     For now, this just prints to the screen. But eventually, could re-route via a web interface.'''
-#     # check for name attribute
-#     if hasattr(source, 'name'):
-#         name = getattr(source, 'name')
-#         if name:
-#             print
-#             name + ": " + str(message)
-#         elif hasattr(source, 'owner'):
-#             owner = getattr(source, 'owner')
-#             if owner:
-#                 notice(source.owner, message)
-#             else:
-#                 print
-#                 str(source) + ": " + str(message)
-#         else:
-#             print
-#             str(source) + ": " + str(message)
-#     else:
-#         if hasattr(source, 'owner'):
-#             owner = getattr(source, 'owner')
-#             if owner:
-#                 notice(source.owner, message)
-#             else:
-#                 print
-#                 str(source) + ": " + str(message)
-#         else:
-#             print
-#             str(source) + ": " + str(message)
+def notice(source=None, message=""):
+    """Send a notice to the user.
+
+    For now, this just prints to the console, but could eventually re-route
+    via a web interface.
+    """
+    # check for name attribute
+    if hasattr(source, 'name'):
+        name = getattr(source, 'name')
+        if name:
+            print(name + ": " + str(message))
+        elif hasattr(source, 'owner'):
+            owner = getattr(source, 'owner')
+            if owner:
+                notice(source.owner, message)
+            else:
+                print(str(source) + ": " + str(message))
+        else:
+            print(str(source) + ": " + str(message))
+    else:
+        if hasattr(source, 'owner'):
+            owner = getattr(source, 'owner')
+            if owner:
+                notice(source.owner, message)
+            else:
+                print(str(source) + ": " + str(message))
+        else:
+            print(str(source) + ": " + str(message))
 
 
 class PersistenceManager(object):

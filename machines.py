@@ -1,6 +1,6 @@
 # --IMPORTS-----
-from .utilities import PersistenceManager
-from .utilities import notice as notice
+from utilities import PersistenceManager
+from utilities import notice as notice
 import math
 import copy
 import threading
@@ -11,7 +11,7 @@ import inspect
 class VirtualMachine(object):
     """Base class for all virtual machines.
 
-    While many machines won't need the pre-built initializers which get called,
+    While many machines won't need every pre-built initializer which gets called,
     they are provided to introduce some structure to the format of user virtual
     machines.
 
@@ -21,8 +21,6 @@ class VirtualMachine(object):
         persistence (PersistenceManager): Persistence file's manager.
         providedInterface (baseInterface): Interface between virtual machine and
         physical machine.
-        publishEnabled (boolean): Publisher's setting
-        publisher (publisher): Virtual machine's publisher.
     """
     def __init__(self, *args, **kwargs):
         if 'name' in kwargs:

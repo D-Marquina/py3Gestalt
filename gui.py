@@ -19,7 +19,10 @@ import serial
 import shutil
 import glob
 import sys
+import importlib
 import os
+
+import inspect
 
 kivy.require('1.0.1')
 
@@ -35,7 +38,7 @@ class Py3GestaltGUIApp(App):
         """Overrides default build method.
 
         Returns:
-            Py3GestaltGUI: Kivy's box layout, root widget of this app.
+            Py3GestaltGUI: Kivy's box layout, main widget of this app.
         """
         self.load_kv('gui.kv')
         return Py3GestaltGUI()
@@ -53,7 +56,9 @@ class Py3GestaltGUI(BoxLayout):
     Attributes:
         vm_bt_load (Button): Virtual machine section's 'Load' button.
         vm_fb (VirtualMachineBrowser): Virtual machine section's file browser.
-        vm_vm_source_file (str): Virtual machine's definition file's direction.
+        vm_source_file (str): Virtual machine's definition file's direction.
+        vm_class (class): User defined virtual machine class.
+        vm(vm_class): Instantiation of user defined virtual machine.
         inf_sp (Spinner): Interface section's spinner.
         inf_bt_connect (Button): Interface section's 'Connect' button.
         debugger_lb (Label): Debugger output.
@@ -67,17 +72,22 @@ class Py3GestaltGUI(BoxLayout):
         super(Py3GestaltGUI, self).__init__()
         self.vm_fb = VirtualMachineBrowser()
         self.vm_source_file = None
+        self.vm_class = None
+        self.vm = None
 
     def open_file_browser(self):
         """Open a file browser including a reference to this GUI."""
         self.vm_fb.open(self)
 
-    def load_virtual_machine(self):
-        """Load virtual machine definition.
+    def import_virtual_machine(self):
+        """Import virtual machine definition.
 
-        Makes a directory called 'tmp', copies the virtual machine's
-        definition into a file called 'temp_virtual_machine' and imports such
-        file.
+        Makes a directory (package) called 'tmp', copies the virtual machine's
+        definition into a file (module) called 'temp_virtual_machine' and
+        imports user-defined virtual machine's class.
+
+        Returns:
+            None if virtual machine is ill defined.
         """
         temp_vm_location = os.path.join('tmp', 'temp_virtual_machine.py')
 
@@ -91,10 +101,40 @@ class Py3GestaltGUI(BoxLayout):
         temp_vm_file = open(temp_vm_location, 'w')
         shutil.copyfile(self.vm_source_file, temp_vm_location)
         temp_vm_file.close()
-        __import__('tmp.temp_virtual_machine')
+
+        vm_module = __import__('tmp.temp_virtual_machine',
+                                       ['temp_virtual_machine']).temp_virtual_machine
+        vm_module = importlib.reload(vm_module)
+        possible_vm = None
+        counter = 0
+        for name in dir(vm_module):
+            obj = getattr(vm_module, name)
+            if inspect.isclass(obj):
+                if str(obj.__bases__[0]) == "<class 'machines.VirtualMachine'>":
+                    if counter == 0:
+                        possible_vm = obj
+                        print(str(obj.__bases__[0]))
+                    else:
+                        self.debugger_lb.text += ("Error: More than a single "
+                                                  "virtual machine defined.") + \
+                                                 '\n' + \
+                                                 "Import a new virtual machine." + \
+                                                 '\n\n'
+                        self.inf_bt_connect.disabled = True
+                        return
+                    counter += 1
+        if counter == 0:
+            self.debugger_lb.text += "Error: No virtual machine defined." + \
+                                     '\n' + \
+                                     "Import a new virtual machine." + \
+                                     '\n\n'
+            self.inf_bt_connect.disabled = True
+            return
+        else:
+            self.vm_class = possible_vm
 
         with open(self.vm_source_file, 'r') as stream:
-            self.debugger_lb.text += stream.read() + '\n'
+            self.debugger_lb.text += stream.read() + '\n\n'
 
         self.inf_bt_connect.disabled = False
 
@@ -124,8 +164,9 @@ class Py3GestaltGUI(BoxLayout):
         self.inf_sp.values = available_ports
 
     def connect_to_machine(self):
-        """Initialize virtual machine."""
-        print(self.inf_sp.text)
+        """Connect to virtual machine."""
+        self.vm = self.vm_class(self)
+
 
     def check_status(self):
         """Check status of real machine."""
@@ -136,6 +177,9 @@ class VirtualMachineBrowser(Popup):
     """Virtual machine browser class.
 
     Definition of a file browser based on Kivy's FileChooserListView.
+
+    Attributes:
+        parent_gui (Py3GestaltGUI): GUI that initializes this browser.
     """
     title = StringProperty('Select your virtual machine definition')
 
@@ -143,16 +187,16 @@ class VirtualMachineBrowser(Popup):
         super(VirtualMachineBrowser, self).__init__()
         self.parent_gui = None
 
-    def open(self, gui):
+    def open(self, parent_gui):
         """Overrides 'open()' function.
 
         This function pops up the file browser and defines parent GUI.
 
         Arguments:
-            gui: GUI that instantiated this class, aka parent GUI.
+            parent_gui: GUI that instantiated this class, aka parent GUI.
         """
         super(VirtualMachineBrowser, self).open()
-        self.parent_gui = gui
+        self.parent_gui = parent_gui
 
     def select_virtual_machine(self, path, filename):
         """Select virtual machine's definition file.
@@ -166,8 +210,9 @@ class VirtualMachineBrowser(Popup):
                         FileChooser's reference.
             filename (str): Name of selected file.
         """
+        self.parent_gui.vm_source_file = ''
         self.parent_gui.vm_source_file = os.path.join(path, filename)
-        self.parent_gui.debugger_lb.text += filename + '\n' + '\n'
+        self.parent_gui.debugger_lb.text += filename + '\n\n'
         self.parent_gui.vm_bt_load.disabled = False
         self.dismiss()
 
