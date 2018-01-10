@@ -88,9 +88,9 @@ class Py3GestaltGUI(BoxLayout):
         temp_vm_file = open(temp_vm_location, 'w')
         shutil.copyfile(self.vm_source_file, temp_vm_location)
         temp_vm_file.close()
-        __import__('tmp.temp_virtual_machine')
+        # __import__('tmp.temp_virtual_machine')
         with open(self.vm_source_file, 'r') as stream:
-            self.debugger_lb.text += stream.read()
+            self.debugger_lb.text += stream.read() + '\n'
         self.inf_bt_connect.disabled = False
 
     def load_ports(self):

@@ -1,4 +1,6 @@
 #:kivy 1.10.0
+#:import hex kivy.utils.get_color_from_hex
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 <Py3GestaltGUI>:
     vm_bt_load : vm_button_load
@@ -15,14 +17,12 @@
             size: self.size
 
     BoxLayout:
-        size_hint: (0.98, 0.1)
-        pos_hint: {'x': 0.01}
+        size_hint: (1, 0.1)
         orientation: 'horizontal'
 
         Label:
             size_hint_x: 0.4
             font_size: 18
-            color: (1,1,1,1)
             text: 'Select virtual machine file:'
 
         Button:
@@ -39,14 +39,12 @@
             on_release: root.load_virtual_machine()
 
     BoxLayout:
-        size_hint: (0.98, 0.1)
-        pos_hint: {'x': 0.01}
+        size_hint: (1, 0.1)
         orientation: 'horizontal'
 
         Label:
             size_hint_x: 0.4
             font_size: 18
-            color: (1,1,1,1)
             text: 'Select interface:'
 
         Spinner:
@@ -64,36 +62,38 @@
             on_release: root.connect_to_machine()
 
     BoxLayout:
-        size_hint: (0.98, 0.1)
-        pos_hint: {'x': 0.01}
+        size_hint: (1, 0.1)
         orientation: 'horizontal'
 
         Button:
             text: 'Check status'
 
-    ScrollView:
-        size_hint: (0.98, 0.8)
-        pos_hint: {'x': 0.01}
+    BoxLayout:
         canvas:
             Color:
-                rgba: 0.6431, 0.8784, 0.9176, 0.2
+                rgba: hex('#2B2B2B')
             Rectangle:
                 pos: (self.x, self.y)
                 size: self.size
 
-        Label:
-            id: debugger_label
-            size_hint_y: None #
-            height: self.texture_size[1] #
-            text_size: self.width, None
-            halign: 'left'
-            valign: 'top'
-            padding_x: 10
-            padding_y: 10
-            text: 'Py3Gestalt Tester Version 0.1' + '\n' + '\n'
+        ScrollView:
+            bar_width: 10
+            effect_cls: ScrollEffect
+            scroll_type: ['bars', 'content']
+
+            Label:
+                id: debugger_label
+                size_hint_y: None #
+                height: self.texture_size[1] #
+                text_size: self.width, None
+                halign: 'left'
+                valign: 'top'
+                padding_x: 10
+                padding_y: 10
+                color: hex('#A9B7C6')
+                text: 'Py3Gestalt Tester Version 0.1' + '\n' + '\n'
 
 <VirtualMachineBrowser>:
-
     BoxLayout:
         orientation: 'vertical'
 
