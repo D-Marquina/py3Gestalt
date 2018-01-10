@@ -25,9 +25,9 @@ kivy.require('1.0.1')
 
 
 class Py3GestaltGUIApp(App):
-    """Gestalt framework for Python 3's GUI application class
+    """Gestalt framework for Python 3's GUI application class.
 
-    Personalized class based on kivy.app class.
+    Builds a Py3GestaltGUI object. Visual settings are located in 'gui.kv'.
     """
     title = StringProperty("Gestalt Framework for Python 3")
 
@@ -42,21 +42,21 @@ class Py3GestaltGUIApp(App):
 
 
 class Py3GestaltGUI(BoxLayout):
-    """ Gestalt framework for Python 3's GUI's main layout class
+    """ Gestalt framework for Python 3's GUI's main layout class.
 
     This layout contains 4 sections:
-        - Virtual machine selection
-        - Interface selection
-        - Machine recognition
-        - Debugger output
+        - Virtual machine selection,
+        - Interface selection,
+        - Machine recognition,
+        - Debugger output.
 
     Attributes:
-        vm_bt_load (Button): Virtual machine section's 'Load' button
-        vm_fb (VirtualMachineBrowser): Virtual machine section's file browser
-        vm_vm_source_file (str): Virtual machine's definition file's direction
-        inf_sp (Spinner): Interface section's spinner
-        inf_bt_connect (Button): Interface section's 'Connect' button
-        debugger_lb (Label): Debugger output
+        vm_bt_load (Button): Virtual machine section's 'Load' button.
+        vm_fb (VirtualMachineBrowser): Virtual machine section's file browser.
+        vm_vm_source_file (str): Virtual machine's definition file's direction.
+        inf_sp (Spinner): Interface section's spinner.
+        inf_bt_connect (Button): Interface section's 'Connect' button.
+        debugger_lb (Label): Debugger output.
     """
     vm_bt_load = ObjectProperty(Button())
     inf_sp = ObjectProperty(Spinner())
@@ -69,28 +69,33 @@ class Py3GestaltGUI(BoxLayout):
         self.vm_source_file = None
 
     def open_file_browser(self):
-        """Open a file browser including a reference to this GUI"""
+        """Open a file browser including a reference to this GUI."""
         self.vm_fb.open(self)
 
     def load_virtual_machine(self):
-        """Load virtual machine definition
+        """Load virtual machine definition.
 
         Makes a directory called 'tmp', copies the virtual machine's
         definition into a file called 'temp_virtual_machine' and imports such
         file.
         """
         temp_vm_location = os.path.join('tmp', 'temp_virtual_machine.py')
+
         if os.path.exists('tmp'):
             shutil.rmtree('tmp', ignore_errors=True)
         os.makedirs('tmp')
+
         init_file = open(os.path.join('tmp', '__init__.py'), 'w')
         init_file.close()
+
         temp_vm_file = open(temp_vm_location, 'w')
         shutil.copyfile(self.vm_source_file, temp_vm_location)
         temp_vm_file.close()
-        # __import__('tmp.temp_virtual_machine')
+        __import__('tmp.temp_virtual_machine')
+
         with open(self.vm_source_file, 'r') as stream:
             self.debugger_lb.text += stream.read() + '\n'
+
         self.inf_bt_connect.disabled = False
 
     def load_ports(self):
@@ -106,6 +111,7 @@ class Py3GestaltGUI(BoxLayout):
             ports = glob.glob('/dev/tty.*')
         else:
             raise EnvironmentError('Unsupported platform')
+
         available_ports = []
         for port in ports:
             try:
@@ -114,21 +120,22 @@ class Py3GestaltGUI(BoxLayout):
                 available_ports.append(port)
             except (OSError, serial.SerialException):
                 pass
+
         self.inf_sp.values = available_ports
 
     def connect_to_machine(self):
-        """initialize virtual machine."""
+        """Initialize virtual machine."""
         print(self.inf_sp.text)
 
     def check_status(self):
-        """Checks status of real machine."""
+        """Check status of real machine."""
         pass
 
 
 class VirtualMachineBrowser(Popup):
-    """File browser class
+    """Virtual machine browser class.
 
-    Definition of a file browser based on kivy's FileChooserListView.
+    Definition of a file browser based on Kivy's FileChooserListView.
     """
     title = StringProperty('Select your virtual machine definition')
 
@@ -137,7 +144,7 @@ class VirtualMachineBrowser(Popup):
         self.parent_gui = None
 
     def open(self, gui):
-        """Overrides open() function
+        """Overrides 'open()' function.
 
         This function pops up the file browser and defines parent GUI.
 
@@ -148,7 +155,7 @@ class VirtualMachineBrowser(Popup):
         self.parent_gui = gui
 
     def select_virtual_machine(self, path, filename):
-        """Select virtual machine's definition file
+        """Select virtual machine's definition file.
 
         Gives parent GUI the path and filename of virtual machine's definition
         file. Also, writes file's name and content in parent GUI's debugger.
