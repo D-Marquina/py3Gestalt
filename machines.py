@@ -1,7 +1,6 @@
 # --IMPORTS-----
 from .utilities import PersistenceManager
 from .utilities import notice as notice
-# from .publish import publish
 import math
 import copy
 import threading
@@ -15,43 +14,50 @@ class VirtualMachine(object):
     While many machines won't need the pre-built initializers which get called,
     they are provided to introduce some structure to the format of user virtual
     machines.
+
+    Attributes:
+        name (str): Virtual machine's name.
+        persistenceFile (str): Persistence file's name.
+        persistence (PersistenceManager): Persistence file's manager.
+        providedInterface (baseInterface): Interface between virtual machine and
+        physical machine.
+        publishEnabled (boolean): Publisher's setting
+        publisher (publisher): Virtual machine's publisher.
     """
     def __init__(self, *args, **kwargs):
-        if 'name' in kwargs:  # set name as provided
+        if 'name' in kwargs:
             self.name = kwargs['name']
         else:  # set name to filename for generating proper notice commands
             self.name = inspect.getfile(self.__class__)
 
-        if 'persistenceFile' in kwargs:  # set persistence file as provided
+        if 'persistenceFile' in kwargs:
             self.persistenceFilename = kwargs['persistenceFile']
             if 'name' not in kwargs:
-                # If no name is provided, and multiple machines share the persistence
-                # file, this can result in a namespace conflict.
+                # If no name is provided, and multiple machines share the
+                # persistence file, this could result in a namespace conflict.
                 notice(self,
                        'Warning: setting persistence without providing a name \
-                       to the virtual machine can result in a conflict in multi-machine persistence files.')
+                       to the virtual machine can result in a conflict in \
+                       multi-machine persistence files.')
         else:
             self.persistenceFilename = None
-
-        self.persistence = PersistenceManager(filename=self.persistenceFilename, namespace=self.name)
+        self.persistence = PersistenceManager(filename=self.persistenceFilename,
+                                              namespace=self.name)
 
         if 'interface' in kwargs:
-            self.providedInterface = kwargs['interface']  # interface provided on instantiation of virtual machine.
+            # An interface was provided on instantiation of virtual machine.
+            self.providedInterface = kwargs['interface']
         else:
             self.providedInterface = None
 
-        self.publishEnabled = True  # this should get set explicitly to false in user init by calling disablePublishing
-
-        # run user initialization
+        # Run user initialization
         self.init(*args, **kwargs)  # calls child class init function
         self.init_interfaces()
         self.init_controllers()
         self.init_coordinates()
         self.init_kinematics()
         self.init_functions()
-        self.init_publish()
         self.init_last()
-        self.publish()
 
     def init_interfaces(self):
         pass
@@ -72,22 +78,6 @@ class VirtualMachine(object):
         pass
 
     def init_last(self):
-        pass
-
-    def disable_publishing(self):
-        self.publishEnabled = False
-
-    def enable_publishing(self):
-        self.publishEnabled = True
-
-    def init_publish(self):
-        if self.publishEnabled:
-            self.publisher = publish.publisher()
-        else:
-            self.publisher = None
-
-    def publish(self):
-        # this method intended to be overwritten by user
         pass
 
 
