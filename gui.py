@@ -19,6 +19,7 @@ import serial
 import shutil
 import glob
 import sys
+import pyclbr
 import importlib
 import os
 
@@ -54,7 +55,8 @@ class Py3GestaltGUI(BoxLayout):
         - Debugger output.
 
     Attributes:
-        vm_bt_load (Button): Virtual machine section's 'Load' button.
+        vm_bt_search (Button): Virtual machine section's 'Search' button.
+        vm_bt_import (Button): Virtual machine section's 'Import' button.
         vm_fb (VirtualMachineBrowser): Virtual machine section's file browser.
         vm_source_file (str): Virtual machine's definition file's direction.
         vm_class (class): User defined virtual machine class.
@@ -63,7 +65,8 @@ class Py3GestaltGUI(BoxLayout):
         inf_bt_connect (Button): Interface section's 'Connect' button.
         debugger_lb (Label): Debugger output.
     """
-    vm_bt_load = ObjectProperty(Button())
+    vm_bt_search = ObjectProperty(Button())
+    vm_bt_import = ObjectProperty(Button())
     inf_sp = ObjectProperty(Spinner())
     inf_bt_connect = ObjectProperty(Button())
     debugger_lb = ObjectProperty(Label())
@@ -74,6 +77,7 @@ class Py3GestaltGUI(BoxLayout):
         self.vm_source_file = None
         self.vm_class = None
         self.vm = None
+        self.import_counter = 0
 
     def open_file_browser(self):
         """Open a file browser including a reference to this GUI."""
@@ -82,61 +86,104 @@ class Py3GestaltGUI(BoxLayout):
     def import_virtual_machine(self):
         """Import virtual machine definition.
 
-        Makes a directory (package) called 'tmp', copies the virtual machine's
-        definition into a file (module) called 'temp_virtual_machine' and
-        imports user-defined virtual machine's class.
+        Makes a copy of the user's virtual machine into a folder called 'tmp',
+        imports it as a module inside a package and creates a reference to
+        its user-defined virtual machine class.
 
         Returns:
             None if virtual machine is ill defined.
         """
-        temp_vm_location = os.path.join('tmp', 'temp_virtual_machine.py')
+        self.import_counter += 1
 
-        if os.path.exists('tmp'):
-            shutil.rmtree('tmp', ignore_errors=True)
-        os.makedirs('tmp')
+        vm_module = self.create_vm_module()
 
-        init_file = open(os.path.join('tmp', '__init__.py'), 'w')
-        init_file.close()
-
-        temp_vm_file = open(temp_vm_location, 'w')
-        shutil.copyfile(self.vm_source_file, temp_vm_location)
-        temp_vm_file.close()
-
-        vm_module = __import__('tmp.temp_virtual_machine',
-                                       ['temp_virtual_machine']).temp_virtual_machine
-        vm_module = importlib.reload(vm_module)
-        possible_vm = None
-        counter = 0
-        for name in dir(vm_module):
-            obj = getattr(vm_module, name)
-            if inspect.isclass(obj):
-                if str(obj.__bases__[0]) == "<class 'machines.VirtualMachine'>":
-                    if counter == 0:
-                        possible_vm = obj
-                        print(str(obj.__bases__[0]))
-                    else:
-                        self.debugger_lb.text += ("Error: More than a single "
-                                                  "virtual machine defined.") + \
-                                                 '\n' + \
-                                                 "Import a new virtual machine." + \
-                                                 '\n\n'
-                        self.inf_bt_connect.disabled = True
-                        return
-                    counter += 1
-        if counter == 0:
-            self.debugger_lb.text += "Error: No virtual machine defined." + \
-                                     '\n' + \
-                                     "Import a new virtual machine." + \
-                                     '\n\n'
+        if self.is_vm_ill_defined(vm_module):
             self.inf_bt_connect.disabled = True
             return
-        else:
-            self.vm_class = possible_vm
+
+        vm_imported_module = importlib.import_module(vm_module)
+        for name in dir(vm_imported_module):
+            cls = getattr(vm_imported_module, name)
+            if inspect.isclass(cls):
+                if str(cls.__bases__[0]) == "<class 'machines.VirtualMachine'>":
+                    print('Yahoo')
+                    self.vm_class = cls
 
         with open(self.vm_source_file, 'r') as stream:
             self.debugger_lb.text += stream.read() + '\n\n'
 
+        self.vm_bt_search.disabled = True
+        self.vm_bt_import.disabled = True
         self.inf_bt_connect.disabled = False
+
+    def create_vm_module(self):
+        """Create user-defined virtual machine module.
+
+        Makes a temporal package (directory with an '__init__.py' file) called
+        'tmp' with a temporal module (file) which is a copy of the user-defined
+        virtual machine.
+        They are assessed as 'temporal' because they are deleted every time an
+        import action is attempted.
+
+        Note:
+        The module's name is 'temp_virtual_machine_X.py', where 'X' is the
+        number of import attempts. Such change of name is necessary in order
+        to avoid problems next, when analyzing module's classes using 'pyclbr'.
+
+        Returns:
+            module: Temporal module's name.
+        """
+        package = 'tmp'
+        if os.path.exists(package):
+            shutil.rmtree(package, ignore_errors=True)
+        os.makedirs(package)
+        open(os.path.join(package, '__init__.py'), 'w').close()
+
+        module_name = 'temp_virtual_machine_' + str(self.import_counter)
+        module_location = os.path.join(package, module_name + '.py')
+        open(module_location, 'w').close()
+        shutil.copyfile(self.vm_source_file, module_location)
+        module = package + '.' + module_name
+
+        return module
+
+    def is_vm_ill_defined(self, vm_module):
+        """Check whether a virtual machine is well or ill defined.
+
+        Makes sure that selected virtual machine contains one and only one
+        user-defined virtual machine class, child of py3Gestalt's
+        'machines.VirtualMachine' class.
+
+        Args:
+            vm_module: Virtual Machine module to be analyzed
+
+        Returns:
+            True when selected module contains none or more than a unique
+            virtual machine. False otherwise.
+        """
+        num_of_vm_cls = 0
+        for name, class_data in sorted(pyclbr.readmodule(vm_module).items(),
+                                       key=lambda x: x[1].lineno):
+            if class_data.super[0] == 'machines.VirtualMachine':
+                num_of_vm_cls += 1
+
+        if num_of_vm_cls == 0:
+            self.debugger_lb.text += "Error: No virtual machine defined." + \
+                                     '\n' + \
+                                     "Select a new file." + \
+                                     '\n\n'
+            return True
+        elif num_of_vm_cls > 1:
+            self.debugger_lb.text += ("Error: More than a unique virtual "
+                                      "machine defined in a single file.") + \
+                                     '\n' + \
+                                     "Select a new file." + \
+                                     '\n\n'
+            return True
+
+        self.debugger_lb.text += "Virtual machine correctly defined." + '\n\n'
+
+        return False
 
     def load_ports(self):
         """Loads available ports into interface section's spinner.
@@ -166,7 +213,6 @@ class Py3GestaltGUI(BoxLayout):
     def connect_to_machine(self):
         """Connect to virtual machine."""
         self.vm = self.vm_class(self)
-
 
     def check_status(self):
         """Check status of real machine."""
@@ -213,7 +259,7 @@ class VirtualMachineBrowser(Popup):
         self.parent_gui.vm_source_file = ''
         self.parent_gui.vm_source_file = os.path.join(path, filename)
         self.parent_gui.debugger_lb.text += filename + '\n\n'
-        self.parent_gui.vm_bt_load.disabled = False
+        self.parent_gui.vm_bt_import.disabled = False
         self.dismiss()
 
 

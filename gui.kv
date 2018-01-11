@@ -6,7 +6,8 @@
 #:import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 <Py3GestaltGUI>:
-    vm_bt_load : vm_button_load
+    vm_bt_import: vm_button_import
+    vm_bt_search: vm_button_search
     inf_sp: inf_spinner
     inf_bt_connect: inf_button_connect
     debugger_lb: debugger_label
@@ -29,13 +30,14 @@
             text: 'Select virtual machine file:'
 
         Button:
+            id: vm_button_search
             size_hint_x: 0.2
             text: 'Search file'
             color: (1,1,1,1)
             on_release: root.open_file_browser()
 
         Button:
-            id:vm_button_load
+            id:vm_button_import
             size_hint_x: 0.3
             text: 'Import virtual machine'
             disabled: True
