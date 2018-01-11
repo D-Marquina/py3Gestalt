@@ -106,11 +106,10 @@ class Py3GestaltGUI(BoxLayout):
             cls = getattr(vm_imported_module, name)
             if inspect.isclass(cls):
                 if str(cls.__bases__[0]) == "<class 'machines.VirtualMachine'>":
-                    print('Yahoo')
                     self.vm_class = cls
 
-        with open(self.vm_source_file, 'r') as stream:
-            self.debugger_lb.text += stream.read() + '\n\n'
+        with open(self.vm_source_file, 'r') as vm_definition:
+            self.print_debugger(vm_definition.read())
 
         self.vm_bt_search.disabled = True
         self.vm_bt_import.disabled = True
@@ -168,20 +167,16 @@ class Py3GestaltGUI(BoxLayout):
                 num_of_vm_cls += 1
 
         if num_of_vm_cls == 0:
-            self.debugger_lb.text += "Error: No virtual machine defined." + \
-                                     '\n' + \
-                                     "Select a new file." + \
-                                     '\n\n'
+            self.print_debugger("Error: No virtual machine defined." + '\n' +
+                                "Select a new file.")
             return True
         elif num_of_vm_cls > 1:
-            self.debugger_lb.text += ("Error: More than a unique virtual "
-                                      "machine defined in a single file.") + \
-                                     '\n' + \
-                                     "Select a new file." + \
-                                     '\n\n'
+            self.print_debugger("Error: More than a unique virtual " +
+                                "machine defined in a single file." + '\n' +
+                                "Select a new file.")
             return True
 
-        self.debugger_lb.text += "Virtual machine correctly defined." + '\n\n'
+        self.print_debugger("Virtual machine correctly defined.")
 
         return False
 
@@ -217,6 +212,10 @@ class Py3GestaltGUI(BoxLayout):
     def check_status(self):
         """Check status of real machine."""
         pass
+
+    def print_debugger(self, message):
+        """Print in debugging section."""
+        self.debugger_lb.text += message + '\n\n'
 
 
 class VirtualMachineBrowser(Popup):
@@ -258,7 +257,7 @@ class VirtualMachineBrowser(Popup):
         """
         self.parent_gui.vm_source_file = ''
         self.parent_gui.vm_source_file = os.path.join(path, filename)
-        self.parent_gui.debugger_lb.text += filename + '\n\n'
+        self.parent_gui.print_debugger(filename)
         self.parent_gui.vm_bt_import.disabled = False
         self.dismiss()
 

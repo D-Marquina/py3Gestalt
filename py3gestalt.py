@@ -1,7 +1,5 @@
 """
 TO-DO
-- gui.Py3GestaltGUI:
-    add print debugger method
 - gui.VirtualMachineBrowser.select_virtual_machine():
     Evaluate whether file's extension is '.py' or not
 - gui.Py3GestaltGUI.check_status():
