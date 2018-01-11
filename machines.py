@@ -1,3 +1,12 @@
+"""Machines module from Gestalt framework for Python 3.
+
+Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
+
+This module contains classes needed to define a virtual machine and its
+components according to real physical machine.
+
+Copyright (c) 2018 Daniel Marquina
+"""
 # --IMPORTS-----
 from utilities import PersistenceManager
 from utilities import notice as notice
@@ -11,16 +20,27 @@ import inspect
 class VirtualMachine(object):
     """Base class for all virtual machines.
 
-    While many machines won't need every pre-built initializer which gets called,
-    they are provided to introduce some structure to the format of user virtual
-    machines.
+    On instantiation, four main attributes are initialized: name, interface,
+    GUI and persistence file.
+    If no name is specified, its path is assigned as its name by default. Its
+    interface must be defined on 'interfaces' module. GUI must have a
+    'write.debugger(str)' method. The persistence file is always created when
+    its name is specified and is saved where the user-defined virtual machine's
+    file resides.
+
+    All methods are empty but are called in initialization because the user
+    should redefine them according to the real machine's requirements. While
+    many machines won't need every pre-built initializer, they are provided to
+    introduce some structure to the format of virtual machines.
 
     Attributes:
         name (str): Virtual machine's name.
-        persistenceFile (str): Persistence file's name.
-        persistence (PersistenceManager): Persistence file's manager.
         providedInterface (baseInterface): Interface between virtual machine and
         physical machine.
+        use_gui (boolean): Flag indicating use of a GUI for notices.
+        gui (Py3GestaltGUI): GUI where notices will be displayed.
+        persistenceFile (str): Persistence file's name.
+        persistence (PersistenceManager): Persistence file's manager.
     """
     def __init__(self, *args, **kwargs):
         if 'name' in kwargs:
@@ -56,7 +76,7 @@ class VirtualMachine(object):
                                               namespace=self.name)
 
         # Run user initialization
-        self.init(*args, **kwargs)  # calls child class init function
+        self.init(*args, **kwargs)
         self.init_interfaces()
         self.init_controllers()
         self.init_coordinates()
