@@ -4,17 +4,12 @@ This modules does nothing, for now.
 """
 
 import machines
+from utilities import notice as notice
 # import test_vn
 
 
 class TestVirtualMachine(machines.VirtualMachine):
-    def __init__(self, gui):
-        super(TestVirtualMachine, self).__init__()
-        self.gui = gui
-        self.gui.debugger_lb.text += 'Loaded'
+    pass
 
-class AnotherTestVirtualMachine(machines.VirtualMachine):
-    def __init__(self, gui):
-        super(TestVirtualMachine, self).__init__()
-        self.gui = gui
-        self.gui.debugger_lb.text += 'Loaded'
+if __name__ == '__main__':
+    TestVirtualMachine()

@@ -1,7 +1,5 @@
 """
 TO-DO
-- gui.VirtualMachineBrowser.select_virtual_machine():
-    Evaluate whether file's extension is '.py' or not
 - gui.Py3GestaltGUI.check_status():
     Define empty method
 - examples/test/test_machine.py:
@@ -11,5 +9,5 @@ TO-DO
 from machines import VirtualMachine
 from gui import Py3GestaltGUIApp
 
-VirtualMachine(name='de')
+# VirtualMachine(name='de')
 Py3GestaltGUIApp().run()

@@ -3,13 +3,18 @@ import ast
 import datetime
 
 
-def notice(source=None, message=""):
+def notice(source=None, message="", use_gui=None):
     """Send a notice to the user.
 
     For now, this just prints to the console, but could eventually re-route
     via a web interface.
     """
     # check for name attribute
+    if use_gui:
+        source.gui.write_debugger(message)
+        print(use_gui)
+        return
+    print(use_gui)
     if hasattr(source, 'name'):
         name = getattr(source, 'name')
         if name:

@@ -109,7 +109,7 @@ class Py3GestaltGUI(BoxLayout):
                     self.vm_class = cls
 
         with open(self.vm_source_file, 'r') as vm_definition:
-            self.print_debugger(vm_definition.read())
+            self.write_debugger(vm_definition.read())
 
         self.vm_bt_search.disabled = True
         self.vm_bt_import.disabled = True
@@ -167,16 +167,16 @@ class Py3GestaltGUI(BoxLayout):
                 num_of_vm_cls += 1
 
         if num_of_vm_cls == 0:
-            self.print_debugger("Error: No virtual machine defined." + '\n' +
+            self.write_debugger("Error: No virtual machine defined." + '\n' +
                                 "Select a new file.")
             return True
         elif num_of_vm_cls > 1:
-            self.print_debugger("Error: More than a unique virtual " +
+            self.write_debugger("Error: More than a unique virtual " +
                                 "machine defined in a single file." + '\n' +
                                 "Select a new file.")
             return True
 
-        self.print_debugger("Virtual machine correctly defined.")
+        self.write_debugger("Virtual machine correctly defined.")
 
         return False
 
@@ -207,13 +207,13 @@ class Py3GestaltGUI(BoxLayout):
 
     def connect_to_machine(self):
         """Connect to virtual machine."""
-        self.vm = self.vm_class(self)
+        self.vm = self.vm_class(gui=self)
 
     def check_status(self):
         """Check status of real machine."""
         pass
 
-    def print_debugger(self, message):
+    def write_debugger(self, message):
         """Print in debugging section."""
         self.debugger_lb.text += message + '\n\n'
 
@@ -257,7 +257,7 @@ class VirtualMachineBrowser(Popup):
         """
         self.parent_gui.vm_source_file = ''
         self.parent_gui.vm_source_file = os.path.join(path, filename)
-        self.parent_gui.print_debugger(filename)
+        self.parent_gui.write_debugger(filename)
         self.parent_gui.vm_bt_import.disabled = False
         self.dismiss()
 

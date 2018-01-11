@@ -28,6 +28,19 @@ class VirtualMachine(object):
         else:  # set name to filename for generating proper notice commands
             self.name = inspect.getfile(self.__class__)
 
+        if 'interface' in kwargs:
+            # An interface was provided on instantiation of virtual machine.
+            self.providedInterface = kwargs['interface']
+        else:
+            self.providedInterface = None
+
+        if 'gui' in kwargs:
+            self.use_gui = True
+            self.gui = kwargs['gui']
+        else:
+            self.use_gui = False
+            self.gui = None
+
         if 'persistenceFile' in kwargs:
             self.persistenceFilename = kwargs['persistenceFile']
             if 'name' not in kwargs:
@@ -36,17 +49,11 @@ class VirtualMachine(object):
                 notice(self,
                        'Warning: setting persistence without providing a name \
                        to the virtual machine can result in a conflict in \
-                       multi-machine persistence files.')
+                       multi-machine persistence files.', self.use_gui)
         else:
             self.persistenceFilename = None
         self.persistence = PersistenceManager(filename=self.persistenceFilename,
                                               namespace=self.name)
-
-        if 'interface' in kwargs:
-            # An interface was provided on instantiation of virtual machine.
-            self.providedInterface = kwargs['interface']
-        else:
-            self.providedInterface = None
 
         # Run user initialization
         self.init(*args, **kwargs)  # calls child class init function
