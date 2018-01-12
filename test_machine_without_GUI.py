@@ -1,4 +1,11 @@
-"""Virtual Machine for Testing
+"""Virtual Machine for Testing without a GUI
+
+This virtual machine is intended to be run from console, its purpose is to find
+problems or incongruities between the use of GUI or console. After all, this
+framework was originally intended to be run from console.
+
+
+Eventually, this file wil be moved to examples.
 
 For now, this virtual machine is only initialized and displays its attributes.
 In Ilan Moyer's original Gestalt Framework, a virtual machine was executed
@@ -22,9 +29,8 @@ class TestVirtualMachine(machines.VirtualMachine):
     def publish_settings(self):
         init_message = ''
         if self.use_gui:
-            init_message += 'Settings:' + '\n'
-        else:
-            init_message += '\n' + 'Settings:' + '\n'
+            init_message += self.name
+        init_message += '\n' + 'Settings:' + '\n'
         if self.name:
             init_message += "Name: " + self.name + '\n'
         if self.interface:
@@ -38,12 +44,12 @@ class TestVirtualMachine(machines.VirtualMachine):
         notice(self, init_message, self.use_gui)
 
     def init_interfaces(self):
-        self.interface.owner = self
-        self.interface.interface = interfaces.BaseInterface(gui=self.gui)
+        """Initializes an interface shell if it was not specified."""
+        if not self.interface:
+            self.interface = interfaces.InterfaceShell()
 
 
-# If executing from console (Needed?):
+# If executing from console:
 if __name__ == '__main__':
     TestVirtualMachine(name='Testing Machine',
-                       persistenceFile='test.vmp',
-                       interface=interfaces.InterfaceShell())
+                       persistenceFile='test.vmp',)

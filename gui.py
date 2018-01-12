@@ -15,15 +15,16 @@ from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty, ObjectProperty
+import importlib
+import inspect
+import pyclbr
 import serial
 import shutil
 import glob
 import sys
-import pyclbr
-import importlib
 import os
 
-import inspect
+import interfaces
 
 kivy.require('1.0.1')
 
@@ -214,7 +215,8 @@ class Py3GestaltGUI(BoxLayout):
         located.
         Besides, interface section's buttons are disabled.
         """
-        self.vm = self.vm_class(gui=self, persistence='foo.txt')
+        self.vm = self.vm_class(gui=self, persistenceFile='test.txt',
+                                interface=interfaces.InterfaceShell(gui=self))
         os.chdir(os.path.dirname(self.vm_source_file))
         self.inf_sp.disabled = True
         self.inf_bt_connect.disabled = True

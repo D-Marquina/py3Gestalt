@@ -34,8 +34,8 @@ class VirtualMachine(object):
 
     Attributes:
         name (str): Virtual machine's name.
-        providedInterface (baseInterface): Interface between virtual machine and
-        physical machine.
+        interface (...): Virtual machine's interface, must be defined in
+        interfaces module.
         use_gui (boolean): Flag indicating use of a GUI for notices.
         gui (Py3GestaltGUI): GUI where notices will be displayed.
         persistenceFile (str): Persistence file's name.
@@ -43,32 +43,32 @@ class VirtualMachine(object):
     """
     def __init__(self, *args, **kwargs):
         if 'name' in kwargs:
-            self.name = kwargs['name']
+            self.set_name(kwargs['name'])
         else:  # set name to filename for generating proper notice commands
             self.name = inspect.getfile(self.__class__)
 
         if 'interface' in kwargs:
             # An interface was provided on instantiation of virtual machine.
-            self.providedInterface = kwargs['interface']
+            self.set_interface(kwargs['interface'])
         else:
-            self.providedInterface = None
+            self.interface = None
 
         if 'gui' in kwargs:
-            self.use_gui = True
-            self.gui = kwargs['gui']
+            self.set_gui(kwargs['gui'])
         else:
             self.use_gui = False
             self.gui = None
 
         if 'persistenceFile' in kwargs:
-            self.persistenceFilename = kwargs['persistenceFile']
+            self.persistenceFilename = ''
+            self.set_persistence(kwargs['persistenceFile'])
             if 'name' not in kwargs:
                 # If no name is provided, and multiple machines share the
                 # persistence file, this could result in a namespace conflict.
                 notice(self,
-                       'Warning: setting persistence without providing a name \
-                       to the virtual machine can result in a conflict in \
-                       multi-machine persistence files.', self.use_gui)
+                       'Warning: setting persistence without providing a name '
+                       'to the virtual machine can result in a conflict in '
+                       'multi-machine persistence files.', self.use_gui)
         else:
             self.persistenceFilename = None
         self.persistence = PersistenceManager(filename=self.persistenceFilename,
@@ -82,6 +82,57 @@ class VirtualMachine(object):
         self.init_kinematics()
         self.init_functions()
         self.init_last()
+
+    def set_name(self, name=None):
+        """Set name of virtual machine.
+
+        If this function is called without passing an argument, virtual machine's
+        file's location is assigned as name.
+
+        Args:
+            name (str): Virtual machine's new name
+        """
+        if name:
+            self.name = name
+        else:
+            self.name = inspect.getfile(self.__class__)
+
+    def set_interface(self, interface):
+        """Set interface of virtual machine.
+
+        Args:
+            interface (...): Virtual machine's interface, must be defined in
+            interfaces module.
+        """
+        if interface:
+            self.interface = interface
+        else:
+            notice(self, "No interface trying to be assigned.", self.use_gui)
+
+    def set_gui(self, gui):
+        """Set GUI of virtual machine.
+
+        Args:
+            gui (Py3GestaltGUI): Virtual machine's GUI.
+        """
+        if gui:
+            self.use_gui = True
+            self.gui = gui
+        else:
+            notice(self, "No gui trying to be assigned.", self.use_gui)
+
+    def set_persistence(self, filename):
+        """Set persistence file of virtual machine.
+
+        Args:
+            filename (str): Virtual machine's persistence file's name.
+        """
+        if filename:
+            self.persistenceFilename = filename
+        else:
+            self.persistenceFilename = None
+        self.persistence = PersistenceManager(filename=self.persistenceFilename,
+                                              namespace=self.name)
 
     def init_interfaces(self):
         pass

@@ -17,7 +17,7 @@ import os
 import sys
 import platform
 import time
-# import Queue
+import queue
 import threading
 import socket
 import itertools
@@ -30,20 +30,29 @@ from utilities import notice
 class InterfaceShell(object):
     """Intermediary between nodes, node shells and interfaces.
 
+    Args:
+        interface (BaseInterface): Interface to be contained by this shell.
+        owner (VirtualMachine): Virtual machine that owns this interface shell.
+        gui (Py3GestaltGUI): Same GUI as virtual machine's one.
+
     Attributes:
         Interface (BaseInterface): Interfaced contained by this shell.
         owner (VirtualMachine): Virtual machine that instantiates this shell
         and its contained interface, can be None. Used in the port acquisition
         process.
-
-    Args:
-        interface (BaseInterface): Interface to be contained by this shell.
-        owner (VirtualMachine): Virtual machine that owns this interface shell.
+        gui (Py3GestaltGUI): GUI used in virtual machine's definition.
     """
-    def __init__(self, interface=None, owner=None):
+    def __init__(self, interface=None, owner=None, gui=None):
         self.owner = None
         self.Interface = None
         self.set(interface, owner)
+        if gui:
+            self.use_gui = True
+            self.gui = gui
+        else:
+            self.use_gui = False
+            self.gui = None
+        notice(self, "Interface shell successfully initialized...", self.use_gui)
 
     def set(self, interface, owner=None):
         """Updates the interface contained by the shell.
@@ -63,7 +72,7 @@ class InterfaceShell(object):
             self.Interface.owner = self.owner
         if interface:
             # Initializes contained interface
-            interface.initAfterSet()
+            interface.init_after_set()
 
     def set_owner(self, owner):
         """Set owner.
@@ -90,260 +99,264 @@ class InterfaceShell(object):
         return getattr(self.Interface, attribute)
 
 
-# class baseInterface(object):
-#     ''' This base class could eventually provide a common foundation for all interfaces '''
-#
-#     def initAfterSet(self):
-#         '''This method gets called when an interface is set into an interface shell.'''
-#         pass
-#
-#
-# class socketInterface(baseInterface):
-#     def __init__(self, IPAddress='', IPPort=27272):  # all avaliable interfaces, port 27272
-#         self.receiveIPAddress = IPAddress
-#         self.receiveIPPort = IPPort
-#
-#
-# class socketUDPServer(socketInterface):
-#
-#     def initAfterSet(self):  # gets called once interface is set into shell.
-#         self.receiveSocket = socket.socket(socket.AF_INET,
-#                                            socket.SOCK_DGRAM)  # UDP, would be socket.SOCK_STREAM for TCP
-#         self.receiveSocket.bind((self.receiveIPAddress, self.receiveIPPort))  # bind to socket
-#         notice(self, "opened socket on " + str(self.receiveIPAddress) + " port " + str(self.receiveIPPort))
-#         self.transmitSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-#
-#     def receive(self):
-#         data, addr = self.receiveSocket.recvfrom(1024)
-#         notice(self, "'" + str(data) + "' from " + str(addr))
-#         return (data, addr)
-#
-#     def transmit(self, remoteIPAddress, remoteIPPort, data):
-#         #		self.transmitSocket.sendto(data, (remoteIPAddress, remoteIPPort))
-#         self.receiveSocket.sendto(data, (remoteIPAddress, remoteIPPort))
-#
-#
-# class devInterface(baseInterface):
-#     ''' Base class for interfaces mounted in the /dev/ folder.'''
-#
-#     def deviceScan(self, searchTerm):
-#         '''returns available ports that match the search term'''
-#         ports = os.listdir('/dev/')
-#         matchingPorts = []
-#         for port in ports:
-#             if searchTerm in port:
-#                 matchingPorts.append('/dev/' + port)
-#         return matchingPorts
-#
-#     def getSearchTerms(self, interfaceType):
-#         '''returns the likely prefix for a serial port based on the operating system and device type'''
-#         # define search strings in format {'OperatingSystem':'SearchString'}
-#         ftdi = {'Darwin': 'tty.usbserial-'}
-#         lufa = {'Darwin': 'tty.usbmodem'}
-#         genericSerial = {'Darwin': 'tty.'}
-#
-#         searchStrings = {'ftdi': ftdi, 'lufa': lufa, 'genericSerial': genericSerial}
-#
-#         opSys = platform.system()  # nominally detects the system
-#
-#         if interfaceType in searchStrings:
-#             if opSys in searchStrings[interfaceType]:
-#                 return searchStrings[interfaceType][opSys]
-#             else:
-#                 notice('getSearchTerm', 'operating system support not found for interface type ' + interfaceType)
-#                 return False
-#         else:
-#             notice('getSearchTerm', 'interface support not found for interface type ' + interfaceType)
-#             return False
-#
-#     def waitForNewPort(self, searchTerms='', timeout=10):
-#         '''Scans for a new port to appear in /dev/ and returns the name of the port.
-#
-#         Search terms is a list that can contain several terms. For now only implemented for one term.'''
-#         timerCount = 0
-#         devPorts = self.deviceScan(searchTerms)
-#         numDevPorts = len(devPorts)
-#         while True:
-#             time.sleep(0.25)
-#             timerCount += 0.25
-#             if timerCount > timeout:
-#                 notice(self.owner, 'TIMOUT in acquiring a port.')
-#                 return False
-#             currentDevPorts = self.deviceScan(searchTerms)
-#             numCurrentDevPorts = len(currentDevPorts)
-#
-#             # port has been unplugged... update number of ports
-#             if numCurrentDevPorts < numDevPorts:
-#                 devPorts = list(currentDevPorts)
-#                 numDevPorts = numCurrentDevPorts
-#             elif numCurrentDevPorts > numDevPorts:
-#                 return list(set(currentDevPorts) - set(devPorts))  # returns all ports that just appeared
-#
-#
-# class serialInterface(devInterface):
-#     '''Provides an interface to nodes connected thru a serial port on the host machine.'''
-#
-#     def __init__(self, baudRate, portName=None, interfaceType=None, owner=None, timeOut=0.2, flowControl=None):
-#         self.baudRate = baudRate
-#         self.portName = portName
-#         self.timeOut = timeOut
-#         self.isConnected = False
-#         self.owner = owner
-#         # self.owner gets set by the interface shell, and contains a reference to the owning object
-#         # this is useful to refer to the name of the object when acquiring the interface
-#         self.port = None  # will be replaced with a serial object when port is acquired
-#         self.interfaceType = interfaceType
-#         self.transmitQueue = Queue.Queue()  # a queue is used to allow multiple threads to call transmit simultaneously.
-#
-#     def initAfterSet(self):
-#         # if port name is provided, auto-connect
-#         if self.portName:
-#             self.connect(self.portName)
-#         elif self.interfaceType:  # if an interface type is provided, auto-acquire
-#             self.acquirePort(self.interfaceType)
-#
-#     def getAvailablePorts(self, ports):
-#         '''tests all provided ports and returns a subset of ports that are available'''
-#         availablePorts = []
-#         for port in ports:
-#             try:
-#                 openPort = serial.Serial(port)
-#                 openPort.close()
-#                 availablePorts += [port]
-#             except serial.SerialException, e:
-#                 continue
-#         return availablePorts
-#
-#     def acquirePort(self, interfaceType=None):
-#         '''Discovers and connects to a port by waiting for a new device to be plugged in.'''
-#         # get search terms
-#         if interfaceType:
-#             searchTerm = self.getSearchTerms(interfaceType)
-#         else:
-#             searchTerm = self.getSearchTerms('genericSerial')
-#
-#         # try to find a single port that's open. This is good for when only a single device is attached.
-#         availablePorts = self.getAvailablePorts(self.deviceScan(searchTerm))
-#         if len(availablePorts) == 1:
-#             self.portName = availablePorts[0]
-#             return self.connect()
-#         else:
-#             notice(self.owner, "trying to acquire. Please plug me in.")
-#             newPorts = self.waitForNewPort(searchTerm, 10)  # wait for new port
-#             if newPorts:
-#                 if len(newPorts) > 1:
-#                     notice(self.owner, 'Could not acquire. Multiple ports plugged in simultaneously.')
-#                     return False
-#                 else:
-#                     self.portName = newPorts[0]
-#                     return self.connect()
-#             else:
-#                 return False
-#
-#     def connect(self, portName=None):
-#         '''Locates port for interface on host machine.'''
-#
-#         # check if port has been provided explicitly to connect function
-#         if portName:
-#             self.connectToPort(portName)
-#             return True
-#
-#         # port hasn't been provided to connect function, check if assigned on instantiation
-#         elif self.portName:
-#             self.connectToPort(self.portName)
-#             return True
-#
-#         # no port name provided
-#         else:
-#             notice(self, 'no port name provided.')
-#             return False
-#
-#     def connectToPort(self, portName):
-#         '''Actually connects the interface to the port'''
-#         try:
-#             self.port = serial.Serial(portName, self.baudRate, timeout=self.timeOut)
-#             self.port.flushInput()
-#             self.port.flushOutput()
-#             notice(self, "port " + str(portName) + " connected succesfully.")
-#             time.sleep(2)  # some serial ports require a brief amount of time between opening and transmission
-#             self.isConnected = True
-#             self.startTransmitter()
-#             return True
-#         except:
-#             notice(self, "error opening serial port " + str(portName))
-#             return False
-#
-#     def disconnect(self):
-#         '''Disconnects from serial port.'''
-#         self.port.close()
-#         self.isConnected = False
-#
-#     def setDTR(self):
-#         '''Used to reset the Arduino hardware.'''
-#         if self.port:
-#             self.port.setDTR()
-#         return
-#
-#     def setTimeout(self, timeout):
-#         '''Sets timeout for receiving on port.'''
-#         if self.port:
-#             try:
-#                 self.port.timeout = timeout
-#             except:
-#                 notice(self, "could not set timeout: " + sys.exc_info()[0])
-#
-#     def startTransmitter(self):
-#         '''Starts the transmit thread.'''
-#         self.transmitter = self.transmitThread(self.transmitQueue, self.port)
-#         self.transmitter.daemon = True
-#         self.transmitter.start()
-#
-#     def transmit(self, data):
-#         '''Sends request for data to be transmitted over the serial port. Format is as a list.'''
-#         if self.isConnected:
-#             self.transmitQueue.put(data)  # converts to list in case data comes in as a string.
-#         else:
-#             notice(self, 'serialInterface is not connected.')
-#
-#     class transmitThread(threading.Thread):
-#         '''Handles transmitting data over the serial port.'''
-#
-#         def __init__(self, transmitQueue, port):
-#             threading.Thread.__init__(self)  # initialize threading superclass
-#             self.transmitQueue = transmitQueue
-#             self.port = port
-#
-#         def run(self):
-#             '''Code run by the transmit thread.'''
-#             while True:
-#                 transmitState, transmitPacket = self.getTransmitPacket()
-#                 if transmitState:
-#                     if self.port:
-#                         self.port.write(serialize(transmitPacket))
-#                     else:
-#                         notice(self, 'Cannot Transmit - No Serial Port Initialized')
-#                 time.sleep(0.0005)
-#
-#         def getTransmitPacket(self):
-#             '''Tries to fetch a packet from the transmit queue.'''
-#             try:
-#                 return True, self.transmitQueue.get()
-#             except:
-#                 return False, None
-#
-#     def receive(self):
-#         '''Grabs one byte from the serial port.'''
-#         if self.port:
-#             return self.port.read()
-#         else:
-#             return None
-#
-#     def flushInput(self):
-#         '''Flushes the input buffer.'''
-#         self.port.flushInput()
-#         return
-#
-#
+class BaseInterface(object):
+    """ Base class of all interfaces.
+
+    Args:
+        gui (Py3GestaltGUI): Same GUI as virtual machine's one.
+
+    Attributes:
+        gui (Py3GestaltGUI): GUI specified in virtual machine's definition.
+        Useful for debugging purposes.
+
+    This class presents a basic structure of all interfaces. For now it only
+    has an empty method which will be overridden by a child class defined
+    later.
+    """
+
+    def __init__(self, gui=None):
+        if gui:
+            self.use_gui = True
+            self.gui = gui
+        else:
+            self.use_gui = False
+            self.gui = None
+        notice(self, "Base interface successfully initialized...", self.use_gui)
+
+    def init_after_set(self):
+        """Connect to interface after it was assigned to a interface shell."""
+        pass
+
+
+class SerialInterface(BaseInterface):
+    '''Provides an interface to nodes connected thru a serial port on the host machine.'''
+
+    def __init__(self, baudRate, portName=None, interfaceType=None, owner=None, timeOut=0.2, flowControl=None, gui=None):
+        super(SerialInterface, self).__init__(gui)
+        self.baudRate = baudRate
+        self.portName = portName
+        self.timeOut = timeOut
+        self.isConnected = False
+        self.owner = owner
+        # self.owner gets set by the interface shell, and contains a reference to the owning object
+        # this is useful to refer to the name of the object when acquiring the interface
+        self.port = None  # will be replaced with a serial object when port is acquired
+        self.interfaceType = interfaceType
+        self.transmitQueue = queue.Queue()  # a queue is used to allow multiple threads to call transmit simultaneously.
+
+        if gui:
+            self.use_gui = True
+            self.gui = gui
+            notice(self, "Interface successfully instantiated.")
+        else:
+            self.use_gui = False
+            self.gui = None
+
+    class DevInterface(BaseInterface):
+        """Base class for interfaces mounted in the /dev/ folder."""
+
+        def device_scan(self, search_term):
+            """Returns available ports that match the search term."""
+            ports = os.listdir('/dev/')
+            matching_ports = []
+            for port in ports:
+                if search_term in port:
+                    matching_ports.append('/dev/' + port)
+            return matching_ports
+
+        def getSearchTerms(self, interfaceType):
+            '''returns the likely prefix for a serial port based on the operating system and device type'''
+            # define search strings in format {'OperatingSystem':'SearchString'}
+            ftdi = {'Darwin': 'tty.usbserial-'}
+            lufa = {'Darwin': 'tty.usbmodem'}
+            genericSerial = {'Darwin': 'tty.'}
+
+            searchStrings = {'ftdi': ftdi, 'lufa': lufa, 'genericSerial': genericSerial}
+
+            opSys = platform.system()  # nominally detects the system
+
+            if interfaceType in searchStrings:
+                if opSys in searchStrings[interfaceType]:
+                    return searchStrings[interfaceType][opSys]
+                else:
+                    notice('getSearchTerm', 'operating system support not found for interface type ' + interfaceType)
+                    return False
+            else:
+                notice('getSearchTerm', 'interface support not found for interface type ' + interfaceType)
+                return False
+
+        def waitForNewPort(self, searchTerms='', timeout=10):
+            '''Scans for a new port to appear in /dev/ and returns the name of the port.
+
+            Search terms is a list that can contain several terms. For now only implemented for one term.'''
+            timerCount = 0
+            devPorts = self.deviceScan(searchTerms)
+            numDevPorts = len(devPorts)
+            while True:
+                time.sleep(0.25)
+                timerCount += 0.25
+                if timerCount > timeout:
+                    notice(self.owner, 'TIMOUT in acquiring a port.')
+                    return False
+                currentDevPorts = self.deviceScan(searchTerms)
+                numCurrentDevPorts = len(currentDevPorts)
+
+                # port has been unplugged... update number of ports
+                if numCurrentDevPorts < numDevPorts:
+                    devPorts = list(currentDevPorts)
+                    numDevPorts = numCurrentDevPorts
+                elif numCurrentDevPorts > numDevPorts:
+                    return list(set(currentDevPorts) - set(devPorts))  # returns all ports that just appeared
+
+    # def initAfterSet(self):
+    #     # if port name is provided, auto-connect
+    #     if self.portName:
+    #         self.connect(self.portName)
+    #     elif self.interfaceType:  # if an interface type is provided, auto-acquire
+    #         self.acquirePort(self.interfaceType)
+    #
+    # def getAvailablePorts(self, ports):
+    #     '''tests all provided ports and returns a subset of ports that are available'''
+    #     availablePorts = []
+    #     for port in ports:
+    #         try:
+    #             openPort = serial.Serial(port)
+    #             openPort.close()
+    #             availablePorts += [port]
+    #         except serial.SerialException, e:
+    #             continue
+    #     return availablePorts
+    #
+    # def acquirePort(self, interfaceType=None):
+    #     '''Discovers and connects to a port by waiting for a new device to be plugged in.'''
+    #     # get search terms
+    #     if interfaceType:
+    #         searchTerm = self.getSearchTerms(interfaceType)
+    #     else:
+    #         searchTerm = self.getSearchTerms('genericSerial')
+    #
+    #     # try to find a single port that's open. This is good for when only a single device is attached.
+    #     availablePorts = self.getAvailablePorts(self.deviceScan(searchTerm))
+    #     if len(availablePorts) == 1:
+    #         self.portName = availablePorts[0]
+    #         return self.connect()
+    #     else:
+    #         notice(self.owner, "trying to acquire. Please plug me in.")
+    #         newPorts = self.waitForNewPort(searchTerm, 10)  # wait for new port
+    #         if newPorts:
+    #             if len(newPorts) > 1:
+    #                 notice(self.owner, 'Could not acquire. Multiple ports plugged in simultaneously.')
+    #                 return False
+    #             else:
+    #                 self.portName = newPorts[0]
+    #                 return self.connect()
+    #         else:
+    #             return False
+    #
+    # def connect(self, portName=None):
+    #     '''Locates port for interface on host machine.'''
+    #
+    #     # check if port has been provided explicitly to connect function
+    #     if portName:
+    #         self.connectToPort(portName)
+    #         return True
+    #
+    #     # port hasn't been provided to connect function, check if assigned on instantiation
+    #     elif self.portName:
+    #         self.connectToPort(self.portName)
+    #         return True
+    #
+    #     # no port name provided
+    #     else:
+    #         notice(self, 'no port name provided.')
+    #         return False
+    #
+    # def connectToPort(self, portName):
+    #     '''Actually connects the interface to the port'''
+    #     try:
+    #         self.port = serial.Serial(portName, self.baudRate, timeout=self.timeOut)
+    #         self.port.flushInput()
+    #         self.port.flushOutput()
+    #         notice(self, "port " + str(portName) + " connected succesfully.")
+    #         time.sleep(2)  # some serial ports require a brief amount of time between opening and transmission
+    #         self.isConnected = True
+    #         self.startTransmitter()
+    #         return True
+    #     except:
+    #         notice(self, "error opening serial port " + str(portName))
+    #         return False
+    #
+    # def disconnect(self):
+    #     '''Disconnects from serial port.'''
+    #     self.port.close()
+    #     self.isConnected = False
+    #
+    # def setDTR(self):
+    #     '''Used to reset the Arduino hardware.'''
+    #     if self.port:
+    #         self.port.setDTR()
+    #     return
+    #
+    # def setTimeout(self, timeout):
+    #     '''Sets timeout for receiving on port.'''
+    #     if self.port:
+    #         try:
+    #             self.port.timeout = timeout
+    #         except:
+    #             notice(self, "could not set timeout: " + sys.exc_info()[0])
+    #
+    # def startTransmitter(self):
+    #     '''Starts the transmit thread.'''
+    #     self.transmitter = self.transmitThread(self.transmitQueue, self.port)
+    #     self.transmitter.daemon = True
+    #     self.transmitter.start()
+    #
+    # def transmit(self, data):
+    #     '''Sends request for data to be transmitted over the serial port. Format is as a list.'''
+    #     if self.isConnected:
+    #         self.transmitQueue.put(data)  # converts to list in case data comes in as a string.
+    #     else:
+    #         notice(self, 'serialInterface is not connected.')
+    #
+    # class transmitThread(threading.Thread):
+    #     '''Handles transmitting data over the serial port.'''
+    #
+    #     def __init__(self, transmitQueue, port):
+    #         threading.Thread.__init__(self)  # initialize threading superclass
+    #         self.transmitQueue = transmitQueue
+    #         self.port = port
+    #
+    #     def run(self):
+    #         '''Code run by the transmit thread.'''
+    #         while True:
+    #             transmitState, transmitPacket = self.getTransmitPacket()
+    #             if transmitState:
+    #                 if self.port:
+    #                     self.port.write(serialize(transmitPacket))
+    #                 else:
+    #                     notice(self, 'Cannot Transmit - No Serial Port Initialized')
+    #             time.sleep(0.0005)
+    #
+    #     def getTransmitPacket(self):
+    #         '''Tries to fetch a packet from the transmit queue.'''
+    #         try:
+    #             return True, self.transmitQueue.get()
+    #         except:
+    #             return False, None
+    #
+    # def receive(self):
+    #     '''Grabs one byte from the serial port.'''
+    #     if self.port:
+    #         return self.port.read()
+    #     else:
+    #         return None
+    #
+    # def flushInput(self):
+    #     '''Flushes the input buffer.'''
+    #     self.port.flushInput()
+    #     return
+
+
 # class gestaltInterface(baseInterface):
 #     '''Interface to Gestalt nodes based on the Gestalt protocol.'''
 #
@@ -612,6 +625,31 @@ class InterfaceShell(object):
 #         def putActionObject(self, actionObject):
 #             self.channelPriorityQueue.put(actionObject)
 #             return True
+#
+#
+# class socketInterface(baseInterface):
+#     def __init__(self, IPAddress='', IPPort=27272):  # all avaliable interfaces, port 27272
+#         self.receiveIPAddress = IPAddress
+#         self.receiveIPPort = IPPort
+#
+#
+# class socketUDPServer(socketInterface):
+#
+#     def initAfterSet(self):  # gets called once interface is set into shell.
+#         self.receiveSocket = socket.socket(socket.AF_INET,
+#                                            socket.SOCK_DGRAM)  # UDP, would be socket.SOCK_STREAM for TCP
+#         self.receiveSocket.bind((self.receiveIPAddress, self.receiveIPPort))  # bind to socket
+#         notice(self, "opened socket on " + str(self.receiveIPAddress) + " port " + str(self.receiveIPPort))
+#         self.transmitSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#
+#     def receive(self):
+#         data, addr = self.receiveSocket.recvfrom(1024)
+#         notice(self, "'" + str(data) + "' from " + str(addr))
+#         return (data, addr)
+#
+#     def transmit(self, remoteIPAddress, remoteIPPort, data):
+#         #		self.transmitSocket.sendto(data, (remoteIPAddress, remoteIPPort))
+#         self.receiveSocket.sendto(data, (remoteIPAddress, remoteIPPort))
 #
 #
 # # ----UTILITY CLASSES---------------
