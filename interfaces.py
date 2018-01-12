@@ -1,44 +1,95 @@
-# # ----IMPORTS------------
-# import serial  # for connecting to serial ports
-# import os
-# import sys
-# import platform
-# import time
+"""Interfaces module from Gestalt framework for Python 3.
+
+Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
+
+This module defines interface classes and an interface shell class, which acts
+as an intermediary between the interface and nodes.
+
+TO-DO list:
+- line 64:
+    Should not self.Interface be initialized?
+
+Copyright (c) 2018 Daniel Marquina
+"""
+
+import serial  # for connecting to serial ports
+import os
+import sys
+import platform
+import time
 # import Queue
-# import threading
-# import socket
-# import itertools
-# from pygestalt.utilities import notice
+import threading
+import socket
+import itertools
+from utilities import notice
 # from pygestalt import packets
 # from pygestalt import functions
 # from pygestalt import core
-#
-#
-# # ----INTERFACE CLASSES------------
-# class interfaceShell(object):
-#     '''Allows both the node and shell node to access the interface by acting as an intermediary.'''
-#
-#     def __init__(self, Interface=None, owner=None):
-#         self.set(Interface, owner)
-#
-#     def set(self, Interface, owner=None):
-#         '''Updates the interface contained by the shell'''
-#         if owner: self.owner = owner  # update owner
-#         self.Interface = Interface  # update interface
-#         if Interface and self.owner: self.Interface.owner = self.owner  # if interface, set owner
-#         if Interface: Interface.initAfterSet()  # initializes after owner is set, so that owner is reported correctly to user.
-#
-#     def setOwner(self, owner):
-#         '''Updates the owner of the interface contained by the shell'''
-#         self.owner = owner  # used in the port acquisition process
-#         if self.Interface:
-#             self.Interface.owner = owner
-#
-#     def __getattr__(self, attribute):
-#         '''Forwards attribute calls to the linked interface.'''
-#         return getattr(self.Interface, attribute)
-#
-#
+
+
+class InterfaceShell(object):
+    """Intermediary between nodes, node shells and interfaces.
+
+    Attributes:
+        Interface (BaseInterface): Interfaced contained by this shell.
+        owner (VirtualMachine): Virtual machine that instantiates this shell
+        and its contained interface, can be None. Used in the port acquisition
+        process.
+
+    Args:
+        interface (BaseInterface): Interface to be contained by this shell.
+        owner (VirtualMachine): Virtual machine that owns this interface shell.
+    """
+    def __init__(self, interface=None, owner=None):
+        self.owner = None
+        self.Interface = None
+        self.set(interface, owner)
+
+    def set(self, interface, owner=None):
+        """Updates the interface contained by the shell.
+
+        Updates and initializes contained (or linked) shell. Owner can be
+        None.
+
+        Args:
+            interface (BaseInterface): Interface to be contained by this shell.
+            owner (VirtualMachine): Virtual machine that owns this interface shell.
+        """
+        if owner:
+            self.owner = owner
+        self.Interface = interface
+        if interface and self.owner:
+            # Set owner of contained interface
+            self.Interface.owner = self.owner
+        if interface:
+            # Initializes contained interface
+            interface.initAfterSet()
+
+    def set_owner(self, owner):
+        """Set owner.
+
+         Updates owner of this shell and its contained interface.
+         Useful when no owner was specified when instantiating.
+
+         Args:
+             - owner (VirtualMachine):
+        """
+        self.owner = owner  # used in the port acquisition process
+        if self.Interface:
+            self.Interface.owner = owner
+
+    def __getattr__(self, attribute):
+        """Forwards attribute calls to the contained interface.
+
+        Args:
+            attribute (): Attribute of contained interface.
+
+        Returns:
+            Contained interfaces's attribute.
+        """
+        return getattr(self.Interface, attribute)
+
+
 # class baseInterface(object):
 #     ''' This base class could eventually provide a common foundation for all interfaces '''
 #

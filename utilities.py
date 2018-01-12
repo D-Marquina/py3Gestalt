@@ -1,3 +1,13 @@
+"""Utilities module from Gestalt framework for Python 3.
+
+Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
+
+This module contains various classes and methods needed for the correct
+implementation of this framework.
+
+Copyright (c) 2018 Daniel Marquina
+"""
+
 import math
 import ast
 import datetime
@@ -6,15 +16,25 @@ import datetime
 def notice(source=None, message="", use_gui=None):
     """Send a notice to the user.
 
-    For now, this just prints to the console, but could eventually re-route
-    via a web interface.
+    Originally, this method only showed a notice on the console, but for now
+    it can also show a notice on a user-defined gui as long as such gui meets
+    one requirement:
+    - It must have a write_debugger(str) method
+
+    Note: Eventually, this method could re-route its notice via a web interface.
+
+    Args:
+        source (VirtualMachine, etc.): Object that sends a notice.
+        message (str): Message to display.
+        use_gui (boolean): Flag that indicates is a GUI will be used.
+
+    Returns:
+        None after message has been sent to GUI's debugger.
     """
-    # check for name attribute
     if use_gui:
         source.gui.write_debugger(message)
-        print(use_gui)
         return
-    print(use_gui)
+
     if hasattr(source, 'name'):
         name = getattr(source, 'name')
         if name:

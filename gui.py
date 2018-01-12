@@ -1,4 +1,4 @@
-"""Gestalt framework for Python 3's GUI
+"""Gestalt framework for Python 3's GUI.
 
 This module extends Gestalt Framework for Python 3's usability by creating a
 GUI that allows the user to select a defined virtual machine, available
@@ -89,6 +89,7 @@ class Py3GestaltGUI(BoxLayout):
         Makes a copy of the user's virtual machine into a folder called 'tmp',
         imports it as a module inside a package and creates a reference to
         its user-defined virtual machine class.
+        Besides, virtual machine section's buttons are disabled.
 
         Returns:
             None if virtual machine is ill defined.
@@ -206,8 +207,17 @@ class Py3GestaltGUI(BoxLayout):
         self.inf_sp.values = available_ports
 
     def connect_to_machine(self):
-        """Connect to virtual machine."""
-        self.vm = self.vm_class(gui=self)
+        """Connect to virtual machine.
+
+        Instantiate a user-defined virtual machine and changes the current
+        working directory to where its original virtual machine's file is
+        located.
+        Besides, interface section's buttons are disabled.
+        """
+        self.vm = self.vm_class(gui=self, persistence='foo.txt')
+        os.chdir(os.path.dirname(self.vm_source_file))
+        self.inf_sp.disabled = True
+        self.inf_bt_connect.disabled = True
 
     def check_status(self):
         """Check status of real machine."""

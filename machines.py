@@ -7,7 +7,7 @@ components according to real physical machine.
 
 Copyright (c) 2018 Daniel Marquina
 """
-# --IMPORTS-----
+
 from utilities import PersistenceManager
 from utilities import notice as notice
 import math
@@ -16,7 +16,6 @@ import threading
 import inspect
 
 
-# VIRTUAL MACHINE BASE CLASS
 class VirtualMachine(object):
     """Base class for all virtual machines.
 

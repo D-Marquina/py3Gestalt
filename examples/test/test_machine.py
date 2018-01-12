@@ -21,7 +21,10 @@ class TestVirtualMachine(machines.VirtualMachine):
         self.publish_settings()
 
     def publish_settings(self):
-        init_message = 'Settings:' + '\n'
+        init_message = ''
+        if self.use_gui:
+            init_message += self.name
+        init_message += '\n' + 'Settings:' + '\n'
         if self.name:
             init_message += "Name: " + self.name + '\n'
         if self.providedInterface:
