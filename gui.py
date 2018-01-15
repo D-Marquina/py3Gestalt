@@ -62,14 +62,14 @@ class Py3GestaltGUI(BoxLayout):
         vm_source_file (str): Virtual machine's definition file's direction.
         vm_class (class): User defined virtual machine class.
         vm(vm_class): Instantiation of user defined virtual machine.
-        inf_sp (Spinner): Interface section's spinner.
-        inf_bt_connect (Button): Interface section's 'Connect' button.
+        int_sp (Spinner): Interface section's spinner.
+        int_bt_connect (Button): Interface section's 'Connect' button.
         debugger_lb (Label): Debugger output.
     """
     vm_bt_search = ObjectProperty(Button())
     vm_bt_import = ObjectProperty(Button())
-    inf_sp = ObjectProperty(Spinner())
-    inf_bt_connect = ObjectProperty(Button())
+    int_sp = ObjectProperty(Spinner())
+    int_bt_connect = ObjectProperty(Button())
     debugger_lb = ObjectProperty(Label())
 
     def __init__(self):
@@ -100,7 +100,7 @@ class Py3GestaltGUI(BoxLayout):
         vm_module = self.create_vm_module()
 
         if self.is_vm_ill_defined(vm_module):
-            self.inf_bt_connect.disabled = True
+            self.int_bt_connect.disabled = True
             return
 
         vm_imported_module = importlib.import_module(vm_module)
@@ -115,7 +115,7 @@ class Py3GestaltGUI(BoxLayout):
 
         self.vm_bt_search.disabled = True
         self.vm_bt_import.disabled = True
-        self.inf_bt_connect.disabled = False
+        self.int_bt_connect.disabled = False
 
     def create_vm_module(self):
         """Create user-defined virtual machine module.
@@ -205,7 +205,7 @@ class Py3GestaltGUI(BoxLayout):
             except (OSError, serial.SerialException):
                 pass
 
-        self.inf_sp.values = available_ports
+        self.int_sp.values = available_ports
 
     def connect_to_machine(self):
         """Connect to virtual machine.
@@ -215,11 +215,12 @@ class Py3GestaltGUI(BoxLayout):
         located.
         Besides, interface section's buttons are disabled.
         """
-        self.vm = self.vm_class(gui=self, persistenceFile='test.txt',
-                                interface=interfaces.InterfaceShell(gui=self))
+        self.vm = self.vm_class(gui=self, persistenceFile='test.txt')
+        self.vm.set_interface(interfaces.InterfaceShell(gui=self))
+        self.vm.interface.set(interfaces.BaseInterface(gui=self))
         os.chdir(os.path.dirname(self.vm_source_file))
-        self.inf_sp.disabled = True
-        self.inf_bt_connect.disabled = True
+        self.int_sp.disabled = True
+        self.int_bt_connect.disabled = True
 
     def check_status(self):
         """Check status of real machine."""

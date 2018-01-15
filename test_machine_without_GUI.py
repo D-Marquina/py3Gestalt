@@ -41,15 +41,24 @@ class TestVirtualMachine(machines.VirtualMachine):
             init_message += "GUI: " + str(self.use_gui) + '\n'
         if self.persistenceFilename:
             init_message += "Persistence file: " + self.persistenceFilename + '\n'
+        else:
+            init_message += "Persistence file: False" + '\n'
         notice(self, init_message, self.use_gui)
 
     def init_interfaces(self):
-        """Initializes an interface shell if it was not specified."""
-        if not self.interface:
-            self.interface = interfaces.InterfaceShell()
+        """Initializes an basic interface if it was not specified."""
+        if self.interface is not None:
+            self.interface.set_owner = self
+            self.interface.set(interfaces.BaseInterface(gui=self.gui))
 
 
 # If executing from console:
 if __name__ == '__main__':
+    # You could run:
     TestVirtualMachine(name='Testing Machine',
-                       persistenceFile='test.vmp',)
+                       interface=interfaces.InterfaceShell(interfaces.BaseInterface()),
+                       persistenceFile='test.vmp')
+    # Or this:
+    # my_machine = TestVirtualMachine(name='Testing Machine', persistenceFile='test.vmp',)
+    # my_machine.set_interface(interfaces.InterfaceShell())
+    # my_machine.interface.set(interfaces.BaseInterface())

@@ -35,11 +35,15 @@ class TestVirtualMachine(machines.VirtualMachine):
             init_message += "GUI: " + str(self.use_gui) + '\n'
         if self.persistenceFilename:
             init_message += "Persistence file: " + self.persistenceFilename + '\n'
+        else:
+            init_message += "Persistence file: False" + '\n'
         notice(self, init_message, self.use_gui)
 
     def init_interfaces(self):
-        self.interface.owner = self
-        self.interface.interface = interfaces.BaseInterface(gui=self.gui)
+        """Sets an interface shell if it content was not specified."""
+        if self.interface is not None:
+            self.interface.set_owner(self)
+            self.interface.set(interfaces.BaseInterface(gui=self.gui))
 
 
 # If executing from console (Needed?):

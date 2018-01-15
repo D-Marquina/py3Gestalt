@@ -6,8 +6,6 @@ This module defines interface classes and an interface shell class, which acts
 as an intermediary between the interface and nodes.
 
 TO-DO list:
-- line 64:
-    Should not self.Interface be initialized?
 
 Copyright (c) 2018 Daniel Marquina
 """
@@ -36,7 +34,7 @@ class InterfaceShell(object):
         gui (Py3GestaltGUI): Same GUI as virtual machine's one.
 
     Attributes:
-        Interface (BaseInterface): Interfaced contained by this shell.
+        contained_interface (BaseInterface): Interfaced contained by this shell.
         owner (VirtualMachine): Virtual machine that instantiates this shell
         and its contained interface, can be None. Used in the port acquisition
         process.
@@ -44,7 +42,7 @@ class InterfaceShell(object):
     """
     def __init__(self, interface=None, owner=None, gui=None):
         self.owner = None
-        self.Interface = None
+        self.contained_interface = None
         self.set(interface, owner)
         if gui:
             self.use_gui = True
@@ -58,7 +56,7 @@ class InterfaceShell(object):
         """Updates the interface contained by the shell.
 
         Updates and initializes contained (or linked) shell. Owner can be
-        None.
+        None. It is called when a node is initialized.
 
         Args:
             interface (BaseInterface): Interface to be contained by this shell.
@@ -66,10 +64,10 @@ class InterfaceShell(object):
         """
         if owner:
             self.owner = owner
-        self.Interface = interface
+        self.contained_interface = interface
         if interface and self.owner:
             # Set owner of contained interface
-            self.Interface.owner = self.owner
+            self.contained_interface.owner = self.owner
         if interface:
             # Initializes contained interface
             interface.init_after_set()
@@ -81,11 +79,11 @@ class InterfaceShell(object):
          Useful when no owner was specified when instantiating.
 
          Args:
-             - owner (VirtualMachine):
+             owner (VirtualMachine):
         """
         self.owner = owner  # used in the port acquisition process
-        if self.Interface:
-            self.Interface.owner = owner
+        if self.contained_interface:
+            self.contained_interface.owner = owner
 
     def __getattr__(self, attribute):
         """Forwards attribute calls to the contained interface.
@@ -96,7 +94,7 @@ class InterfaceShell(object):
         Returns:
             Contained interfaces's attribute.
         """
-        return getattr(self.Interface, attribute)
+        return getattr(self.contained_interface, attribute)
 
 
 class BaseInterface(object):
@@ -121,27 +119,28 @@ class BaseInterface(object):
         else:
             self.use_gui = False
             self.gui = None
-        notice(self, "Base interface successfully initialized...", self.use_gui)
+        notice(self, "Base interface successfully instantiated...", self.use_gui)
 
     def init_after_set(self):
-        """Connect to interface after it was assigned to a interface shell."""
-        pass
+        """Connect to interface after it was assigned to an interface shell."""
+        notice(self, "Base interface successfully initialized...", self.use_gui)
 
 
 class SerialInterface(BaseInterface):
-    '''Provides an interface to nodes connected thru a serial port on the host machine.'''
+    """Provides an interface to nodes connected through a serial port on the host machine."""
 
-    def __init__(self, baudRate, portName=None, interfaceType=None, owner=None, timeOut=0.2, flowControl=None, gui=None):
+    def __init__(self, baud_rate, port_name=None, interface_type=None, owner=None,
+                 time_out=0.2, flow_control=None, gui=None):
         super(SerialInterface, self).__init__(gui)
-        self.baudRate = baudRate
-        self.portName = portName
-        self.timeOut = timeOut
+        self.baudRate = baud_rate
+        self.portName = port_name
+        self.timeOut = time_out
         self.isConnected = False
         self.owner = owner
         # self.owner gets set by the interface shell, and contains a reference to the owning object
         # this is useful to refer to the name of the object when acquiring the interface
         self.port = None  # will be replaced with a serial object when port is acquired
-        self.interfaceType = interfaceType
+        self.interfaceType = interface_type
         self.transmitQueue = queue.Queue()  # a queue is used to allow multiple threads to call transmit simultaneously.
 
         if gui:

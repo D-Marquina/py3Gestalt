@@ -83,7 +83,7 @@ class PersistenceManager(object):
     def __call__(self):
         """Overrides '__call__()' method.
 
-        Makes sure that a persistence file exists.
+        Makes sure that a persistence file exists before trying to use it.
 
         Returns:
             'self', if was previously initialized, False otherwise.

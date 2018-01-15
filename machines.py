@@ -59,6 +59,8 @@ class VirtualMachine(object):
             self.use_gui = False
             self.gui = None
 
+        self.persistenceFilename = None
+        self.persistence = None
         if 'persistenceFile' in kwargs:
             self.persistenceFilename = ''
             self.set_persistence(kwargs['persistenceFile'])
@@ -70,9 +72,7 @@ class VirtualMachine(object):
                        'to the virtual machine can result in a conflict in '
                        'multi-machine persistence files.', self.use_gui)
         else:
-            self.persistenceFilename = None
-        self.persistence = PersistenceManager(filename=self.persistenceFilename,
-                                              namespace=self.name)
+            self.set_persistence(None)
 
         # Run user initialization
         self.init(*args, **kwargs)
@@ -119,10 +119,13 @@ class VirtualMachine(object):
             self.use_gui = True
             self.gui = gui
         else:
-            notice(self, "No gui trying to be assigned.", self.use_gui)
+            notice(self, "No GUI trying to be assigned.", self.use_gui)
 
-    def set_persistence(self, filename):
+    def set_persistence(self, filename=None):
         """Set persistence file of virtual machine.
+
+        'Filename' can be None because the implementation of PersistenceManager
+        class foresees a case when no file name was assigned.
 
         Args:
             filename (str): Virtual machine's persistence file's name.
