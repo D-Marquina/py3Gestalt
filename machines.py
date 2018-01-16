@@ -5,15 +5,19 @@ Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
 This module contains classes needed to define a virtual machine and its
 components according to real physical machine.
 
+'Virtual Machine' class is the main class, it includes some methods in order to
+show some basic structure of virtual machines. Those methods are supposed to be
+overridden.
+
 Copyright (c) 2018 Daniel Marquina
 """
 
 from utilities import PersistenceManager
 from utilities import notice as notice
-import math
-import copy
 import threading
 import inspect
+import math
+import copy
 
 
 class VirtualMachine(object):

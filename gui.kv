@@ -8,8 +8,8 @@
 <Py3GestaltGUI>:
     vm_bt_import: vm_button_import
     vm_bt_search: vm_button_search
-    int_sp: inf_spinner
-    int_bt_connect: inf_button_connect
+    int_sp: int_spinner
+    int_bt_connect: int_button_connect
     debugger_lb: debugger_label
 
     orientation : 'vertical'
@@ -53,14 +53,14 @@
             text: 'Select interface:'
 
         Spinner:
-            id: inf_spinner
+            id: int_spinner
             size_hint_x: 0.2
             text: '/dev/ttyUSB0'
             color: (1,1,1,1)
             on_release: root.load_ports()
 
         Button:
-            id:inf_button_connect
+            id:int_button_connect
             size_hint_x: 0.3
             text: 'Connect to Machine'
             disabled: True

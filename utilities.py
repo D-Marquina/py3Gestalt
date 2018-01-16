@@ -5,57 +5,31 @@ Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
 This module contains various classes and methods needed for the correct
 implementation of this framework.
 
+'PersistenceManager' class defines an object which is in charge of managing the
+creation, writing  and reading of persistence file.
+
+'Notice' method prints information about the execution of the framework,
+either to console or to a GUI.
+
+'Scan_serial_ports' returns a list of all serial ports in the PC.
+
+'Get_available_serial_ports' filters only available serial ports by opening and
+closing them.
+
+TO-DO list:
+- Try 'scan_serial_ports()' on MacOS
+
 Copyright (c) 2018 Daniel Marquina
 """
 
+import datetime
+import serial
+import serial.tools.list_ports
 import math
 import ast
-import datetime
 
-
-def notice(source=None, message="", use_gui=None):
-    """Send a notice to the user.
-
-    Originally, this method only showed a notice on the console, but for now
-    it can also show a notice on a user-defined gui as long as such gui meets
-    one requirement:
-    - It must have a write_debugger(str) method
-
-    Note: Eventually, this method could re-route its notice via a web interface.
-
-    Args:
-        source (VirtualMachine, etc.): Object that sends a notice.
-        message (str): Message to display.
-        use_gui (boolean): Flag that indicates is a GUI will be used.
-
-    Returns:
-        None after message has been sent to GUI's debugger.
-    """
-    if use_gui:
-        source.gui.write_debugger(message)
-        return
-
-    if hasattr(source, 'name'):
-        name = getattr(source, 'name')
-        if name:
-            print(name + ": " + str(message))
-        elif hasattr(source, 'owner'):
-            owner = getattr(source, 'owner')
-            if owner:
-                notice(source.owner, message)
-            else:
-                print(str(source) + ": " + str(message))
-        else:
-            print(str(source) + ": " + str(message))
-    else:
-        if hasattr(source, 'owner'):
-            owner = getattr(source, 'owner')
-            if owner:
-                notice(source.owner, message)
-            else:
-                print(str(source) + ": " + str(message))
-        else:
-            print(str(source) + ": " + str(message))
+import glob
+import sys
 
 
 class PersistenceManager(object):
@@ -155,6 +129,106 @@ class PersistenceManager(object):
                               str(persistence_dict[key]) + ",\n")
         file_object.write("}")
         file_object.close()
+
+
+def notice(source=None, message="", use_gui=None):
+    """Send a notice to the user.
+
+    Originally, this method only showed a notice on the console, but for now
+    it can also show a notice on a user-defined gui as long as such gui meets
+    one requirement:
+    - It must have a write_debugger(str) method
+
+    Note: Eventually, this method could re-route its notice via a web interface.
+
+    Args:
+        source (VirtualMachine, etc.): Object that sends a notice.
+        message (str): Message to display.
+        use_gui (boolean): Flag that indicates is a GUI will be used.
+
+    Returns:
+        None after message has been sent to GUI's debugger.
+    """
+    if use_gui:
+        source.gui.write_debugger(message)
+        return
+
+    if hasattr(source, 'name'):
+        name = getattr(source, 'name')
+        if name:
+            print(name + ": " + str(message))
+        elif hasattr(source, 'owner'):
+            owner = getattr(source, 'owner')
+            if owner:
+                notice(source.owner, message)
+            else:
+                print(str(source) + ": " + str(message))
+        else:
+            print(str(source) + ": " + str(message))
+    else:
+        if hasattr(source, 'owner'):
+            owner = getattr(source, 'owner')
+            if owner:
+                notice(source.owner, message)
+            else:
+                print(str(source) + ": " + str(message))
+        else:
+            print(str(source) + ": " + str(message))
+
+
+def scan_serial_ports(filter_term=None):
+    """Scan serial ports.
+
+    For Windows and Linux, it can filter out ports if a filter term is given.
+
+    Args:
+        filter_term (str): Serial device's manufacturer.
+
+    Returns:
+        A list containing the names of all serial ports.
+
+    Note: When using glob, your current terminal "/dev/tty" is excluded.
+    """
+    if sys.platform.startswith('win') or sys.platform.startswith('linux'):
+        ports = []
+        for port in serial.tools.list_ports.comports():
+            if filter_term:
+                if filter_term in port.manufacturer:
+                    ports.append(port.device)
+                continue
+            else:
+                ports.append(port.device)
+    elif sys.platform.startswith('darwin'):
+        ports = glob.glob('/dev/tty.*')
+    else:
+        raise EnvironmentError('Unsupported platform')
+
+    return ports
+
+
+def get_available_serial_ports(manufacturer=None):
+    """Get available serial ports.
+
+    Tries to open PC's serial ports and filters the available ones.
+    For windows, it can filter ports if a manufacturer name is given.
+
+    Args:
+        manufacturer (str): Serial device's manufacturer.
+
+    Returns:
+        A list containing the names of available serial ports.
+    """
+    ports = scan_serial_ports(manufacturer)
+    available_ports = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            available_ports.append(port)
+        except (OSError, serial.SerialException):
+            pass
+
+    return available_ports
 
 
 # def intToBytes(integer, numbytes):

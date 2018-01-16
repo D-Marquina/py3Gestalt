@@ -25,6 +25,7 @@ import sys
 import os
 
 import interfaces
+from utilities import get_available_serial_ports
 
 kivy.require('1.0.1')
 
@@ -132,7 +133,7 @@ class Py3GestaltGUI(BoxLayout):
         to avoid problems next, when analyzing module's classes using 'pyclbr'.
 
         Returns:
-            module: Temporal module's name.
+            module_object: Temporal module's name.
         """
         package = 'tmp'
         if os.path.exists(package):
@@ -144,9 +145,9 @@ class Py3GestaltGUI(BoxLayout):
         module_location = os.path.join(package, module_name + '.py')
         open(module_location, 'w').close()
         shutil.copyfile(self.vm_source_file, module_location)
-        module = package + '.' + module_name
+        module_object = package + '.' + module_name
 
-        return module
+        return module_object
 
     def is_vm_ill_defined(self, vm_module):
         """Check whether a virtual machine is well or ill defined.
@@ -185,27 +186,9 @@ class Py3GestaltGUI(BoxLayout):
     def load_ports(self):
         """Loads available ports into interface section's spinner.
 
-        Note: When using glob, your current terminal "/dev/tty" is excluded.
+        Calls utilities.get_available_ports().
         """
-        if sys.platform.startswith('win'):
-            ports = ['COM%s' % (i + 1) for i in range(256)]
-        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-            ports = glob.glob('/dev/tty[A-Za-z]*')
-        elif sys.platform.startswith('darwin'):
-            ports = glob.glob('/dev/tty.*')
-        else:
-            raise EnvironmentError('Unsupported platform')
-
-        available_ports = []
-        for port in ports:
-            try:
-                s = serial.Serial(port)
-                s.close()
-                available_ports.append(port)
-            except (OSError, serial.SerialException):
-                pass
-
-        self.int_sp.values = available_ports
+        self.int_sp.values = get_available_serial_ports()
 
     def connect_to_machine(self):
         """Connect to virtual machine.
@@ -215,9 +198,14 @@ class Py3GestaltGUI(BoxLayout):
         located.
         Besides, interface section's buttons are disabled.
         """
-        self.vm = self.vm_class(gui=self, persistenceFile='test.txt')
-        self.vm.set_interface(interfaces.InterfaceShell(gui=self))
-        self.vm.interface.set(interfaces.BaseInterface(gui=self))
+        self.vm = self.vm_class(name='Testing Machine',
+                                gui=self, persistenceFile='test.txt')
+        self.vm.set_interface(interfaces.InterfaceShell(gui=self,
+                                                        owner=self.vm))
+        self.vm.interface.set(interfaces.SerialInterface(baud_rate=9600,
+                                                         port_name=self.int_sp.text,
+                                                         gui=self,
+                                                         owner=self.vm))
         os.chdir(os.path.dirname(self.vm_source_file))
         self.int_sp.disabled = True
         self.int_bt_connect.disabled = True

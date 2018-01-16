@@ -49,16 +49,20 @@ class TestVirtualMachine(machines.VirtualMachine):
         """Initializes an basic interface if it was not specified."""
         if self.interface is not None:
             self.interface.set_owner = self
-            self.interface.set(interfaces.BaseInterface(gui=self.gui))
 
 
 # If executing from console:
 if __name__ == '__main__':
     # You could run:
-    TestVirtualMachine(name='Testing Machine',
-                       interface=interfaces.InterfaceShell(interfaces.BaseInterface()),
-                       persistenceFile='test.vmp')
+    # TestVirtualMachine(name='Testing Machine',
+    #                    interface=interfaces.InterfaceShell(interfaces.SerialInterface(baud_rate=9600)),
+    #                    persistenceFile='test.vmp')
     # Or this:
-    # my_machine = TestVirtualMachine(name='Testing Machine', persistenceFile='test.vmp',)
-    # my_machine.set_interface(interfaces.InterfaceShell())
-    # my_machine.interface.set(interfaces.BaseInterface())
+    my_machine = TestVirtualMachine(name='Testing Machine',
+                                    persistenceFile='test.vmp',)
+    my_machine.set_interface(interfaces.InterfaceShell(owner=my_machine))
+    my_machine.interface.set(interfaces.SerialInterface(baud_rate=9600,
+                                                        interface_type='arduino',
+                                                        # port_name='COM7',
+                                                        owner=my_machine))
+    # my_machine.interface.connect('COM7')

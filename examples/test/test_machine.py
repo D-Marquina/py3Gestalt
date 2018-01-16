@@ -16,7 +16,7 @@ from utilities import notice as notice
 class TestVirtualMachine(machines.VirtualMachine):
     def __init__(self, *args, **kwargs):
         super(TestVirtualMachine,
-              self).__init__(*args, **kwargs,)
+              self).__init__(*args, **kwargs)
         self.publish_settings()
 
     def publish_settings(self):
@@ -43,7 +43,6 @@ class TestVirtualMachine(machines.VirtualMachine):
         """Sets an interface shell if it content was not specified."""
         if self.interface is not None:
             self.interface.set_owner(self)
-            self.interface.set(interfaces.BaseInterface(gui=self.gui))
 
 
 # If executing from console (Needed?):
