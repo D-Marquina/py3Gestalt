@@ -20,6 +20,7 @@ import inspect
 import pyclbr
 import serial
 import shutil
+import time
 import glob
 import sys
 import os
@@ -204,6 +205,7 @@ class Py3GestaltGUI(BoxLayout):
                                                         owner=self.vm))
         self.vm.interface.set(interfaces.SerialInterface(baud_rate=9600,
                                                          port_name=self.int_sp.text,
+                                                         interface_type='arduino',
                                                          gui=self,
                                                          owner=self.vm))
         os.chdir(os.path.dirname(self.vm_source_file))
@@ -211,8 +213,17 @@ class Py3GestaltGUI(BoxLayout):
         self.int_bt_connect.disabled = True
 
     def check_status(self):
-        """Check status of real machine."""
-        pass
+        """Check status of real machine.
+
+        In this stage of Py3Gestalt's development, this function just sends an
+        'a' and shows what was the answer from an Arduino. It was programmed
+        to re-send every incoming character and to toggle built-in led when
+        an 'a' was received.
+        """
+        self.vm.interface.transmit('a')
+        time.sleep(0.05)
+        self.write_debugger('Message: ' +
+                            self.vm.interface.read_bytes(30).decode('utf-8'))
 
     def write_debugger(self, message):
         """Print in debugging section."""

@@ -138,14 +138,18 @@ class BaseInterface(object):
 class SerialInterface(BaseInterface):
     """Serial communication interface.
 
+    The core of this class is a serial object. For data transmission, a queue
+    stores all data to be sent whereas a thread handles transmission of every
+    element in that queue. As data reception using a thread requires a defined
+    protocol, a simple method reads a number of bytes from the input buffer.
+
     Args:
         baud_rate (int): Speed in baud.
         port_name (str): Name of port to connect.
-        interface_type (str): Type of interface, 'ftdi' or 'lufa' for now.
+        interface_type (str): Type of interface, 'ftdi' or 'arduino' for now.
         owner (VirtualMachine): Object that instantiates this interface.
         time_out (float): Time to wait for a new device to be connected, in
         seconds.
-        flow_control (): To be implemented...
         gui (Py3GestaltGUI): GUI for debugging's purposes.
 
     Attributes:
@@ -161,9 +165,12 @@ class SerialInterface(BaseInterface):
         transmitter (TransmitThread): A thread to handle data transmission.
         gui (Py3GestaltGUI): GUI for debugging's purposes.
 
+    Note: Regarding the attribute 'interfaceType', a third value may be used,
+    'genericSerial', but its use could potentially cause problems because of
+    its generic implementation.
     """
     def __init__(self, baud_rate, port_name=None, interface_type=None, owner=None,
-                 time_out=0.2, flow_control=None, gui=None):
+                 time_out=0.2, gui=None):
         super(SerialInterface, self).__init__(gui)
         self.baudRate = baud_rate
         self.portName = port_name
@@ -371,46 +378,28 @@ class SerialInterface(BaseInterface):
         """
         if self.isConnected:
             self.transmitQueue.put(data)
-            notice(self, 'Transmitted?.', self.use_gui)
         else:
             notice(self, 'Serial interface is not connected.', self.use_gui)
 
-    def receive(self):
-        """Grab one byte from the serial port.
+    def read_bytes(self, bytes_to_read=None):
+        """Read a number of bytes from the serial port's input buffer.
+
+        If there are less bytes available, read only the available ones.
+
+        Args:
+            bytes_to_read (int): Number of bytes to grab.
 
         Returns:
-            Read byte if received. False, otherwise.
+            Read bytes, if received. None, otherwise.
         """
         if self.port:
-            return self.port.read()
+            available_bytes = self.port.in_waiting
+            if bytes_to_read:
+                return self.port.read(min(bytes_to_read, available_bytes))
+            else:
+                return self.port.read(available_bytes)
         else:
             return None
-
-    def flush_input(self):
-        """Flush input buffer."""
-        self.port.flushInput()
-
-    def disconnect(self):
-        """Disconnect from serial port."""
-        self.port.close()
-        self.isConnected = False
-
-    def set_dtr(self):
-        """Set DTR pin.
-
-        Used to reset the Arduino hardware.
-        """
-        if self.port:
-            self.port.setDTR()
-
-    def set_timeout(self, timeout):
-        """Set timeout for receiving on port."""
-        if self.port:
-            try:
-                self.port.timeout = timeout
-            except serial.SerialException:
-                notice(self, "Could not set timeout: " + sys.exc_info()[0],
-                       self.use_gui)
 
     class TransmitThread(threading.Thread):
         """A thread to handle data transmission data over a serial port.

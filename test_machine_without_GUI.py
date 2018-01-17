@@ -66,13 +66,9 @@ if __name__ == '__main__':
                                                         interface_type='arduino',
                                                         port_name='COM7',
                                                         owner=my_machine))
-    # my_machine.interface.set_dtr()
-    my_machine.interface.transmit('a')
+    # An Arduino was used. It was programmed to re-send every incoming
+    # character and to toggle built-in led when an 'a' was received.
     time.sleep(1)
     my_machine.interface.transmit('a')
-    time.sleep(1)
-    my_machine.interface.transmit('a')
-    my_machine.interface.disconnect()
-    # time.sleep(1)
-    # my_machine.interface.transmit('a')
-    # my_machine.interface.connect('COM7')
+    time.sleep(0.05)
+    print(my_machine.interface.read_bytes(15))
