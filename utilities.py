@@ -176,30 +176,36 @@ def notice(source=None, message="", use_gui=None):
             print(str(source) + ": " + str(message))
 
 
-def scan_serial_ports(filter_term=None):
+def scan_serial_ports(serial_filter_terms=None):
     """Scan serial ports.
 
-    For Windows and Linux, it can filter out ports if a filter term is given.
+    It can filter out ports if a filter term is given.
 
     Args:
-        filter_term (str): Serial device's manufacturer.
+        serial_filter_terms (str): Serial device's manufacturer.
 
     Returns:
         A list containing the names of all serial ports.
 
     Note: When using glob, your current terminal "/dev/tty" is excluded.
     """
-    if sys.platform.startswith('win') or sys.platform.startswith('linux'):
+    if sys.platform.startswith('win') or \
+            sys.platform.startswith('linux') or \
+            sys.platform.startswith('darwin'):
         ports = []
         for port in serial.tools.list_ports.comports():
-            if filter_term:
-                if filter_term in port.manufacturer:
-                    ports.append(port.device)
+            if serial_filter_terms:
+                filter_type = serial_filter_terms[0]
+                filter_term = serial_filter_terms[1]
+                if filter_type == 'manufacturer':
+                    if filter_term in port.manufacturer:
+                        ports.append(port.device)
+                elif filter_type == 'device':
+                    if filter_term in port.device:
+                        ports.append(port.device)
                 continue
             else:
                 ports.append(port.device)
-    elif sys.platform.startswith('darwin'):
-        ports = glob.glob('/dev/tty.*')
     else:
         raise EnvironmentError('Unsupported platform')
 

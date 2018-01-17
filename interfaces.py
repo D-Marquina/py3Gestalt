@@ -194,7 +194,8 @@ class SerialInterface(BaseInterface):
         """
         if self.portName:
             self.connect(self.portName)
-        elif self.interfaceType:  # if an interface type is provided, auto-acquire
+        elif self.interfaceType:
+            # if an interface type is provided, auto-acquire
             self.acquire_port_and_connect(self.interfaceType)
         else:
             notice(self, "Serial interface could not be initialized. A port name or an "
@@ -209,10 +210,6 @@ class SerialInterface(BaseInterface):
 
         Args:
             port_name (str): Name of serial port.
-
-        Returns:
-            False if no name was found or could not open serial port, true
-            otherwise.
         """
         if port_name:
             port = port_name
@@ -220,14 +217,14 @@ class SerialInterface(BaseInterface):
             port = self.portName
         else:
             notice(self, 'No port name provided.', self.use_gui)
-            return False
+            return
 
         try:
             self.port = serial.Serial(port, self.baudRate, timeout=self.timeOut)
         except serial.SerialException:
             notice(self, "Error when opening serial port " + str(port),
                    self.use_gui)
-            return False
+            return
 
         self.port.flushInput()
         self.port.flushOutput()
@@ -237,9 +234,8 @@ class SerialInterface(BaseInterface):
         time.sleep(2)
         self.isConnected = True
         self.start_transmitter()
-        return True
 
-    def acquire_port_and_connect(self, interface_type=None):
+    def acquire_port_and_connect(self, interface_type):
         """Acquire a serial port and connect to it.
 
         Tries to detect a serial port based on the provided interface type.
@@ -250,13 +246,10 @@ class SerialInterface(BaseInterface):
              interface_type (str): Type of interface.
 
         Returns:
-            Call to connect function if a port was detected. False, otherwise.
+            Call to connect function if a port was detected. Exits, otherwise.
         """
-        if interface_type:
-            filter_term = self.get_filter_term(interface_type)
-        else:
-            filter_term = self.get_filter_term('genericSerial')
-        available_ports = get_available_serial_ports(filter_term)
+        serial_filter = self.get_serial_filter_terms(interface_type)
+        available_ports = get_available_serial_ports(serial_filter)
         if len(available_ports) == 1:
             # Connects to the only available port that matches the filter.
             self.portName = available_ports[0]
@@ -265,37 +258,51 @@ class SerialInterface(BaseInterface):
             notice(self, "Trying to acquire serial port. You have 10 seconds to "
                          "plug an interface in.",
                    self.use_gui)
-            new_ports = self.wait_for_new_port(filter_term)
+            new_ports = self.wait_for_new_port(serial_filter)
             if new_ports:
                 if len(new_ports) > 1:
                     notice(self.owner,
                            "Could not acquire. Multiple ports plugged in "
                            "simultaneously.",
                            self.use_gui)
-                    return False
+                    return
                 else:
                     self.portName = new_ports[0]
                     return self.connect()
-            else:
-                return False
 
-    def get_filter_term(self, interface_type=None):
-        """Get filter term for serial ports.
+    def get_serial_filter_terms(self, interface_type=None):
+        """Get filter terms for serial ports.
 
-        According to the operating system, selects a likely serial port prefix
-        (MacOS) or a likely manufacturer (Windows and Linux) from a Python
-        dictionary in order to filter out available serial ports.
+        According to the operating system, selects a type of filter and the
+        filter term.
+        For example, in the case of Arduino, the type is 'manufacturer' and the
+        filter term is 'Arduino'. This function is implemented like that in
+        order to include new interfaces.
+
+        Note 1: Currently, the type of filter should be one attribute of
+        serial.tools.list_ports.ListPortInfo class, supported by your operating
+        system (Windows, Linux os MacOS).
+
+        Note 2: The use of interface type 'genericSerial' should be avoided
+        because many devices could share the provided filter term.
 
         Args:
             interface_type (str): Type of interface, 'ftdi' for FTDI devices,
             'Arduino' for Arduino and 'generic serial' for others.
 
         Returns:
-            Serial port prefix, if found on the dictionary. False, otherwise.
+            A list of filter type and filter term respectively, if found on
+            the dictionary. False, otherwise.
         """
-        ftdi_terms = {'Windows': 'FTDI', 'Linux': 'FTDI', 'Darwin': 'tty.usbserial-'}
-        arduino_terms = {'Windows': 'Arduino', 'Linux': 'Arduino', 'Darwin': 'tty.usbmodem'}
-        generic_serial_terms = {'Windows': '', 'Linux': '', 'Darwin': 'tty.'}
+        ftdi_terms = {'Windows': ['manufacturer', 'FTDI'],
+                      'Linux': ['manufacturer', 'FTDI'],
+                      'Darwin': ['manufacturer', 'FTDI']}
+        arduino_terms = {'Windows': ['manufacturer', 'Arduino'],
+                         'Linux': ['manufacturer', 'Arduino'],
+                         'Darwin': ['manufacturer', 'Arduino']}
+        generic_serial_terms = {'Windows': ['device', 'COM'],
+                                'Linux': ['device', 'tty'],
+                                'Darwin': ['device', 'tty.']}
         terms_dict = {'ftdi': ftdi_terms, 'arduino': arduino_terms,
                        'genericSerial': generic_serial_terms}
         op_sys = platform.system()  # nominally detects the system
@@ -355,28 +362,33 @@ class SerialInterface(BaseInterface):
         self.transmitter.daemon = True
         self.transmitter.start()
 
-    # Continue here----------------------------------------------------------
     def transmit(self, data):
-    #     '''Sends request for data to be transmitted over the serial port. Format is as a list.'''
-    #     if self.isConnected:
-    #         self.transmitQueue.put(data)  # converts to list in case data comes in as a string.
-    #     else:
-    #         notice(self, 'serialInterface is not connected.')
-        pass
+        """Add data to transmit queue.
+
+        As a thread handles data transmission, it continuously checks the
+        transmit queue and sends data when added by this function.
+        Data as a string is converted to a list by default.
+        """
+        if self.isConnected:
+            self.transmitQueue.put(data)
+            notice(self, 'Transmitted?.', self.use_gui)
+        else:
+            notice(self, 'Serial interface is not connected.', self.use_gui)
 
     def receive(self):
-    #     '''Grabs one byte from the serial port.'''
-    #     if self.port:
-    #         return self.port.read()
-    #     else:
-    #         return None
-        pass
+        """Grab one byte from the serial port.
+
+        Returns:
+            Read byte if received. False, otherwise.
+        """
+        if self.port:
+            return self.port.read()
+        else:
+            return None
 
     def flush_input(self):
-    #     '''Flushes the input buffer.'''
-    #     self.port.flushInput()
-    #     return
-        pass
+        """Flush input buffer."""
+        self.port.flushInput()
 
     def disconnect(self):
         """Disconnect from serial port."""
@@ -390,7 +402,6 @@ class SerialInterface(BaseInterface):
         """
         if self.port:
             self.port.setDTR()
-        return
 
     def set_timeout(self, timeout):
         """Set timeout for receiving on port."""
@@ -435,7 +446,7 @@ class SerialInterface(BaseInterface):
                 transmit_state, transmit_packet = self.get_transmit_packet()
                 if transmit_state:
                     if self.port:
-                        self.port.write(self.serialize(transmit_packet))
+                        self.port.write(self.serialize(transmit_packet).encode('utf-8'))
                     else:
                         notice(self, "Cannot transmit. No serial port "
                                      "initialized.",
@@ -458,6 +469,8 @@ class SerialInterface(BaseInterface):
 
         def serialize(self, packet):
             """Convert packet into a string for transmission over a serial port.
+
+            Uses ASCII characters.
 
             Returns:
                 Packet as string if it was a list or a string. False, otherwise.

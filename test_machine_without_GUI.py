@@ -17,6 +17,7 @@ Copyright (c) 2018 Daniel Marquina
 import machines
 import interfaces
 from utilities import notice as notice
+import time
 # import test_vn
 
 
@@ -63,6 +64,15 @@ if __name__ == '__main__':
     my_machine.set_interface(interfaces.InterfaceShell(owner=my_machine))
     my_machine.interface.set(interfaces.SerialInterface(baud_rate=9600,
                                                         interface_type='arduino',
-                                                        # port_name='COM7',
+                                                        port_name='COM7',
                                                         owner=my_machine))
+    # my_machine.interface.set_dtr()
+    my_machine.interface.transmit('a')
+    time.sleep(1)
+    my_machine.interface.transmit('a')
+    time.sleep(1)
+    my_machine.interface.transmit('a')
+    my_machine.interface.disconnect()
+    # time.sleep(1)
+    # my_machine.interface.transmit('a')
     # my_machine.interface.connect('COM7')
