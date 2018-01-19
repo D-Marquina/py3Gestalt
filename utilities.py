@@ -17,7 +17,6 @@ either to console or to a GUI.
 closing them.
 
 TO-DO list:
-- Try 'scan_serial_ports()' on MacOS
 
 Copyright (c) 2018 Daniel Marquina
 """
@@ -26,9 +25,8 @@ import datetime
 import serial
 import serial.tools.list_ports
 import math
-import ast
-
 import glob
+import ast
 import sys
 
 
@@ -131,12 +129,12 @@ class PersistenceManager(object):
         file_object.close()
 
 
-def notice(source=None, message="", use_gui=None):
+def notice(source=None, message="", use_debug_gui=None):
     """Send a notice to the user.
 
     Originally, this method only showed a notice on the console, but for now
-    it can also show a notice on a user-defined gui as long as such gui meets
-    one requirement:
+    it can also show a notice on a user-defined debugger gui as long as such
+    gui meets one requirement:
     - It must have a write_debugger(str) method
 
     Note: Eventually, this method could re-route its notice via a web interface.
@@ -144,13 +142,13 @@ def notice(source=None, message="", use_gui=None):
     Args:
         source (VirtualMachine, etc.): Object that sends a notice.
         message (str): Message to display.
-        use_gui (boolean): Flag that indicates is a GUI will be used.
+        use_debug_gui (boolean): Flag that indicates is a GUI will be used.
 
     Returns:
         None after message has been sent to GUI's debugger.
     """
-    if use_gui:
-        source.gui.write_debugger(message)
+    if use_debug_gui is True:
+        source.debug_gui.write_debugger(message)
         return
 
     if hasattr(source, 'name'):

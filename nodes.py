@@ -1,119 +1,289 @@
-# # ----IMPORTS------------
-# import imp  # for importing files as modules
-# import random
-# import threading
-# import time
-# import os
-# import urllib
-# import math
-# from pygestalt.utilities import notice as notice
-# from pygestalt import interfaces
+"""Nodes module from Gestalt framework for Python 3.
+
+Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
+
+This module defines node classes and an node shell classes, which act
+as an intermediary between the virtual nodes and the virtual machine.
+
+TO-DO list:
+- Complete load_from_module
+- Decide load_from_file procedure
+- Update is_vm_ill_defined based on is_vn_ill_defined
+- Invetigate load_from_URL
+
+Copyright (c) 2018 Daniel Marquina
+"""
+
+import importlib  # for importing files as modules
+import inspect
+import random
+import threading
+import time
+import os
+import urllib
+import pyclbr
+import math
+from utilities import notice as notice
+import interfaces
 # from pygestalt import functions
 # from pygestalt import packets
 # from pygestalt import utilities
 # from pygestalt import core
-#
-#
-# # ----NODE SHELLS------------
-# class baseNodeShell(object):
-#     '''	The basic container for all nodes.
-#
-#         Like a room in a hotel, that has different occupants and offers certain amenities to its guests.
-#         baseNodeShell gets subclassed by more specific shells for one of the four types of gestalt nodes:
-#         ->Solo/Independent: arbitrary interface/ arbitrary protocol
-#         ->Solo/Gestalt: arbitrary interface/ gestalt protocol
-#         ->Networked/Gestalt: networked gestalt interface/ gestalt protocol
-#         ->Managed/Gestalt: hardware synchronized gestalt network/ gestalt protocol'''
-#
-#     def __init__(self):
-#         '''Typically this will be overriden, but should be called by the child class.
-#
-#         This behavior is being allowed because the child class will always belong to the nodes module.'''
-#         # create an interface shell for self.
-#         self.interface = interfaces.interfaceShell()
-#
-#     def acquire(self):
-#         '''gets the identifier for either the interface or the node'''
-#         pass
-#
-#     def hasNode(self):
-#         '''Checks if shell contains a node.'''
-#         if hasattr(self, 'node'):
-#             return True
-#         else:
-#             return False
-#
-#     def __getattr__(self, attribute):
-#         '''	Forwards any unsupported calls to the shell onto the node.'''
-#         if self.hasNode():  # Shell contains a node.
-#             if hasattr(self.node, attribute):  # node contains requested attribute
-#                 return getattr(self.node, attribute)
-#             else:
-#                 notice(self, "NODE DOESN'T HAVE REQUESTED ATTRIBUTE")
-#                 raise AttributeError(attribute)
-#         else:
-#             notice(self, "NODE IS NOT INITIALIZED")
-#             raise AttributeError(attribute)
-#
-#     def setNode(self, node):
-#         '''sets the node'''
-#         # assign node
-#         self.node = node
-#
-#         # pass shell references to node
-#         self.node.shell = self  # give the node a reference to the shell
-#         self.node.name = self.name  # give node the same name as shell (for notice function)
-#         self.node.interface = self.interface  # give node a reference to the interface
-#
-#         # finish initializing node
-#         self.node._init(**self.node.initKwargs)
-#         self.node.init(**self.node.initKwargs)
-#
-#     def loadNodeFromFile(self, filename, **kwargs):
-#         ''' Loads a node into the node shell from a provided filename.
-#
-#             Assumes that this is called from a node shell that has defined self.name'''
-#         try:
-#             self.setNode(imp.load_source('', filename).virtualNode(**kwargs))
-#             notice(self, "loaded node from:  " + filename)
-#             return True
-#         except IOError, error:
-#             notice(self, "error loading file.")
-#             print
-#             error
-#             return False
-#
-#     def loadNodeFromURL(self, URL, **kwargs):
-#         '''Loads a node into the node shell from a provided URL.
-#
-#             Assumes that this is called form a node shell that has defined self.name'''
-#         try:
-#             VNFilename = os.path.basename(URL)  # gets filename
-#             urllib.urlretrieve(URL, VNFilename)
-#             notice(self, "downloaded " + VNFilename + " from " + URL)
-#             return self.loadNodeFromFile(VNFilename, **kwargs)  # stores file to local directory for import.
-#         # same name is used so that local import works if internet is later down.
-#         except IOError:
-#             notice(self, "could not load " + VNFilename + " from " + URL)
-#             notice(self, "Attempting to load file from local directory...")
-#             return self.loadNodeFromFile(VNFilename, **kwargs)  # attempt to load file locally
-#
-#     def loadNodeFromModule(self, module, **kwargs):
-#         '''Loads a node into the node shell from the provided class.
-#
-#         Note that class itself should be provided, NOT a class instance.'''
-#         try:
-#             if hasattr(module, 'virtualNode'):
-#                 self.setNode(module.virtualNode(**kwargs))
-#             else:
-#                 self.setNode(module(**kwargs))
-#             notice(self, "loaded module " + str(module.__name__))
-#             return True
-#         except AttributeError, err:
-#             notice(self, "unable to load module: " + str(err))
-#             return False
-#
-#
+
+
+# ----NODE SHELLS------------
+class BaseNodeShell(object):
+    """The basic container for all nodes.
+
+    Like a room in a hotel, that has different occupants and offers certain
+    amenities to its guests. 'BaseNodeShell' gets subclassed by more specific
+    shells for one of the four types of gestalt nodes:
+    ->Solo/Independent: arbitrary interface/ arbitrary protocol
+    ->Solo/Gestalt: arbitrary interface/ gestalt protocol
+    ->Networked/Gestalt: networked gestalt interface/ gestalt protocol
+    ->Managed/Gestalt: hardware synchronized gestalt network/ gestalt protocol
+
+    Args:
+        owner (VirtualMachine or a child): Virtual machine that aims to own
+            this node shell.
+        name (str): Name of this node shell.
+
+    Attributes:
+        owner (VirtualMachine or a child): Virtual machine that owns this node
+            shell.
+        name (str): Name of this node shell.
+        use_debug_gui (boolean): Flag indicating use of a debugging GUI.
+        debug_gui: GUI use for debugging purposes. For now it is a Py3GestaltGUI
+            object.
+        interface (InterfaceShell): Shell to contained owner's interface.
+        vn_class (Class): Virtual node's class. The contained node will be an
+            instance of this class.
+        node (BaseVirtualNode or a child): Contained or linked node.
+    """
+    def __init__(self, owner, name):
+        self.owner = owner
+        self.name = name
+        if self.owner.use_debug_gui:
+            self.use_debug_gui = True
+            self.debug_gui = self.owner.debug_gui
+        else:
+            self.use_debug_gui = False
+            self.debug_gui = None
+        self.interface = interfaces.InterfaceShell(self)
+        self.vn_class = None
+        self.node = None
+        # For debugging purposes
+        notice(self, "Base Node Shell initialized!", self.use_debug_gui)
+
+    def load_vn_from_module(self, module, checked=False, **kwargs):
+        """Load virtual node from an imported module.
+
+        Instantiates a virtual node from a class defined in provided module.
+        Such module must have been already imported and should contain only one
+        virtual node class that is a child of 'nodes.BaseVirtualNode'. That
+        last feature can be checked passing an argument 'checked' as False.
+
+        Args:
+            module: Module containing virtual node's definition.
+            checked (boolean): A flag indicating whether module's content (only
+                one BaseVirtualNode's child class) has been checked or not.
+        """
+        if not checked:
+            if self.is_vn_ill_defined(module.__name__):
+                notice(self, "Provided module '"
+                       + module.__name__ +
+                       ".py' was ill defined and could not be loaded.",
+                       self.use_debug_gui)
+                return
+
+        for name in dir(module):
+            cls = getattr(module, name)
+            if inspect.isclass(cls):
+                if "BaseVirtualNode" in str(cls.__mro__[-2]):
+                    self.vn_class = cls
+                else:
+                    notice(self, "Error - Virtual node class ill defined.",
+                           self.use_debug_gui)
+                    return
+
+        self.set_node(self.vn_class, **kwargs)
+
+    def is_vn_ill_defined(self, vn_module):
+        """Check whether a virtual node is ill defined or not.
+
+        Makes sure that selected virtual node contains one and only one
+        user-defined virtual machine class, child of 'nodes.BaseVirtualNode'
+        class.
+
+        Args:
+            vn_module: Virtual node module to be analyzed.
+
+        Returns:
+            True when selected module contains none or more than a unique
+            virtual node. False otherwise.
+        """
+        num_of_vn_cls = 0
+        for name, class_data in sorted(pyclbr.readmodule(vn_module).items(),
+                                       key=lambda x: x[1].lineno):
+            supers_list = []
+            if hasattr(class_data, 'super'):
+                class_super = class_data.super[0]
+                while class_super != 'object':
+                    supers_list.append(class_super.name)
+                    class_super = class_super.super[0]
+            supers_list.append('object')
+            if 'BaseVirtualNode' in supers_list:
+                num_of_vn_cls += 1
+
+        if num_of_vn_cls == 0:
+            notice(self, "Error: No virtual node defined.", self.use_debug_gui)
+            return True
+        elif num_of_vn_cls > 1:
+            notice(self, "Error: More than a unique virtual node defined in a "
+                         "single file.", self.use_debug_gui)
+            return True
+
+        return False
+
+    def set_node(self, vn_class, **kwargs):
+        """Sets contained or linked node.
+
+        Creates an instance of selected virtual node class and executes its
+        'init()' method.
+        Owner, name and interface from this shell are passed to contained node.
+
+        Args:
+            vn_class (Class): Virtual node class to be instantiated.
+        """
+        self.node = vn_class(self.owner, **kwargs)
+        notice(self, "Node assigned to '" + self.name + "' node shell.",
+               self.use_debug_gui)
+        self.node.shell = self
+        self.node.name = self.name
+        self.node.interface = self.interface
+        self.node.init(**self.node.initKwargs)
+
+    def __getattr__(self, attribute):
+        """Forward any unsupported call to the shell onto the node."""
+        if self.node is not None:  # Shell contains a node.
+            if hasattr(self.node, attribute):  # node contains requested attribute
+                return getattr(self.node, attribute)
+            else:
+                notice(self, "Node does not have requested attribute.",
+                       self.use_debug_gui)
+                raise AttributeError(attribute)
+        else:
+            notice(self, "Node has not been initialized.", self.use_debug_gui)
+            raise AttributeError(attribute)
+
+    # def load_node_from_file(self, filename, **kwargs):
+    #     """Load a node into the node shell from a provided filename.
+    #
+    #     Assumes that this is called from a node shell that has defined
+    #     self.name.
+    #     """
+    #     try:
+    #         self.setNode(importlib.load_source('', filename).virtualNode(**kwargs))
+    #         notice(self, "loaded node from:  " + filename)
+    #         return True
+    #     except (IOError, importlib.error):
+    #         notice(self, "error loading file.")
+    #         print
+    #         error
+    #         return False
+    # def import_virtual_machine(self):
+    #     """Import virtual machine definition.
+    #
+    #     Makes a copy of the user's virtual machine into a folder called 'tmp',
+    #     imports it as a module inside a package and creates a reference to
+    #     its user-defined virtual machine class.
+    #     Besides, virtual machine section's buttons are disabled.
+    #
+    #     Returns:
+    #         None if virtual machine is ill defined.
+    #     """
+    #     self.import_counter += 1
+    #
+    #     vm_module = self.create_vm_module()
+    #
+    #     if self.is_vm_ill_defined(vm_module):
+    #         self.int_bt_connect.disabled = True
+    #         return
+    #
+    #     vm_imported_module = importlib.import_module(vm_module)
+    #     for name in dir(vm_imported_module):
+    #         cls = getattr(vm_imported_module, name)
+    #         if inspect.isclass(cls):
+    #             if str(cls.__bases__[0]) == "<class 'machines.VirtualMachine'>":
+    #                 self.vm_class = cls
+    #
+    #     with open(self.vm_source_file, 'r') as vm_definition:
+    #         self.write_debugger(vm_definition.read())
+    #
+    #     self.vm_bt_search.disabled = True
+    #     self.vm_bt_import.disabled = True
+    #     self.int_bt_connect.disabled = False
+    #
+    # def create_vm_module(self):
+    #     """Create user-defined virtual machine module.
+    #
+    #     Makes a temporal package (directory with an '__init__.py' file) called
+    #     'tmp' with a temporal module (file) which is a copy of the user-defined
+    #     virtual machine.
+    #     They are assessed as 'temporal' because they are deleted every time an
+    #     import action is attempted.
+    #
+    #     Note:
+    #     The module's name is 'temp_virtual_machine_X.py', where 'X' is the
+    #     number of import attempts. Such change of name is necessary in order
+    #     to avoid problems next, when analyzing module's classes using 'pyclbr'.
+    #
+    #     Returns:
+    #         module_object: Temporal module's name.
+    #     """
+    #     package = 'tmpVM'
+    #     if os.path.exists(package):
+    #         shutil.rmtree(package, ignore_errors=True)
+    #     os.makedirs(package)
+    #     open(os.path.join(package, '__init__.py'), 'w').close()
+    #
+    #     module_name = 'temp_virtual_machine_' + str(self.import_counter)
+    #     module_location = os.path.join(package, module_name + '.py')
+    #     open(module_location, 'w').close()
+    #     shutil.copyfile(self.vm_source_file, module_location)
+    #     module_object = package + '.' + module_name
+    #
+    #     return module_object
+    #
+
+
+    # def loadNodeFromURL(self, URL, **kwargs):
+    #     '''Loads a node into the node shell from a provided URL.
+    #
+    #         Assumes that this is called form a node shell that has defined self.name'''
+    #     try:
+    #         VNFilename = os.path.basename(URL)  # gets filename
+    #         urllib.urlretrieve(URL, VNFilename)
+    #         notice(self, "downloaded " + VNFilename + " from " + URL)
+    #         return self.loadNodeFromFile(VNFilename, **kwargs)  # stores file to local directory for import.
+    #     # same name is used so that local import works if internet is later down.
+    #     except IOError:
+    #         notice(self, "could not load " + VNFilename + " from " + URL)
+    #         notice(self, "Attempting to load file from local directory...")
+    #         return self.loadNodeFromFile(VNFilename, **kwargs)  # attempt to load file locally
+
+    #
+    # def acquire(self):
+    #     '''gets the identifier for either the interface or the node'''
+    #     pass
+    #
+    # def has_node(self):
+    #     '''Checks if shell contains a node.'''
+    #     if hasattr(self, 'node'):
+    #         return True
+    #     else:
+    #         return False
+
 # class soloIndependentNode(baseNodeShell):
 #     ''' A container shell for Solo/Independent nodes.
 #
@@ -280,27 +450,53 @@
 #
 #
 # # ----VIRTUAL NODES------------
-#
-# class baseVirtualNode(object):
-#     '''base class for creating virtual nodes'''
-#
-#     def __init__(self, **kwargs):
-#         '''	Initializer for virtualNode base class.
-#
-#             Initialization occurs in three steps:
-#             1) baseVirtualNode gets initialized when instantiated
-#             2) node shell loads references into node thru setNode method of baseNodeShell class
-#             3) _init and init are called by setNode method.
-#             The purpose of this routine is to initialize the nodes once they already have references to their shell.'''
-#         self.initKwargs = kwargs
-#
-#     def _init(self, **kwargs):
-#         '''Dummy initializer for child class.'''
-#         pass
-#
-#     def init(self, **kwargs):
-#         '''Dummy initializer for terminal child class.'''
-#         pass
+
+class BaseVirtualNode(object):
+    """Base class for virtual nodes.
+
+    Initialization occurs in three steps:
+            1) BaseVirtualNode gets initialized when instantiated.
+            2) Node shell loads references into node through 'set_node()' method.
+            3) 'init()' is called by 'set_node()' method.
+    The purpose of this routine is to initialize the nodes once they already
+    have references to their shell.
+
+    Args:
+        owner (VirtualMachine or a child): Virtual machine that instantiates
+            this node.
+
+    Attributes:
+        owner (VirtualMachine or a child): Virtual machine that instantiates
+            this node.
+        shell (BaseNodeShell or a child): Node shell that contains this node.
+        name (str): Name of this node shell.
+        interface (InterfaceShell): Shell to contained owner's interface.
+        use_debug_gui (boolean): Flag indicating use of a debugging GUI.
+        debug_gui: GUI use for debugging purposes. For now it is a Py3GestaltGUI
+            object.
+    """
+
+    def __init__(self, owner, **kwargs):
+        self.owner = owner
+        self.shell = None
+        self.name = None
+        self.interface = None
+        self.initKwargs = kwargs
+        if self.owner.use_debug_gui:
+            self.use_debug_gui = True
+            self.debug_gui = self.owner.debug_gui
+        else:
+            self.use_debug_gui = False
+            self.debug_gui = None
+
+    def _init(self, **kwargs):
+        """Dummy initializer for child class."""
+        pass
+
+    def init(self, **kwargs):
+        """Dummy initializer for terminal child class."""
+        pass
+
 #
 #
 # class baseSoloIndependentNode(baseVirtualNode):

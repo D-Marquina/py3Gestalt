@@ -136,7 +136,7 @@ class Py3GestaltGUI(BoxLayout):
         Returns:
             module_object: Temporal module's name.
         """
-        package = 'tmp'
+        package = 'tmpVM'
         if os.path.exists(package):
             shutil.rmtree(package, ignore_errors=True)
         os.makedirs(package)
@@ -200,14 +200,12 @@ class Py3GestaltGUI(BoxLayout):
         Besides, interface section's buttons are disabled.
         """
         self.vm = self.vm_class(name='Testing Machine',
-                                gui=self, persistenceFile='test.txt')
-        self.vm.set_interface(interfaces.InterfaceShell(gui=self,
-                                                        owner=self.vm))
-        self.vm.interface.set(interfaces.SerialInterface(baud_rate=9600,
+                                debug_gui=self, persistenceFile='test.txt')
+        self.vm.set_interface(interfaces.InterfaceShell(owner=self.vm))
+        self.vm.interface.set(interfaces.SerialInterface(owner=self.vm,
+                                                         baud_rate=9600,
                                                          port_name=self.int_sp.text,
-                                                         interface_type='arduino',
-                                                         gui=self,
-                                                         owner=self.vm))
+                                                         interface_type='arduino'))
         os.chdir(os.path.dirname(self.vm_source_file))
         self.int_sp.disabled = True
         self.int_bt_connect.disabled = True
@@ -224,6 +222,8 @@ class Py3GestaltGUI(BoxLayout):
         time.sleep(0.05)
         self.write_debugger('Message: ' +
                             self.vm.interface.read_bytes(30).decode('utf-8'))
+        self.vm.init_controllers()
+        self.vm.test_node.do()
 
     def write_debugger(self, message):
         """Print in debugging section."""

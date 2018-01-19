@@ -39,13 +39,21 @@ class VirtualMachine(object):
     Attributes:
         name (str): Virtual machine's name.
         interface (...): Virtual machine's interface, must be defined in
-        interfaces module.
-        use_gui (boolean): Flag indicating use of a GUI for notices.
-        gui (Py3GestaltGUI): GUI where notices will be displayed.
+            interfaces module.
+        use_debug_gui (boolean): Flag indicating use of a GUI for notices.
+        debug_gui (Py3GestaltGUI): GUI where notices will be displayed.
         persistenceFile (str): Persistence file's name.
         persistence (PersistenceManager): Persistence file's manager.
     """
     def __init__(self, *args, **kwargs):
+        if 'debug_gui' in kwargs:
+            self.set_debug_gui(kwargs['debug_gui'])
+        else:
+            self.use_debug_gui = False
+            self.debug_gui = None
+
+        notice(self, "Initializing virtual machine...", self.use_debug_gui)
+
         if 'name' in kwargs:
             self.set_name(kwargs['name'])
         else:  # set name to filename for generating proper notice commands
@@ -56,12 +64,6 @@ class VirtualMachine(object):
             self.set_interface(kwargs['interface'])
         else:
             self.interface = None
-
-        if 'gui' in kwargs:
-            self.set_gui(kwargs['gui'])
-        else:
-            self.use_gui = False
-            self.gui = None
 
         self.persistenceFilename = None
         self.persistence = None
@@ -74,7 +76,7 @@ class VirtualMachine(object):
                 notice(self,
                        'Warning: setting persistence without providing a name '
                        'to the virtual machine can result in a conflict in '
-                       'multi-machine persistence files.', self.use_gui)
+                       'multi-machine persistence files.', self.use_debug_gui)
         else:
             self.set_persistence(None)
 
@@ -111,19 +113,19 @@ class VirtualMachine(object):
         if interface:
             self.interface = interface
         else:
-            notice(self, "No interface trying to be assigned.", self.use_gui)
+            notice(self, "No interface trying to be assigned.", self.use_debug_gui)
 
-    def set_gui(self, gui):
+    def set_debug_gui(self, gui):
         """Set GUI of virtual machine.
 
         Args:
             gui (Py3GestaltGUI): Virtual machine's GUI.
         """
         if gui:
-            self.use_gui = True
-            self.gui = gui
+            self.use_debug_gui = True
+            self.debug_gui = gui
         else:
-            notice(self, "No GUI trying to be assigned.", self.use_gui)
+            notice(self, "No GUI trying to be assigned.", self.use_debug_gui)
 
     def set_persistence(self, filename=None):
         """Set persistence file of virtual machine.

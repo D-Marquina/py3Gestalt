@@ -14,8 +14,6 @@ interface should be based on it.
 'SerialInterface' class defines an interface that uses a serial port.
 
 TO-DO list:
-- Move methods from DevInterface class to the bottom of the module.
-- Test SerialInterface.acquire_ports()'s implementation for Windows.
 
 Copyright (c) 2018 Daniel Marquina
 """
@@ -40,27 +38,27 @@ class InterfaceShell(object):
     """Intermediary between nodes, node shells and interfaces.
 
     Args:
+        owner: Owner of this interface shell. For now it can be a virtual
+            machine or a virtual node.
         interface (BaseInterface): Interface to be contained by this shell.
-        owner (VirtualMachine): Virtual machine that owns this interface shell.
-        gui (Py3GestaltGUI): Same GUI as virtual machine's one.
 
     Attributes:
-        contained_interface (BaseInterface): Interfaced contained by this shell.
-        owner (VirtualMachine): Virtual machine that instantiates this shell
-        and its contained interface, can be None. Used in the port acquisition
-        process.
-        gui (Py3GestaltGUI): GUI used in virtual machine's definition.
+        owner: Object that instantiates this shell. Used in the port acquisition
+            process.
+        contained_interface (BaseInterface or a child): Interface contained by
+            this shell.
+        debug_gui: GUI used for debugging. For now it is a Py3GestaltGUI object.
     """
-    def __init__(self, interface=None, owner=None, gui=None):
+    def __init__(self, owner, interface=None):
         self.owner = None
         self.contained_interface = None
         self.set(interface, owner)
-        if gui:
-            self.use_gui = True
-            self.gui = gui
+        if self.owner.use_debug_gui:
+            self.use_debug_gui = True
+            self.debug_gui = self.owner.debug_gui
         else:
-            self.use_gui = False
-            self.gui = None
+            self.use_debug_gui = False
+            self.debug_gui = None
 
     def set(self, interface, owner=None):
         """Updates the interface contained by the shell.
@@ -111,24 +109,30 @@ class BaseInterface(object):
     """Base class of all interfaces.
 
     Args:
-        gui (Py3GestaltGUI): Same GUI as virtual machine's one.
+        owner (VirtualMachine or a child): Virtual machine that aims to own
+            this interface.
 
     Attributes:
-        gui (Py3GestaltGUI): GUI specified in virtual machine's definition.
-        Useful for debugging purposes.
+        owner (VirtualMachine or a child): Virtual machine that owns this
+            interface.
+        use_debug_gui (boolean): Flag indicating whether this interface will
+            use a GUI for debugging or not.
+        debug_gui: GUI specified in virtual machine's definition. Useful for
+            debugging purposes. For now it is a Py3GestaltGUI object.
 
-    This class presents a basic structure of all interfaces. For now it only
+    This class presents a basic structure of all interfaces. Currently, it only
     has an empty method which will be overridden by a child class defined
     later.
     """
 
-    def __init__(self, gui=None):
-        if gui:
-            self.use_gui = True
-            self.gui = gui
+    def __init__(self, owner):
+        self.owner = owner
+        if self.owner.use_debug_gui:
+            self.use_debug_gui = True
+            self.debug_gui = self.owner.debug_gui
         else:
-            self.use_gui = False
-            self.gui = None
+            self.use_debug_gui = False
+            self.debug_gui = None
 
     def init_after_set(self):
         """Connect to interface after it was assigned to an interface shell."""
@@ -144,13 +148,13 @@ class SerialInterface(BaseInterface):
     protocol, a simple method reads a number of bytes from the input buffer.
 
     Args:
+        owner (VirtualMachine or child): Virtual machine that instantiates
+            this interface.
         baud_rate (int): Speed in baud.
         port_name (str): Name of port to connect.
         interface_type (str): Type of interface, 'ftdi' or 'arduino' for now.
-        owner (VirtualMachine): Object that instantiates this interface.
         time_out (float): Time to wait for a new device to be connected, in
-        seconds.
-        gui (Py3GestaltGUI): GUI for debugging's purposes.
+            seconds.
 
     Attributes:
         baudRate (int): Speed in baud.
@@ -163,34 +167,23 @@ class SerialInterface(BaseInterface):
         transmitQueue (Queue): A queue to store to-be-transmitted packets from
         different sources.
         transmitter (TransmitThread): A thread to handle data transmission.
-        gui (Py3GestaltGUI): GUI for debugging's purposes.
 
     Note: Regarding the attribute 'interfaceType', a third value may be used,
     'genericSerial', but its use could potentially cause problems because of
     its generic implementation.
     """
-    def __init__(self, baud_rate, port_name=None, interface_type=None, owner=None,
-                 time_out=0.2, gui=None):
-        super(SerialInterface, self).__init__(gui)
+    def __init__(self, owner, baud_rate, port_name=None, interface_type=None,
+                 time_out=0.2):
+        super(SerialInterface, self).__init__(owner)
         self.baudRate = baud_rate
         self.portName = port_name
         self.interfaceType = interface_type
-        self.owner = owner
         self.timeOut = time_out
         self.isConnected = False
         self.port = None
         # a queue is used to allow multiple threads to call transmit simultaneously.
         self.transmitQueue = queue.Queue()
         self.transmitter = None
-
-        if gui:
-            self.use_gui = True
-            self.gui = gui
-        else:
-            self.use_gui = False
-            self.gui = None
-        # For debugging purposes, will be deleted later:
-        notice(self, "Serial interface successfully instantiated!", self.use_gui)
 
     def init_after_set(self):
         """Initialize after setting.
@@ -207,7 +200,7 @@ class SerialInterface(BaseInterface):
         else:
             notice(self, "Serial interface could not be initialized. A port name or an "
                          "interface type are required.",
-                   self.use_gui)
+                   self.use_debug_gui)
 
     def connect(self, port_name=None):
         """Connect to serial port.
@@ -223,20 +216,20 @@ class SerialInterface(BaseInterface):
         elif self.portName:
             port = self.portName
         else:
-            notice(self, 'No port name provided.', self.use_gui)
+            notice(self, 'No port name provided.', self.use_debug_gui)
             return
 
         try:
             self.port = serial.Serial(port, self.baudRate, timeout=self.timeOut)
         except serial.SerialException:
             notice(self, "Error when opening serial port " + str(port),
-                   self.use_gui)
+                   self.use_debug_gui)
             return
 
         self.port.flushInput()
         self.port.flushOutput()
         notice(self, "Port " + str(port) + " connected successfully.",
-               self.use_gui)
+               self.use_debug_gui)
         # Some serial ports need some time between opening and transmission
         time.sleep(2)
         self.isConnected = True
@@ -264,14 +257,14 @@ class SerialInterface(BaseInterface):
         else:
             notice(self, "Trying to acquire serial port. You have 10 seconds to "
                          "plug an interface in.",
-                   self.use_gui)
+                   self.use_debug_gui)
             new_ports = self.wait_for_new_port(serial_filter)
             if new_ports:
                 if len(new_ports) > 1:
                     notice(self.owner,
                            "Could not acquire. Multiple ports plugged in "
                            "simultaneously.",
-                           self.use_gui)
+                           self.use_debug_gui)
                     return
                 else:
                     self.portName = new_ports[0]
@@ -319,12 +312,12 @@ class SerialInterface(BaseInterface):
             else:
                 notice(self,
                        "Operating system support not found for interface type '" +
-                       interface_type + "'", self.use_gui)
+                       interface_type + "'", self.use_debug_gui)
                 return False
         else:
             notice(self,
                    "Interface support not found for interface type '" +
-                   interface_type + "'", self.use_gui)
+                   interface_type + "'", self.use_debug_gui)
             return False
 
     def wait_for_new_port(self, filter_term=None, time_limit=10):
@@ -351,7 +344,7 @@ class SerialInterface(BaseInterface):
             timer_count += 0.25
             if timer_count > time_limit:
                 notice(self.owner, 'TIMEOUT while trying to acquire a new port.',
-                       self.use_gui)
+                       self.use_debug_gui)
                 return False
             new_ports = scan_serial_ports(filter_term)
             num_new_ports = len(new_ports)
@@ -365,7 +358,7 @@ class SerialInterface(BaseInterface):
 
     def start_transmitter(self):
         """Start the transmit thread."""
-        self.transmitter = self.TransmitThread(self.transmitQueue, self.port)
+        self.transmitter = self.TransmitThread(self, self.transmitQueue, self.port)
         self.transmitter.daemon = True
         self.transmitter.start()
 
@@ -379,7 +372,7 @@ class SerialInterface(BaseInterface):
         if self.isConnected:
             self.transmitQueue.put(data)
         else:
-            notice(self, 'Serial interface is not connected.', self.use_gui)
+            notice(self, 'Serial interface is not connected.', self.use_debug_gui)
 
     def read_bytes(self, bytes_to_read=None):
         """Read a number of bytes from the serial port's input buffer.
@@ -405,25 +398,29 @@ class SerialInterface(BaseInterface):
         """A thread to handle data transmission data over a serial port.
 
         Args:
-            transmit_queue (Queue): Queue that stores to-be-transmitted packets.
+            owner (SerialInterface): Interface that instantiate this thread.
+            transmit_queue (Queue): Queue that stores to-be-transmitted
+                packets.
             port (Serial): Serial port to be used.
-            gui (Py3Gestalt): GUI to be used.
 
         Attributes:
             transmitQueue (Queue): Queue that stores to-be-transmitted packets.
             port (Serial): Serial port to be used.
-            gui (Py3Gestalt): GUI to be used.
+            use_debug_gui (boolean): Flag indicating the use of a debugging GUI.
+            debug_gui: Debugging GUI to be used. For now it is a Py3Gestalt
+                object.
         """
-        def __init__(self, transmit_queue, port, gui=None):
+        def __init__(self, owner, transmit_queue, port):
             super(SerialInterface.TransmitThread, self).__init__()
+            self.owner = owner
             self.transmitQueue = transmit_queue
             self.port = port
-            if gui:
-                self.use_gui = True
-                self.gui = gui
+            if hasattr(self.owner, 'debug_gui'):
+                self.use_debug_gui = True
+                self.debug_gui = self.owner.debug_gui
             else:
-                self.use_gui = False
-                self.gui = None
+                self.use_debug_gui = False
+                self.debug_gui = None
 
         def run(self):
             """Define code to be ran by the transmit thread.
@@ -439,7 +436,7 @@ class SerialInterface(BaseInterface):
                     else:
                         notice(self, "Cannot transmit. No serial port "
                                      "initialized.",
-                               self.use_gui)
+                               self.use_debug_gui)
                 time.sleep(0.0005)
             pass
 
@@ -471,7 +468,7 @@ class SerialInterface(BaseInterface):
             else:
                 notice(self,
                        "Error: Packet must be either a list or a string.",
-                       self.use_gui)
+                       self.use_debug_gui)
                 return False
 
 # class gestaltInterface(baseInterface):
