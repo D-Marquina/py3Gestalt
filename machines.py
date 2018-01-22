@@ -80,6 +80,8 @@ class VirtualMachine(object):
         else:
             self.set_persistence(None)
 
+        self.import_node_counter = None
+
         # Run user initialization
         self.init(*args, **kwargs)
         self.init_interfaces()
@@ -147,7 +149,7 @@ class VirtualMachine(object):
         pass
 
     def init_controllers(self):
-        pass
+        self.import_node_counter = 0
 
     def init_coordinates(self):
         pass

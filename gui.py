@@ -112,6 +112,10 @@ class Py3GestaltGUI(BoxLayout):
                 if str(cls.__bases__[0]) == "<class 'machines.VirtualMachine'>":
                     self.vm_class = cls
 
+        package = 'tmpVM'
+        if os.path.exists(package):
+            shutil.rmtree(package, ignore_errors=True)
+
         with open(self.vm_source_file, 'r') as vm_definition:
             self.write_debugger(vm_definition.read())
 
@@ -220,9 +224,8 @@ class Py3GestaltGUI(BoxLayout):
         """
         self.vm.interface.transmit('a')
         time.sleep(0.05)
-        self.write_debugger('Message: ' +
-                            self.vm.interface.read_bytes(30).decode('utf-8'))
-        self.vm.init_controllers()
+        # self.write_debugger('Message: ' +
+                            # self.vm.interface.read_bytes(30).decode('utf-8'))
         self.vm.test_node.do()
 
     def write_debugger(self, message):

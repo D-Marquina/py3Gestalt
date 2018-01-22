@@ -12,12 +12,11 @@ import interfaces
 import nodes
 from utilities import notice as notice
 import test_node_without_GUI as TestNode
-# import test_vn
 
 
 class TestVirtualMachine(machines.VirtualMachine):
     def __init__(self, *args, **kwargs):
-        # Nodes should be defined here, before calling super().__init__
+        # Nodes should be declared here, before calling super().__init__
         self.test_node = None
         super(TestVirtualMachine,
               self).__init__(*args, **kwargs)
@@ -44,8 +43,10 @@ class TestVirtualMachine(machines.VirtualMachine):
         notice(self, init_message, self.use_debug_gui)
 
     def init_controllers(self):
+        super(TestVirtualMachine, self).init_controllers()
         self.test_node = nodes.BaseNodeShell(self, 'Test Node')
-        self.test_node.load_node_from_module(TestNode)
+        # self.test_node.load_vn_from_module(TestNode)
+        self.test_node.load_vn_from_file('examples\\test\\test_node.py')
 
 
 
