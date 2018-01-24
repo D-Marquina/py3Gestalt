@@ -80,7 +80,7 @@ class VirtualMachine(object):
         else:
             self.set_persistence(None)
 
-        self.import_node_counter = None
+        self.node_file_counter = None
 
         # Run user initialization
         self.init(*args, **kwargs)
@@ -149,7 +149,7 @@ class VirtualMachine(object):
         pass
 
     def init_controllers(self):
-        self.import_node_counter = 0
+        self.node_file_counter = 0
 
     def init_coordinates(self):
         pass

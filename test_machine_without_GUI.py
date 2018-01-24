@@ -14,7 +14,7 @@ import interfaces
 import nodes
 from utilities import notice as notice
 import time
-# import test_node_without_GUI as TestNode
+import test_node_without_GUI as TestNode
 
 
 class TestVirtualMachine(machines.VirtualMachine):
@@ -54,10 +54,11 @@ class TestVirtualMachine(machines.VirtualMachine):
     def init_controllers(self):
         super(TestVirtualMachine, self).init_controllers()
         self.test_node = nodes.BaseNodeShell(self, 'Test Node')
-        # self.test_node.is_vn_ill_defined('tmpVN.temp_virtual_node_1')
+        # self.test_node.is_vn_ill_defined('test_node_without_GUI')
         # self.test_node.load_vn_from_module(TestNode)
-        # self.test_node.load_node_from_file('test_node_without_GUI.py')
-        self.test_node.load_node_from_file('examples\\test\\test_node.py')
+        # self.test_node.load_vn_from_file('test_node_without_GUI.py')
+        # self.test_node.load_vn_from_file('examples\\test\\test_node.py')
+        self.test_node.load_vn_from_url('https://raw.githubusercontent.com/D-Marquina/py3Gestalt/master/test_node_without_GUI.py')
 
 
 # If executing from console:

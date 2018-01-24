@@ -17,6 +17,7 @@ Copyright (c) 2018 Daniel Marquina
 import importlib  # for importing files as modules
 import inspect
 import shutil
+import requests
 import random
 import threading
 import time
@@ -73,15 +74,25 @@ class BaseNodeShell(object):
         self.interface = interfaces.InterfaceShell(self)
         self.vn_class = None
         self.node = None
-        # For debugging purposes
-        notice(self, "Base Node Shell initialized!", self.use_debug_gui)
+
+    def __getattr__(self, attribute):
+        """Forward any unsupported call to the shell onto the node."""
+        if self.node is not None:  # Shell contains a node.
+            if hasattr(self.node, attribute):  # node contains requested attribute
+                return getattr(self.node, attribute)
+            else:
+                notice(self, "Node does not have requested attribute.",
+                       self.use_debug_gui)
+                raise AttributeError(attribute)
+        else:
+            notice(self, "Node has not been initialized.", self.use_debug_gui)
+            raise AttributeError(attribute)
 
     def load_vn_from_file(self, filename, **kwargs):
         """Load virtual node from a file.
 
-        This functions checks whether provided filename contains only one
-        virtual node or not; if it does, then it is imported and loaded calling
-        'load_vn_from_module()'.
+        This functions gets the text from a file, imports it as a module and
+        loads its defined virtual node'.
 
         Note:
             If a file path is being passed, it is recommended to use
@@ -92,50 +103,67 @@ class BaseNodeShell(object):
              filename (str): Name or path to file containing virtual node's
                 definition.
         """
-        self.owner.import_node_counter += 1
-        vn_module = self.create_vn_module(filename)
-        if self.is_vn_ill_defined(vn_module):
-            # self.int_bt_connect.disabled = True
-            return
-
-        vn_imported_module = importlib.import_module(vn_module)
-
-        package = 'tmpVN'
-        if os.path.exists(package):
-            shutil.rmtree(package, ignore_errors=True)
-
+        file_object = open(filename, 'r')
+        vn_imported_module = self.import_vn_module(file_object.read())
+        file_object.close()
         self.load_vn_from_module(vn_imported_module, checked=True, **kwargs)
 
-    def create_vn_module(self, vn_source_file):
-        """Create user-defined virtual machine module.
+    def load_vn_from_url(self, url, **kwargs):
+        """Load virtual node from a url.
+
+        This functions gets the text from a provided URL, imports it as a
+        module and loads the defined virtual node.
+
+        Args:
+             url (str): URL directing to virtual node's definition.
+        """
+        resp = requests.get(url)
+        notice(self, resp.text, self.use_debug_gui)
+        vn_imported_module = self.import_vn_module(resp.text)
+        self.load_vn_from_module(vn_imported_module, checked=True, **kwargs)
+
+    def import_vn_module(self, module_content):
+        """Import a user-defined virtual node module.
 
         Makes a temporal package (directory with an '__init__.py' file) called
-        'tmp' with a temporal module (file) which is a copy of the user-defined
-        virtual machine.
+        'tmpVN' with a temporal module (file) which contains a defined virtual
+        node and imports it.
         They are assessed as 'temporal' because they are deleted every time an
         import action is attempted.
 
         Note:
-        The module's name is 'temp_virtual_machine_X.py', where 'X' is the
+        The module's name is 'temp_virtual_node_X.py', where 'X' is the
         number of import attempts. Such change of name is necessary in order
         to avoid problems next, when analyzing module's classes using 'pyclbr'.
 
         Returns:
-            module_object: Temporal module's name.
+            vn_module: Imported virtual node.
         """
+        self.owner.node_file_counter += 1
+
         package = 'tmpVN'
         if os.path.exists(package):
             shutil.rmtree(package, ignore_errors=True)
         os.makedirs(package)
+
         open(os.path.join(package, '__init__.py'), 'w').close()
 
-        module_name = 'temp_virtual_node_' + str(self.owner.import_node_counter)
+        module_name = 'temp_virtual_node_' + str(self.owner.node_file_counter)
         module_location = os.path.join(package, module_name + '.py')
-        open(module_location, 'w').close()
-        shutil.copyfile(vn_source_file, module_location)
-        module_object = package + '.' + module_name
+        module_file = open(module_location, 'w')
+        module_file.write(module_content)
+        module_file.close()
+        module = package + '.' + module_name
 
-        return module_object
+        if self.is_vn_ill_defined(module):
+            return
+
+        vn_module = importlib.import_module(module)
+
+        if os.path.exists(package):
+            shutil.rmtree(package, ignore_errors=True)
+
+        return vn_module
 
     def load_vn_from_module(self, module, checked=False, **kwargs):
         """Load virtual node from an imported module.
@@ -192,7 +220,6 @@ class BaseNodeShell(object):
                 class_super = class_data.super[0]
                 if hasattr(class_super, 'name'):
                     while class_super != 'object':
-                        print(class_super.name)
                         supers_list.append(class_super.name)
                         class_super = class_super.super[0]
                     supers_list.append('object')
@@ -230,35 +257,6 @@ class BaseNodeShell(object):
         self.node.name = self.name
         self.node.interface = self.interface
         self.node.init(**self.node.initKwargs)
-
-    def __getattr__(self, attribute):
-        """Forward any unsupported call to the shell onto the node."""
-        if self.node is not None:  # Shell contains a node.
-            if hasattr(self.node, attribute):  # node contains requested attribute
-                return getattr(self.node, attribute)
-            else:
-                notice(self, "Node does not have requested attribute.",
-                       self.use_debug_gui)
-                raise AttributeError(attribute)
-        else:
-            notice(self, "Node has not been initialized.", self.use_debug_gui)
-            raise AttributeError(attribute)
-
-
-    # def loadNodeFromURL(self, URL, **kwargs):
-    #     '''Loads a node into the node shell from a provided URL.
-    #
-    #         Assumes that this is called form a node shell that has defined self.name'''
-    #     try:
-    #         VNFilename = os.path.basename(URL)  # gets filename
-    #         urllib.urlretrieve(URL, VNFilename)
-    #         notice(self, "downloaded " + VNFilename + " from " + URL)
-    #         return self.loadNodeFromFile(VNFilename, **kwargs)  # stores file to local directory for import.
-    #     # same name is used so that local import works if internet is later down.
-    #     except IOError:
-    #         notice(self, "could not load " + VNFilename + " from " + URL)
-    #         notice(self, "Attempting to load file from local directory...")
-    #         return self.loadNodeFromFile(VNFilename, **kwargs)  # attempt to load file locally
 
 # class soloIndependentNode(baseNodeShell):
 #     ''' A container shell for Solo/Independent nodes.
@@ -426,6 +424,7 @@ class BaseNodeShell(object):
 #
 #
 # # ----VIRTUAL NODES------------
+
 
 class BaseVirtualNode(object):
     """Base class for virtual nodes.

@@ -45,8 +45,13 @@ class TestVirtualMachine(machines.VirtualMachine):
     def init_controllers(self):
         super(TestVirtualMachine, self).init_controllers()
         self.test_node = nodes.BaseNodeShell(self, 'Test Node')
+        # Any of this lines should work, one at a time
         # self.test_node.load_vn_from_module(TestNode)
-        self.test_node.load_vn_from_file('examples\\test\\test_node.py')
+        # self.test_node.load_vn_from_file('examples\\test\\test_node.py')
+        # Provided URL would change in time, it redirects to the actual version
+        # of 'test_node_without_GUI.py'
+        self.test_node.load_vn_from_url(
+            'https://raw.githubusercontent.com/D-Marquina/py3Gestalt/master/test_node_without_GUI.py')
 
 
 
