@@ -38,16 +38,21 @@ class InterfaceShell(object):
     """Intermediary between nodes, node shells and interfaces.
 
     Args:
-        owner: Owner of this interface shell. For now it can be a virtual
+        owner:
+            Owner of this interface shell. For now it can be a virtual
             machine or a virtual node.
-        interface (BaseInterface): Interface to be contained by this shell.
+        interface (BaseInterface):
+            Interface to be contained by this shell.
 
     Attributes:
-        owner: Object that instantiates this shell. Used in the port acquisition
+        owner:
+            Object that instantiates this shell. Used in the port acquisition
             process.
-        contained_interface (BaseInterface or a child): Interface contained by
-            this shell.
-        debug_gui: GUI used for debugging. For now it is a Py3GestaltGUI object.
+        contained_interface (BaseInterface or a child):
+            Interface contained by this shell.
+        debug_gui:
+            GUI used for debugging. For now it is a Py3GestaltGUI object.
+
     """
     def __init__(self, owner, interface=None):
         self.owner = None
@@ -109,16 +114,17 @@ class BaseInterface(object):
     """Base class of all interfaces.
 
     Args:
-        owner (VirtualMachine or a child): Virtual machine that aims to own
-            this interface.
+        owner (VirtualMachine or a child):
+            Virtual machine that aims to own this interface.
 
     Attributes:
-        owner (VirtualMachine or a child): Virtual machine that owns this
-            interface.
-        use_debug_gui (boolean): Flag indicating whether this interface will
-            use a GUI for debugging or not.
-        debug_gui: GUI specified in virtual machine's definition. Useful for
-            debugging purposes. For now it is a Py3GestaltGUI object.
+        owner (VirtualMachine or a child):
+            Virtual machine that owns this interface.
+        use_debug_gui (boolean):
+            Flag indicating whether this interface will use a GUI for debugging or not.
+        debug_gui:
+            GUI specified in virtual machine's definition. Useful for debugging purposes.
+            For now it is a Py3GestaltGUI object.
 
     This class presents a basic structure of all interfaces. Currently, it only
     has an empty method which will be overridden by a child class defined
@@ -148,25 +154,36 @@ class SerialInterface(BaseInterface):
     protocol, a simple method reads a number of bytes from the input buffer.
 
     Args:
-        owner (VirtualMachine or child): Virtual machine that instantiates
-            this interface.
-        baud_rate (int): Speed in baud.
-        port_name (str): Name of port to connect.
-        interface_type (str): Type of interface, 'ftdi' or 'arduino' for now.
-        time_out (float): Time to wait for a new device to be connected, in
-            seconds.
+        owner (VirtualMachine or child):
+            Virtual machine that instantiates this interface.
+        baud_rate (int):
+            Speed in baud.
+        port_name (str):
+            Name of port to connect.
+        interface_type (str):
+            Type of interface, 'ftdi' or 'arduino' for now.
+        time_out (float):
+            Time to wait for a new device to be connected, in seconds.
 
     Attributes:
-        baudRate (int): Speed in baud.
-        portName (str): Name of connected port.
-        interfaceType (str): Type of interface, 'ftdi' or 'lufa' for now.
-        owner (VirtualMachine): Object that owns this interface.
-        timeOut (float): Time to wait for a new device to be connected.
-        isConnected (boolean): State of connection.
-        port (serial): Serial object to use.
-        transmitQueue (Queue): A queue to store to-be-transmitted packets from
-        different sources.
-        transmitter (TransmitThread): A thread to handle data transmission.
+        baudRate (int):
+            Speed in baud.
+        portName (str):
+            Name of connected port.
+        interfaceType (str):
+            Type of interface, 'ftdi' or 'lufa' for now.
+        owner (VirtualMachine):
+            Object that owns this interface.
+        timeOut (float):
+            Time to wait for a new device to be connected.
+        isConnected (boolean):
+            State of connection.
+        port (serial):
+            Serial object to use.
+        transmitQueue (Queue):
+            A queue to store to-be-transmitted packets from different sources.
+        transmitter (TransmitThread):
+            A thread to handle data transmission.
 
     Note: Regarding the attribute 'interfaceType', a third value may be used,
     'genericSerial', but its use could potentially cause problems because of
@@ -398,17 +415,22 @@ class SerialInterface(BaseInterface):
         """A thread to handle data transmission data over a serial port.
 
         Args:
-            owner (SerialInterface): Interface that instantiate this thread.
-            transmit_queue (Queue): Queue that stores to-be-transmitted
-                packets.
-            port (Serial): Serial port to be used.
+            owner (SerialInterface):
+                Interface that instantiate this thread.
+            transmit_queue (Queue):
+                Queue that stores to-be-transmitted packets.
+            port (Serial):
+                Serial port to be used.
 
         Attributes:
-            transmitQueue (Queue): Queue that stores to-be-transmitted packets.
-            port (Serial): Serial port to be used.
-            use_debug_gui (boolean): Flag indicating the use of a debugging GUI.
-            debug_gui: Debugging GUI to be used. For now it is a Py3Gestalt
-                object.
+            transmitQueue (Queue):
+                Queue that stores to-be-transmitted packets.
+            port (Serial):
+                Serial port to be used.
+            use_debug_gui (boolean):
+                Flag indicating the use of a debugging GUI.
+            debug_gui:
+                Debugging GUI to be used. For now it is a Py3Gestalt object.
         """
         def __init__(self, owner, transmit_queue, port):
             super(SerialInterface.TransmitThread, self).__init__()

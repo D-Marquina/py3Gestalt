@@ -1,0 +1,1042 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3Gestalt package &mdash; Gestalt Framework for Python 3 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Gestalt Framework for Python 3 1 documentation" href="index.html"/>
+        <link rel="up" title="py3Gestalt" href="modules.html"/>
+        <link rel="prev" title="py3Gestalt" href="modules.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Gestalt Framework for Python 3
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">py3Gestalt</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">py3Gestalt package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-py3Gestalt.interfaces">py3Gestalt.interfaces module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-py3Gestalt.machines">py3Gestalt.machines module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-py3Gestalt.nodes">py3Gestalt.nodes module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-py3Gestalt.utilities">py3Gestalt.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-py3Gestalt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Gestalt Framework for Python 3</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">py3Gestalt</a> &raquo;</li>
+        
+      <li>py3Gestalt package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/py3Gestalt.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="py3gestalt-package">
+<h1>py3Gestalt package<a class="headerlink" href="#py3gestalt-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-py3Gestalt.interfaces">
+<span id="py3gestalt-interfaces-module"></span><h2>py3Gestalt.interfaces module<a class="headerlink" href="#module-py3Gestalt.interfaces" title="Permalink to this headline">¶</a></h2>
+<p>Interfaces module from Gestalt framework for Python 3.</p>
+<p>Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</p>
+<p>This module defines interface classes and an interface shell class, which acts
+as an intermediary between the interface and nodes.</p>
+<p>‘InterfaceShell’ class is a wrapper that links the real interface object to
+classes and methods that try to access it.</p>
+<p>‘BaseInterface’ class is a basic example of an interface object. Every
+interface should be based on it.</p>
+<p>‘SerialInterface’ class defines an interface that uses a serial port.</p>
+<p>TO-DO list:</p>
+<p>Copyright (c) 2018 Daniel Marquina</p>
+<dl class="class">
+<dt id="py3Gestalt.interfaces.BaseInterface">
+<em class="property">class </em><code class="descclassname">py3Gestalt.interfaces.</code><code class="descname">BaseInterface</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#BaseInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.BaseInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class of all interfaces.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>owner (VirtualMachine or a child):</dt>
+<dd>Virtual machine that aims to own this interface.</dd>
+</dl>
+</dd>
+<dt>Attributes:</dt>
+<dd><dl class="first last docutils">
+<dt>owner (VirtualMachine or a child):</dt>
+<dd>Virtual machine that owns this interface.</dd>
+<dt>use_debug_gui (boolean):</dt>
+<dd>Flag indicating whether this interface will use a GUI for debugging or not.</dd>
+<dt>debug_gui:</dt>
+<dd>GUI specified in virtual machine’s definition. Useful for debugging purposes.
+For now it is a Py3GestaltGUI object.</dd>
+</dl>
+</dd>
+</dl>
+<p>This class presents a basic structure of all interfaces. Currently, it only
+has an empty method which will be overridden by a child class defined
+later.</p>
+<dl class="method">
+<dt id="py3Gestalt.interfaces.BaseInterface.init_after_set">
+<code class="descname">init_after_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#BaseInterface.init_after_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.BaseInterface.init_after_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to interface after it was assigned to an interface shell.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3Gestalt.interfaces.InterfaceShell">
+<em class="property">class </em><code class="descclassname">py3Gestalt.interfaces.</code><code class="descname">InterfaceShell</code><span class="sig-paren">(</span><em>owner</em>, <em>interface=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#InterfaceShell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.InterfaceShell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Intermediary between nodes, node shells and interfaces.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>owner:</dt>
+<dd>Owner of this interface shell. For now it can be a virtual
+machine or a virtual node.</dd>
+<dt>interface (BaseInterface):</dt>
+<dd>Interface to be contained by this shell.</dd>
+</dl>
+</dd>
+<dt>Attributes:</dt>
+<dd><dl class="first last docutils">
+<dt>owner:</dt>
+<dd>Object that instantiates this shell. Used in the port acquisition
+process.</dd>
+<dt>contained_interface (BaseInterface or a child):</dt>
+<dd>Interface contained by this shell.</dd>
+<dt>debug_gui:</dt>
+<dd>GUI used for debugging. For now it is a Py3GestaltGUI object.</dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="py3Gestalt.interfaces.InterfaceShell.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>interface</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#InterfaceShell.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.InterfaceShell.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the interface contained by the shell.</p>
+<p>Updates and initializes contained (or linked) shell. Owner can be
+None. It is called when a node is initialized.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>interface (BaseInterface): Interface to be contained by this shell.
+owner (VirtualMachine): Virtual machine that owns this interface shell.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.InterfaceShell.set_owner">
+<code class="descname">set_owner</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#InterfaceShell.set_owner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.InterfaceShell.set_owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set owner.</p>
+<p>Updates owner of this shell and its contained interface.
+Useful when no owner was specified when instantiating.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>owner (VirtualMachine):</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3Gestalt.interfaces.SerialInterface">
+<em class="property">class </em><code class="descclassname">py3Gestalt.interfaces.</code><code class="descname">SerialInterface</code><span class="sig-paren">(</span><em>owner</em>, <em>baud_rate</em>, <em>port_name=None</em>, <em>interface_type=None</em>, <em>time_out=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3Gestalt.interfaces.BaseInterface" title="py3Gestalt.interfaces.BaseInterface"><code class="xref py py-class docutils literal"><span class="pre">py3Gestalt.interfaces.BaseInterface</span></code></a></p>
+<p>Serial communication interface.</p>
+<p>The core of this class is a serial object. For data transmission, a queue
+stores all data to be sent whereas a thread handles transmission of every
+element in that queue. As data reception using a thread requires a defined
+protocol, a simple method reads a number of bytes from the input buffer.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>owner (VirtualMachine or child):</dt>
+<dd>Virtual machine that instantiates this interface.</dd>
+<dt>baud_rate (int):</dt>
+<dd>Speed in baud.</dd>
+<dt>port_name (str):</dt>
+<dd>Name of port to connect.</dd>
+<dt>interface_type (str):</dt>
+<dd>Type of interface, ‘ftdi’ or ‘arduino’ for now.</dd>
+<dt>time_out (float):</dt>
+<dd>Time to wait for a new device to be connected, in seconds.</dd>
+</dl>
+</dd>
+<dt>Attributes:</dt>
+<dd><dl class="first last docutils">
+<dt>baudRate (int):</dt>
+<dd>Speed in baud.</dd>
+<dt>portName (str):</dt>
+<dd>Name of connected port.</dd>
+<dt>interfaceType (str):</dt>
+<dd>Type of interface, ‘ftdi’ or ‘lufa’ for now.</dd>
+<dt>owner (VirtualMachine):</dt>
+<dd>Object that owns this interface.</dd>
+<dt>timeOut (float):</dt>
+<dd>Time to wait for a new device to be connected.</dd>
+<dt>isConnected (boolean):</dt>
+<dd>State of connection.</dd>
+<dt>port (serial):</dt>
+<dd>Serial object to use.</dd>
+<dt>transmitQueue (Queue):</dt>
+<dd>A queue to store to-be-transmitted packets from different sources.</dd>
+<dt>transmitter (TransmitThread):</dt>
+<dd>A thread to handle data transmission.</dd>
+</dl>
+</dd>
+</dl>
+<p>Note: Regarding the attribute ‘interfaceType’, a third value may be used,
+‘genericSerial’, but its use could potentially cause problems because of
+its generic implementation.</p>
+<dl class="class">
+<dt id="py3Gestalt.interfaces.SerialInterface.TransmitThread">
+<em class="property">class </em><code class="descname">TransmitThread</code><span class="sig-paren">(</span><em>owner</em>, <em>transmit_queue</em>, <em>port</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.TransmitThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.TransmitThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<p>A thread to handle data transmission data over a serial port.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>owner (SerialInterface):</dt>
+<dd>Interface that instantiate this thread.</dd>
+<dt>transmit_queue (Queue):</dt>
+<dd>Queue that stores to-be-transmitted packets.</dd>
+<dt>port (Serial):</dt>
+<dd>Serial port to be used.</dd>
+</dl>
+</dd>
+<dt>Attributes:</dt>
+<dd><dl class="first last docutils">
+<dt>transmitQueue (Queue):</dt>
+<dd>Queue that stores to-be-transmitted packets.</dd>
+<dt>port (Serial):</dt>
+<dd>Serial port to be used.</dd>
+<dt>use_debug_gui (boolean):</dt>
+<dd>Flag indicating the use of a debugging GUI.</dd>
+<dt>debug_gui:</dt>
+<dd>Debugging GUI to be used. For now it is a Py3Gestalt object.</dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.TransmitThread.get_transmit_packet">
+<code class="descname">get_transmit_packet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.TransmitThread.get_transmit_packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.TransmitThread.get_transmit_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a to-be-transmitted packet from the transmit queue.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>True and first packet from transmit queue, if it was not empty.
+False and None, otherwise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.TransmitThread.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.TransmitThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.TransmitThread.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define code to be ran by the transmit thread.</p>
+<p>Gets a packet from transmit queue, converts it to a string and
+transmits it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.TransmitThread.serialize">
+<code class="descname">serialize</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.TransmitThread.serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.TransmitThread.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert packet into a string for transmission over a serial port.</p>
+<p>Uses ASCII characters.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>Packet as string if it was a list or a string. False, otherwise.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.acquire_port_and_connect">
+<code class="descname">acquire_port_and_connect</code><span class="sig-paren">(</span><em>interface_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.acquire_port_and_connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.acquire_port_and_connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire a serial port and connect to it.</p>
+<p>Tries to detect a serial port based on the provided interface type.
+If no serial port is detected, it waits some seconds (10 by default)
+for new one to bw created.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>interface_type (str): Type of interface.</dd>
+<dt>Returns:</dt>
+<dd>Call to connect function if a port was detected. Exits, otherwise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><em>port_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to serial port.</p>
+<p>Connects to specified port name. Tries to connect to port assigned on
+instantiation if no port is specified as argument.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>port_name (str): Name of serial port.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.get_serial_filter_terms">
+<code class="descname">get_serial_filter_terms</code><span class="sig-paren">(</span><em>interface_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.get_serial_filter_terms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.get_serial_filter_terms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get filter terms for serial ports.</p>
+<p>According to the operating system, selects a type of filter and the
+filter term.
+For example, in the case of Arduino, the type is ‘manufacturer’ and the
+filter term is ‘Arduino’. This function is implemented like that in
+order to include new interfaces.</p>
+<p>Note 1: Currently, the type of filter should be one attribute of
+serial.tools.list_ports.ListPortInfo class, supported by your operating
+system (Windows, Linux os MacOS).</p>
+<p>Note 2: The use of interface type ‘genericSerial’ should be avoided
+because many devices could share the provided filter term.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>interface_type (str): Type of interface, ‘ftdi’ for FTDI devices,
+‘Arduino’ for Arduino and ‘generic serial’ for others.</dd>
+<dt>Returns:</dt>
+<dd>A list of filter type and filter term respectively, if found on
+the dictionary. False, otherwise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.init_after_set">
+<code class="descname">init_after_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.init_after_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.init_after_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize after setting.</p>
+<p>Begins connection procedure. First, it tries to connect to provided
+port name; if there is no port name, it waits for a new port to be
+created based on a provided interface type.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.read_bytes">
+<code class="descname">read_bytes</code><span class="sig-paren">(</span><em>bytes_to_read=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.read_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.read_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a number of bytes from the serial port’s input buffer.</p>
+<p>If there are less bytes available, read only the available ones.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>bytes_to_read (int): Number of bytes to grab.</dd>
+<dt>Returns:</dt>
+<dd>Read bytes, if received. None, otherwise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.start_transmitter">
+<code class="descname">start_transmitter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.start_transmitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.start_transmitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the transmit thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.transmit">
+<code class="descname">transmit</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.transmit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.transmit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add data to transmit queue.</p>
+<p>As a thread handles data transmission, it continuously checks the
+transmit queue and sends data when added by this function.
+Data as a string is converted to a list by default.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.interfaces.SerialInterface.wait_for_new_port">
+<code class="descname">wait_for_new_port</code><span class="sig-paren">(</span><em>filter_term=None</em>, <em>time_limit=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/interfaces.html#SerialInterface.wait_for_new_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.interfaces.SerialInterface.wait_for_new_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for a new port to be created.</p>
+<p>This functions waits for the user to connect an interface device and
+returns its new serial port.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>filter_term (str): Optional serial port filter, depends on
+interface type and operating system.
+time_limit (float): Maximum number of seconds to wait for a new
+port to be created.</dd>
+<dt>Returns:</dt>
+<dd>A list of new serial ports. False, otherwise.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3Gestalt.machines">
+<span id="py3gestalt-machines-module"></span><h2>py3Gestalt.machines module<a class="headerlink" href="#module-py3Gestalt.machines" title="Permalink to this headline">¶</a></h2>
+<p>Machines module from Gestalt framework for Python 3.</p>
+<p>Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</p>
+<p>This module contains classes needed to define a virtual machine and its
+components according to real physical machine.</p>
+<p>‘Virtual Machine’ class is the main class, it includes some methods in order to
+show some basic structure of virtual machines. Those methods are supposed to be
+overridden.</p>
+<p>Copyright (c) 2018 Daniel Marquina</p>
+<dl class="class">
+<dt id="py3Gestalt.machines.VirtualMachine">
+<em class="property">class </em><code class="descclassname">py3Gestalt.machines.</code><code class="descname">VirtualMachine</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class for all virtual machines.</p>
+<p>On instantiation, four main attributes are initialized: name, interface,
+GUI and persistence file.
+If no name is specified, its path is assigned as its name by default. Its
+interface must be defined on ‘interfaces’ module. GUI must have a
+‘write.debugger(str)’ method. The persistence file is always created when
+its name is specified and is saved where the user-defined virtual machine’s
+file resides.</p>
+<p>All methods are empty but are called in initialization because the user
+should redefine them according to the real machine’s requirements. While
+many machines won’t need every pre-built initializer, they are provided to
+introduce some structure to the format of virtual machines.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><dl class="first last docutils">
+<dt>name (str):</dt>
+<dd>Virtual machine’s name.</dd>
+<dt>interface:</dt>
+<dd>Virtual machine’s interface, must be defined in interfaces module.</dd>
+<dt>use_debug_gui (boolean):</dt>
+<dd>Flag indicating use of a GUI for notices.</dd>
+<dt>debug_gui (Py3GestaltGUI):</dt>
+<dd>GUI where notices will be displayed.</dd>
+<dt>persistenceFile (str):</dt>
+<dd>Persistence file’s name.</dd>
+<dt>persistence (PersistenceManager):</dt>
+<dd>Persistence file’s manager.</dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.init">
+<code class="descname">init</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.init_controllers">
+<code class="descname">init_controllers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.init_controllers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.init_controllers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.init_coordinates">
+<code class="descname">init_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.init_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.init_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.init_functions">
+<code class="descname">init_functions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.init_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.init_functions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.init_interfaces">
+<code class="descname">init_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.init_interfaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.init_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.init_kinematics">
+<code class="descname">init_kinematics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.init_kinematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.init_kinematics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.init_last">
+<code class="descname">init_last</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.init_last"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.init_last" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.set_debug_gui">
+<code class="descname">set_debug_gui</code><span class="sig-paren">(</span><em>gui</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.set_debug_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.set_debug_gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set GUI of virtual machine.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>gui (Py3GestaltGUI): Virtual machine’s GUI.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.set_interface">
+<code class="descname">set_interface</code><span class="sig-paren">(</span><em>interface</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.set_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.set_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set interface of virtual machine.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>interface (…): Virtual machine’s interface, must be defined in
+interfaces module.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.set_name">
+<code class="descname">set_name</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set name of virtual machine.</p>
+<p>If this function is called without passing an argument, virtual machine’s
+file’s location is assigned as name.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>name (str): Virtual machine’s new name</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.machines.VirtualMachine.set_persistence">
+<code class="descname">set_persistence</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/machines.html#VirtualMachine.set_persistence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.machines.VirtualMachine.set_persistence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set persistence file of virtual machine.</p>
+<p>‘Filename’ can be None because the implementation of PersistenceManager
+class foresees a case when no file name was assigned.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>filename (str): Virtual machine’s persistence file’s name.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3Gestalt.nodes">
+<span id="py3gestalt-nodes-module"></span><h2>py3Gestalt.nodes module<a class="headerlink" href="#module-py3Gestalt.nodes" title="Permalink to this headline">¶</a></h2>
+<p>Nodes module from Gestalt framework for Python 3.</p>
+<p>Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</p>
+<p>This module defines node classes and an node shell classes, which act
+as an intermediary between the virtual nodes and the virtual machine.</p>
+<p>TO-DO list:
+- Complete load_from_module
+- Decide load_from_file procedure
+- Update is_vm_ill_defined based on is_vn_ill_defined
+- Invetigate load_from_URL</p>
+<p>Copyright (c) 2018 Daniel Marquina</p>
+<dl class="class">
+<dt id="py3Gestalt.nodes.BaseNodeShell">
+<em class="property">class </em><code class="descclassname">py3Gestalt.nodes.</code><code class="descname">BaseNodeShell</code><span class="sig-paren">(</span><em>owner</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>The basic container for all nodes.</p>
+<p>Like a room in a hotel, that has different occupants and offers certain
+amenities to its guests. ‘BaseNodeShell’ gets subclassed by more specific
+shells for one of the four types of gestalt nodes:
+-&gt;Solo/Independent: arbitrary interface/ arbitrary protocol
+-&gt;Solo/Gestalt: arbitrary interface/ gestalt protocol
+-&gt;Networked/Gestalt: networked gestalt interface/ gestalt protocol
+-&gt;Managed/Gestalt: hardware synchronized gestalt network/ gestalt protocol</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>owner (VirtualMachine or a child):</dt>
+<dd>Virtual machine that aims to own this node shell.</dd>
+<dt>name (str):</dt>
+<dd>Name of this node shell.</dd>
+</dl>
+</dd>
+<dt>Attributes:</dt>
+<dd><dl class="first last docutils">
+<dt>owner (VirtualMachine or a child):</dt>
+<dd>Virtual machine that owns this node shell.</dd>
+<dt>name (str):</dt>
+<dd>Name of this node shell.</dd>
+<dt>use_debug_gui (boolean):</dt>
+<dd>Flag indicating use of a debugging GUI.</dd>
+<dt>debug_gui:</dt>
+<dd>GUI use for debugging purposes. For now it is a Py3GestaltGUI
+object.</dd>
+<dt>interface (InterfaceShell):</dt>
+<dd>Shell to contained owner’s interface.</dd>
+<dt>vn_class (Class):</dt>
+<dd>Virtual node’s class. The contained node will be an instance of
+this class.</dd>
+<dt>node (BaseVirtualNode or a child):</dt>
+<dd>Contained or linked node.</dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.import_vn_module">
+<code class="descname">import_vn_module</code><span class="sig-paren">(</span><em>module_content</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.import_vn_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.import_vn_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a user-defined virtual node module.</p>
+<p>Makes a temporal package (directory with an ‘__init__.py’ file) called
+‘tmpVN’ with a temporal module (file) which contains a defined virtual
+node and imports it.
+They are assessed as ‘temporal’ because they are deleted every time an
+import action is attempted.</p>
+<p>Note:
+The module’s name is ‘temp_virtual_node_X.py’, where ‘X’ is the number
+of import attempts. Such change of name is necessary in order to avoid
+problems next, when analyzing module’s classes using ‘pyclbr’.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>vn_module: Imported virtual node.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.is_vn_ill_defined">
+<code class="descname">is_vn_ill_defined</code><span class="sig-paren">(</span><em>vn_module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.is_vn_ill_defined"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.is_vn_ill_defined" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a virtual node is ill defined or not.</p>
+<p>Makes sure that selected virtual node contains one and only one
+user-defined virtual machine class, child of ‘nodes.BaseVirtualNode’
+class.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>vn_module: Virtual node module to be analyzed.</dd>
+<dt>Returns:</dt>
+<dd>True when selected module contains none or more than a unique
+virtual node. False otherwise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.load_vn_from_file">
+<code class="descname">load_vn_from_file</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.load_vn_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.load_vn_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load virtual node from a file.</p>
+<p>This functions gets the text from a file, imports it as a module and
+loads its defined virtual node’.</p>
+<dl class="docutils">
+<dt>Note:</dt>
+<dd>If a file path is being passed, it is recommended to use
+‘os.path.join()’ as it creates a path according to the operating
+system.</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>filename (str): Name or path to file containing virtual node’s</dt>
+<dd>definition.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.load_vn_from_module">
+<code class="descname">load_vn_from_module</code><span class="sig-paren">(</span><em>module</em>, <em>checked=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.load_vn_from_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.load_vn_from_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load virtual node from an imported module.</p>
+<p>Instantiates a virtual node from a class defined in provided module.
+Such module must have been already imported and should contain only one
+virtual node class that is a child of ‘nodes.BaseVirtualNode’. That
+last feature can be checked passing an argument ‘checked’ as False.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>module:</dt>
+<dd>Module containing virtual node’s definition.</dd>
+<dt>checked (boolean):</dt>
+<dd>A flag indicating whether module’s content (only one
+BaseVirtualNode’s child class) has been checked or not.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.load_vn_from_url">
+<code class="descname">load_vn_from_url</code><span class="sig-paren">(</span><em>url</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.load_vn_from_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.load_vn_from_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load virtual node from a url.</p>
+<p>This functions gets the text from a provided URL, imports it as a
+module and loads the defined virtual node.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>url (str): URL directing to virtual node’s definition.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.set_node">
+<code class="descname">set_node</code><span class="sig-paren">(</span><em>vn_class</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.set_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.set_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets contained or linked node.</p>
+<p>Creates an instance of selected virtual node class and executes its
+‘init()’ method.
+Owner, name and interface from this shell are passed to contained node.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>vn_class (Class):</dt>
+<dd>Virtual node class to be instantiated.</dd>
+<dt>kwargs:</dt>
+<dd>Arguments to be passed onto the virtual node’s initialization.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3Gestalt.nodes.BaseVirtualNode">
+<em class="property">class </em><code class="descclassname">py3Gestalt.nodes.</code><code class="descname">BaseVirtualNode</code><span class="sig-paren">(</span><em>owner</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseVirtualNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseVirtualNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class for virtual nodes.</p>
+<dl class="docutils">
+<dt>Initialization occurs in three steps:</dt>
+<dd><ol class="first last arabic simple">
+<li>BaseVirtualNode gets initialized when instantiated.</li>
+<li>Node shell loads references into node through ‘set_node()’ method.</li>
+<li>‘init()’ is called by ‘set_node()’ method.</li>
+</ol>
+</dd>
+</dl>
+<p>The purpose of this routine is to initialize the nodes once they already
+have references to their shell.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>owner (VirtualMachine or a child):</dt>
+<dd>Virtual machine that instantiates this node.</dd>
+</dl>
+</dd>
+<dt>Attributes:</dt>
+<dd><dl class="first last docutils">
+<dt>owner (VirtualMachine or a child):</dt>
+<dd>Virtual machine that instantiates this node.</dd>
+<dt>shell (BaseNodeShell or a child):</dt>
+<dd>Node shell that contains this node.</dd>
+<dt>name (str):</dt>
+<dd>Name of this node shell.</dd>
+<dt>interface (InterfaceShell):</dt>
+<dd>Shell to contained owner’s interface.</dd>
+<dt>use_debug_gui (boolean):</dt>
+<dd>Flag indicating use of a debugging GUI.</dd>
+<dt>debug_gui:</dt>
+<dd>GUI use for debugging purposes. For now it is a Py3GestaltGUI
+object.</dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseVirtualNode.init">
+<code class="descname">init</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseVirtualNode.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseVirtualNode.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy initializer for terminal child class.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3Gestalt.utilities">
+<span id="py3gestalt-utilities-module"></span><h2>py3Gestalt.utilities module<a class="headerlink" href="#module-py3Gestalt.utilities" title="Permalink to this headline">¶</a></h2>
+<p>Utilities module from Gestalt framework for Python 3.</p>
+<p>Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</p>
+<p>This module contains various classes and methods needed for the correct
+implementation of this framework.</p>
+<p>‘PersistenceManager’ class defines an object which is in charge of managing the
+creation, writing  and reading of persistence file.</p>
+<p>‘Notice’ method prints information about the execution of the framework,
+either to console or to a GUI.</p>
+<p>‘Scan_serial_ports’ returns a list of all serial ports in the PC.</p>
+<p>‘Get_available_serial_ports’ filters only available serial ports by opening and
+closing them.</p>
+<p>TO-DO list:</p>
+<p>Copyright (c) 2018 Daniel Marquina</p>
+<dl class="class">
+<dt id="py3Gestalt.utilities.PersistenceManager">
+<em class="property">class </em><code class="descclassname">py3Gestalt.utilities.</code><code class="descname">PersistenceManager</code><span class="sig-paren">(</span><em>filename=None</em>, <em>namespace=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Manager of persistence files.</p>
+<p>Every time a machine is configured, when addresses of physical nodes are
+assigned to virtual nodes (actually to node shells), a persistence file
+is created in order to store those addresses and load them next time the
+machine is turned on. This class manages such file, whose content is mostly
+written as a Python dictionary.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>filename (str): Name of persistence file.
+namespace (str): Machine’s name.</dd>
+<dt>Attributes:</dt>
+<dd>filename (str): Name of persistence file.
+namespace (str): Machine’s name.</dd>
+</dl>
+<dl class="method">
+<dt id="py3Gestalt.utilities.PersistenceManager.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a stored node’s address.</p>
+<p>Looks up in persistence file for a node with the specified name and
+returns its address. This function is usually called when a node shell
+is being instantiated.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>name (str): Node’s name.</dd>
+<dt>Returns:</dt>
+<dd>Node’s address, if found; else, None.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.utilities.PersistenceManager.read_persistence_dictionary">
+<code class="descname">read_persistence_dictionary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager.read_persistence_dictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager.read_persistence_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy persistence file’s content into a Python dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.utilities.PersistenceManager.store">
+<code class="descname">store</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager.store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager.store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a node and/or its address.</p>
+<p>Stores a new node or updates an existing node’s address.
+This function is usually called when a node shell is being instantiated.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>name: Node’s name.
+value: Node’s address.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.utilities.PersistenceManager.write_persistence_dictionary">
+<code class="descname">write_persistence_dictionary</code><span class="sig-paren">(</span><em>persistence_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager.write_persistence_dictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager.write_persistence_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write actual persistence file’s content.</p>
+<p>Persistence file’s content consists of a title and a Python dictionary.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>persistence_dict (dict): Python dictionary containing to-be-stored
+nodes and their addresses.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="py3Gestalt.utilities.get_available_serial_ports">
+<code class="descclassname">py3Gestalt.utilities.</code><code class="descname">get_available_serial_ports</code><span class="sig-paren">(</span><em>manufacturer=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#get_available_serial_ports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.get_available_serial_ports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get available serial ports.</p>
+<p>Tries to open PC’s serial ports and filters the available ones.
+For windows, it can filter ports if a manufacturer name is given.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>manufacturer (str): Serial device’s manufacturer.</dd>
+<dt>Returns:</dt>
+<dd>A list containing the names of available serial ports.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3Gestalt.utilities.notice">
+<code class="descclassname">py3Gestalt.utilities.</code><code class="descname">notice</code><span class="sig-paren">(</span><em>source=None</em>, <em>message=''</em>, <em>use_debug_gui=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#notice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.notice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a notice to the user.</p>
+<p>Originally, this method only showed a notice on the console, but for now
+it can also show a notice on a user-defined debugger gui as long as such
+gui meets one requirement:
+- It must have a write_debugger(str) method</p>
+<p>Note: Eventually, this method could re-route its notice via a web interface.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>source (VirtualMachine, etc.): Object that sends a notice.
+message (str): Message to display.
+use_debug_gui (boolean): Flag that indicates is a GUI will be used.</dd>
+<dt>Returns:</dt>
+<dd>None after message has been sent to GUI’s debugger.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3Gestalt.utilities.scan_serial_ports">
+<code class="descclassname">py3Gestalt.utilities.</code><code class="descname">scan_serial_ports</code><span class="sig-paren">(</span><em>serial_filter_terms=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#scan_serial_ports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.scan_serial_ports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scan serial ports.</p>
+<p>It can filter out ports if a filter term is given.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>serial_filter_terms (str): Serial device’s manufacturer.</dd>
+<dt>Returns:</dt>
+<dd>A list containing the names of all serial ports.</dd>
+</dl>
+<p>Note: When using glob, your current terminal “/dev/tty” is excluded.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-py3Gestalt">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-py3Gestalt" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="py3Gestalt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Marquina.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

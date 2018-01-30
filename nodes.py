@@ -46,21 +46,28 @@ class BaseNodeShell(object):
     ->Managed/Gestalt: hardware synchronized gestalt network/ gestalt protocol
 
     Args:
-        owner (VirtualMachine or a child): Virtual machine that aims to own
-            this node shell.
-        name (str): Name of this node shell.
+        owner (VirtualMachine or a child):
+            Virtual machine that aims to own this node shell.
+        name (str):
+            Name of this node shell.
 
     Attributes:
-        owner (VirtualMachine or a child): Virtual machine that owns this node
-            shell.
-        name (str): Name of this node shell.
-        use_debug_gui (boolean): Flag indicating use of a debugging GUI.
-        debug_gui: GUI use for debugging purposes. For now it is a Py3GestaltGUI
+        owner (VirtualMachine or a child):
+            Virtual machine that owns this node shell.
+        name (str):
+            Name of this node shell.
+        use_debug_gui (boolean):
+            Flag indicating use of a debugging GUI.
+        debug_gui:
+            GUI use for debugging purposes. For now it is a Py3GestaltGUI
             object.
-        interface (InterfaceShell): Shell to contained owner's interface.
-        vn_class (Class): Virtual node's class. The contained node will be an
-            instance of this class.
-        node (BaseVirtualNode or a child): Contained or linked node.
+        interface (InterfaceShell):
+            Shell to contained owner's interface.
+        vn_class (Class):
+            Virtual node's class. The contained node will be an instance of
+            this class.
+        node (BaseVirtualNode or a child):
+            Contained or linked node.
     """
     def __init__(self, owner, name):
         self.owner = owner
@@ -132,9 +139,9 @@ class BaseNodeShell(object):
         import action is attempted.
 
         Note:
-        The module's name is 'temp_virtual_node_X.py', where 'X' is the
-        number of import attempts. Such change of name is necessary in order
-        to avoid problems next, when analyzing module's classes using 'pyclbr'.
+        The module's name is 'temp_virtual_node_X.py', where 'X' is the number
+        of import attempts. Such change of name is necessary in order to avoid
+        problems next, when analyzing module's classes using 'pyclbr'.
 
         Returns:
             vn_module: Imported virtual node.
@@ -174,9 +181,11 @@ class BaseNodeShell(object):
         last feature can be checked passing an argument 'checked' as False.
 
         Args:
-            module: Module containing virtual node's definition.
-            checked (boolean): A flag indicating whether module's content (only
-                one BaseVirtualNode's child class) has been checked or not.
+            module:
+                Module containing virtual node's definition.
+            checked (boolean):
+                A flag indicating whether module's content (only one
+                BaseVirtualNode's child class) has been checked or not.
         """
         if not checked:
             if self.is_vn_ill_defined(module.__name__):
@@ -246,9 +255,10 @@ class BaseNodeShell(object):
         Owner, name and interface from this shell are passed to contained node.
 
         Args:
-            vn_class (Class): Virtual node class to be instantiated.
-            kwargs: Arguments to be passed onto the virtual node's
-                initialization.
+            vn_class (Class):
+                Virtual node class to be instantiated.
+            kwargs:
+                Arguments to be passed onto the virtual node's initialization.
         """
         self.node = vn_class(self.owner, **kwargs)
         notice(self, "Node assigned to '" + self.name + "' node shell.",
@@ -433,21 +443,27 @@ class BaseVirtualNode(object):
             1) BaseVirtualNode gets initialized when instantiated.
             2) Node shell loads references into node through 'set_node()' method.
             3) 'init()' is called by 'set_node()' method.
+
     The purpose of this routine is to initialize the nodes once they already
     have references to their shell.
 
     Args:
-        owner (VirtualMachine or a child): Virtual machine that instantiates
-            this node.
+        owner (VirtualMachine or a child):
+            Virtual machine that instantiates this node.
 
     Attributes:
-        owner (VirtualMachine or a child): Virtual machine that instantiates
-            this node.
-        shell (BaseNodeShell or a child): Node shell that contains this node.
-        name (str): Name of this node shell.
-        interface (InterfaceShell): Shell to contained owner's interface.
-        use_debug_gui (boolean): Flag indicating use of a debugging GUI.
-        debug_gui: GUI use for debugging purposes. For now it is a Py3GestaltGUI
+        owner (VirtualMachine or a child):
+            Virtual machine that instantiates this node.
+        shell (BaseNodeShell or a child):
+            Node shell that contains this node.
+        name (str):
+            Name of this node shell.
+        interface (InterfaceShell):
+            Shell to contained owner's interface.
+        use_debug_gui (boolean):
+            Flag indicating use of a debugging GUI.
+        debug_gui:
+            GUI use for debugging purposes. For now it is a Py3GestaltGUI
             object.
     """
 

@@ -37,13 +37,18 @@ class VirtualMachine(object):
     introduce some structure to the format of virtual machines.
 
     Attributes:
-        name (str): Virtual machine's name.
-        interface (...): Virtual machine's interface, must be defined in
-            interfaces module.
-        use_debug_gui (boolean): Flag indicating use of a GUI for notices.
-        debug_gui (Py3GestaltGUI): GUI where notices will be displayed.
-        persistenceFile (str): Persistence file's name.
-        persistence (PersistenceManager): Persistence file's manager.
+        name (str):
+            Virtual machine's name.
+        interface:
+            Virtual machine's interface, must be defined in interfaces module.
+        use_debug_gui (boolean):
+            Flag indicating use of a GUI for notices.
+        debug_gui (Py3GestaltGUI):
+            GUI where notices will be displayed.
+        persistenceFile (str):
+            Persistence file's name.
+        persistence (PersistenceManager):
+            Persistence file's manager.
     """
     def __init__(self, *args, **kwargs):
         if 'debug_gui' in kwargs:
@@ -80,7 +85,7 @@ class VirtualMachine(object):
         else:
             self.set_persistence(None)
 
-        self.node_file_counter = None
+        self.node_file_counter = 0
 
         # Run user initialization
         self.init(*args, **kwargs)
@@ -149,7 +154,7 @@ class VirtualMachine(object):
         pass
 
     def init_controllers(self):
-        self.node_file_counter = 0
+        pass
 
     def init_coordinates(self):
         pass

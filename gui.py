@@ -76,6 +76,11 @@ class Py3GestaltGUI(BoxLayout):
 
     def __init__(self):
         super(Py3GestaltGUI, self).__init__()
+        # self.vm_bt_search = Button()
+        # self.vm_bt_import = Button()
+        # self.int_sp = Spinner()
+        # self.int_bt_connect = Button()
+        # self.debugger_lb = ObjectProperty(Label())
         self.vm_fb = VirtualMachineBrowser()
         self.vm_source_file = None
         self.vm_class = None

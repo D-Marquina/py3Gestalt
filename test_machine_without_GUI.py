@@ -19,6 +19,7 @@ import test_node_without_GUI as TestNode
 
 class TestVirtualMachine(machines.VirtualMachine):
     def __init__(self, *args, **kwargs):
+        # All nodes should be declared here
         self.test_node = None
         super(TestVirtualMachine,
               self).__init__(*args, **kwargs,)
@@ -58,7 +59,8 @@ class TestVirtualMachine(machines.VirtualMachine):
         # self.test_node.load_vn_from_module(TestNode)
         # self.test_node.load_vn_from_file('test_node_without_GUI.py')
         # self.test_node.load_vn_from_file('examples\\test\\test_node.py')
-        self.test_node.load_vn_from_url('https://raw.githubusercontent.com/D-Marquina/py3Gestalt/master/test_node_without_GUI.py')
+        self.test_node.load_vn_from_url(
+            'https://raw.githubusercontent.com/D-Marquina/py3Gestalt/master/test_node_without_GUI.py')
 
 
 # If executing from console:
