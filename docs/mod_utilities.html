@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Utilities &mdash; Gestalt Framework for Python 3 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Gestalt Framework for Python 3 1 documentation" href="index.html"/>
+        <link rel="up" title="py3Gestalt Modules" href="modules.html"/>
+        <link rel="prev" title="Nodes" href="mod_nodes.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Gestalt Framework for Python 3
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">py3Gestalt Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mod_machines.html">Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mod_interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mod_nodes.html">Nodes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Utilities</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Gestalt Framework for Python 3</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">py3Gestalt Modules</a> &raquo;</li>
+        
+      <li>Utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/mod_utilities.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-py3Gestalt.utilities">
+<span id="utilities"></span><h1>Utilities<a class="headerlink" href="#module-py3Gestalt.utilities" title="Permalink to this headline">¶</a></h1>
+<p>Utilities module from Gestalt framework for Python 3.</p>
+<p>Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</p>
+<p>This module contains various classes and methods needed for the correct
+implementation of this framework.</p>
+<p>‘PersistenceManager’ class defines an object which is in charge of managing the
+creation, writing  and reading of persistence file.</p>
+<p>‘Notice’ method prints information about the execution of the framework,
+either to console or to a GUI.</p>
+<p>‘Scan_serial_ports’ returns a list of all serial ports in the PC.</p>
+<p>‘Get_available_serial_ports’ filters only available serial ports by opening and
+closing them.</p>
+<p>TO-DO list:</p>
+<p>Copyright (c) 2018 Daniel Marquina</p>
+<dl class="class">
+<dt id="py3Gestalt.utilities.PersistenceManager">
+<em class="property">class </em><code class="descclassname">py3Gestalt.utilities.</code><code class="descname">PersistenceManager</code><span class="sig-paren">(</span><em>filename=None</em>, <em>namespace=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Manager of persistence files.</p>
+<p>Every time a machine is configured, when addresses of physical nodes are
+assigned to virtual nodes (actually to node shells), a persistence file
+is created in order to store those addresses and load them next time the
+machine is turned on. This class manages such file, whose content is mostly
+written as a Python dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>str</em>) – Name of persistence file.</li>
+<li><strong>namespace</strong> (<em>str</em>) – Machine’s name.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<em>str</em>) – Name of persistence file.</li>
+<li><strong>namespace</strong> (<em>str</em>) – Machine’s name.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="py3Gestalt.utilities.PersistenceManager.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a stored node’s address.</p>
+<p>Looks up in persistence file for a node with the specified name and
+returns its address. This function is usually called when a node shell
+is being instantiated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) – Node’s name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Node’s address, if found; else, None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.utilities.PersistenceManager.store">
+<code class="descname">store</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager.store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager.store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a node and/or its address.</p>
+<p>Stores a new node or updates an existing node’s address.
+This function is usually called when a node shell is being instantiated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – Node’s name.</li>
+<li><strong>value</strong> – Node’s address.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.utilities.PersistenceManager.read_persistence_dictionary">
+<code class="descname">read_persistence_dictionary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager.read_persistence_dictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager.read_persistence_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy persistence file’s content into a Python dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.utilities.PersistenceManager.write_persistence_dictionary">
+<code class="descname">write_persistence_dictionary</code><span class="sig-paren">(</span><em>persistence_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#PersistenceManager.write_persistence_dictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.PersistenceManager.write_persistence_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write actual persistence file’s content.</p>
+<p>Persistence file’s content consists of a title and a Python dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>persistence_dict</strong> (<em>dict</em>) – Python dictionary containing to-be-stored</li>
+<li><strong>and their addresses.</strong> (<a class="reference internal" href="mod_nodes.html#module-py3Gestalt.nodes" title="py3Gestalt.nodes"><em>nodes</em></a>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="py3Gestalt.utilities.notice">
+<code class="descclassname">py3Gestalt.utilities.</code><code class="descname">notice</code><span class="sig-paren">(</span><em>source=None</em>, <em>message=''</em>, <em>use_debug_gui=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#notice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.notice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a notice to the user.</p>
+<p>Originally, this method only showed a notice on the console, but for now
+it can also show a notice on a user-defined debugger gui as long as such
+gui meets one requirement:
+- It must have a write_debugger(str) method</p>
+<p>Note: Eventually, this method could re-route its notice via a web interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>source</strong> (<a class="reference internal" href="mod_machines.html#py3Gestalt.machines.VirtualMachine" title="py3Gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a><em>, </em><em>etc.</em>) – Object that sends a notice.</li>
+<li><strong>message</strong> (<em>str</em>) – Message to display.</li>
+<li><strong>use_debug_gui</strong> (<em>boolean</em>) – Flag that indicates is a GUI will be used.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None after message has been sent to GUI’s debugger.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3Gestalt.utilities.scan_serial_ports">
+<code class="descclassname">py3Gestalt.utilities.</code><code class="descname">scan_serial_ports</code><span class="sig-paren">(</span><em>serial_filter_terms=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#scan_serial_ports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.scan_serial_ports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scan serial ports.</p>
+<p>It can filter out ports if a filter term is given.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>serial_filter_terms</strong> (<em>str</em>) – Serial device’s manufacturer.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list containing the names of all serial ports.</td>
+</tr>
+</tbody>
+</table>
+<p>Note: When using glob, your current terminal “/dev/tty” is excluded.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="py3Gestalt.utilities.get_available_serial_ports">
+<code class="descclassname">py3Gestalt.utilities.</code><code class="descname">get_available_serial_ports</code><span class="sig-paren">(</span><em>manufacturer=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/utilities.html#get_available_serial_ports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.utilities.get_available_serial_ports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get available serial ports.</p>
+<p>Tries to open PC’s serial ports and filters the available ones.
+For windows, it can filter ports if a manufacturer name is given.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>manufacturer</strong> (<em>str</em>) – Serial device’s manufacturer.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list containing the names of available serial ports.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="mod_nodes.html" class="btn btn-neutral" title="Nodes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Marquina.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

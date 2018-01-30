@@ -91,7 +91,8 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">py3Gestalt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">py3Gestalt Modules</a></li>
 </ul>
 
             
@@ -192,13 +193,12 @@
 <span class="c1"># from pygestalt import core</span>
 
 
-<div class="viewcode-block" id="InterfaceShell"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.InterfaceShell">[docs]</a><span class="k">class</span> <span class="nc">InterfaceShell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="InterfaceShell"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.InterfaceShell">[docs]</a><span class="k">class</span> <span class="nc">InterfaceShell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Intermediary between nodes, node shells and interfaces.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        owner:</span>
-<span class="sd">            Owner of this interface shell. For now it can be a virtual</span>
-<span class="sd">            machine or a virtual node.</span>
+<span class="sd">        owner: Owner of this interface shell. For now it can be a virtual</span>
+<span class="sd">        machine or a virtual node.</span>
 <span class="sd">        interface (BaseInterface):</span>
 <span class="sd">            Interface to be contained by this shell.</span>
 
@@ -223,7 +223,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">use_debug_gui</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">debug_gui</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="InterfaceShell.set"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.InterfaceShell.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="InterfaceShell.set"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.InterfaceShell.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates the interface contained by the shell.</span>
 
 <span class="sd">        Updates and initializes contained (or linked) shell. Owner can be</span>
@@ -243,7 +243,7 @@
             <span class="c1"># Initializes contained interface</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">contained_interface</span><span class="o">.</span><span class="n">init_after_set</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="InterfaceShell.set_owner"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.InterfaceShell.set_owner">[docs]</a>    <span class="k">def</span> <span class="nf">set_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+<div class="viewcode-block" id="InterfaceShell.set_owner"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.InterfaceShell.set_owner">[docs]</a>    <span class="k">def</span> <span class="nf">set_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set owner.</span>
 
 <span class="sd">         Updates owner of this shell and its contained interface.</span>
@@ -260,7 +260,7 @@
         <span class="sd">&quot;&quot;&quot;Forwards attribute calls to the contained interface.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            attribute (): Attribute of contained interface.</span>
+<span class="sd">            attribute: Attribute of contained interface.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Contained interfaces&#39;s attribute.</span>
@@ -268,12 +268,12 @@
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contained_interface</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="BaseInterface"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.BaseInterface">[docs]</a><span class="k">class</span> <span class="nc">BaseInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseInterface"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.BaseInterface">[docs]</a><span class="k">class</span> <span class="nc">BaseInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class of all interfaces.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        owner (VirtualMachine or a child):</span>
-<span class="sd">            Virtual machine that aims to own this interface.</span>
+<span class="sd">        owner (VirtualMachine or a child): Virtual machine that aims to own</span>
+<span class="sd">            this interface.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        owner (VirtualMachine or a child):</span>
@@ -298,12 +298,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">use_debug_gui</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">debug_gui</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="BaseInterface.init_after_set"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.BaseInterface.init_after_set">[docs]</a>    <span class="k">def</span> <span class="nf">init_after_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseInterface.init_after_set"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.BaseInterface.init_after_set">[docs]</a>    <span class="k">def</span> <span class="nf">init_after_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Connect to interface after it was assigned to an interface shell.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="SerialInterface"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface">[docs]</a><span class="k">class</span> <span class="nc">SerialInterface</span><span class="p">(</span><span class="n">BaseInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface">[docs]</a><span class="k">class</span> <span class="nc">SerialInterface</span><span class="p">(</span><span class="n">BaseInterface</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Serial communication interface.</span>
 
 <span class="sd">    The core of this class is a serial object. For data transmission, a queue</span>
@@ -360,7 +360,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">transmitQueue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transmitter</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="SerialInterface.init_after_set"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.init_after_set">[docs]</a>    <span class="k">def</span> <span class="nf">init_after_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.init_after_set"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.init_after_set">[docs]</a>    <span class="k">def</span> <span class="nf">init_after_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize after setting.</span>
 
 <span class="sd">        Begins connection procedure. First, it tries to connect to provided</span>
@@ -377,7 +377,7 @@
                          <span class="s2">&quot;interface type are required.&quot;</span><span class="p">,</span>
                    <span class="bp">self</span><span class="o">.</span><span class="n">use_debug_gui</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SerialInterface.connect"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.connect"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Connect to serial port.</span>
 
 <span class="sd">        Connects to specified port name. Tries to connect to port assigned on</span>
@@ -410,7 +410,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">isConnected</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_transmitter</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SerialInterface.acquire_port_and_connect"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.acquire_port_and_connect">[docs]</a>    <span class="k">def</span> <span class="nf">acquire_port_and_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_type</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.acquire_port_and_connect"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.acquire_port_and_connect">[docs]</a>    <span class="k">def</span> <span class="nf">acquire_port_and_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_type</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Acquire a serial port and connect to it.</span>
 
 <span class="sd">        Tries to detect a serial port based on the provided interface type.</span>
@@ -445,7 +445,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">portName</span> <span class="o">=</span> <span class="n">new_ports</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SerialInterface.get_serial_filter_terms"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.get_serial_filter_terms">[docs]</a>    <span class="k">def</span> <span class="nf">get_serial_filter_terms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.get_serial_filter_terms"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.get_serial_filter_terms">[docs]</a>    <span class="k">def</span> <span class="nf">get_serial_filter_terms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get filter terms for serial ports.</span>
 
 <span class="sd">        According to the operating system, selects a type of filter and the</span>
@@ -495,7 +495,7 @@
                    <span class="n">interface_type</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_debug_gui</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="SerialInterface.wait_for_new_port"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.wait_for_new_port">[docs]</a>    <span class="k">def</span> <span class="nf">wait_for_new_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_term</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.wait_for_new_port"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.wait_for_new_port">[docs]</a>    <span class="k">def</span> <span class="nf">wait_for_new_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_term</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait for a new port to be created.</span>
 
 <span class="sd">        This functions waits for the user to connect an interface device and</span>
@@ -531,13 +531,13 @@
                 <span class="c1"># Returns all ports that just appeared</span>
                 <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">new_ports</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">old_ports</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="SerialInterface.start_transmitter"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.start_transmitter">[docs]</a>    <span class="k">def</span> <span class="nf">start_transmitter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.start_transmitter"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.start_transmitter">[docs]</a>    <span class="k">def</span> <span class="nf">start_transmitter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Start the transmit thread.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transmitter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TransmitThread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmitQueue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transmitter</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transmitter</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SerialInterface.transmit"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.transmit">[docs]</a>    <span class="k">def</span> <span class="nf">transmit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.transmit"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.transmit">[docs]</a>    <span class="k">def</span> <span class="nf">transmit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add data to transmit queue.</span>
 
 <span class="sd">        As a thread handles data transmission, it continuously checks the</span>
@@ -549,7 +549,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Serial interface is not connected.&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_debug_gui</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SerialInterface.read_bytes"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.read_bytes">[docs]</a>    <span class="k">def</span> <span class="nf">read_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_to_read</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.read_bytes"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.read_bytes">[docs]</a>    <span class="k">def</span> <span class="nf">read_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_to_read</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read a number of bytes from the serial port&#39;s input buffer.</span>
 
 <span class="sd">        If there are less bytes available, read only the available ones.</span>
@@ -569,7 +569,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="SerialInterface.TransmitThread"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.TransmitThread">[docs]</a>    <span class="k">class</span> <span class="nc">TransmitThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.TransmitThread"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.TransmitThread">[docs]</a>    <span class="k">class</span> <span class="nc">TransmitThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A thread to handle data transmission data over a serial port.</span>
 
 <span class="sd">        Args:</span>
@@ -602,7 +602,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">use_debug_gui</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">debug_gui</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="SerialInterface.TransmitThread.run"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.TransmitThread.run">[docs]</a>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.TransmitThread.run"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.TransmitThread.run">[docs]</a>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Define code to be ran by the transmit thread.</span>
 
 <span class="sd">            Gets a packet from transmit queue, converts it to a string and</span>
@@ -620,7 +620,7 @@
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.0005</span><span class="p">)</span>
             <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="SerialInterface.TransmitThread.get_transmit_packet"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.TransmitThread.get_transmit_packet">[docs]</a>        <span class="k">def</span> <span class="nf">get_transmit_packet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.TransmitThread.get_transmit_packet"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.TransmitThread.get_transmit_packet">[docs]</a>        <span class="k">def</span> <span class="nf">get_transmit_packet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Get a to-be-transmitted packet from the transmit queue.</span>
 
 <span class="sd">            Returns:</span>
@@ -633,7 +633,7 @@
                 <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
             <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="SerialInterface.TransmitThread.serialize"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.interfaces.SerialInterface.TransmitThread.serialize">[docs]</a>        <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">):</span>
+<div class="viewcode-block" id="SerialInterface.TransmitThread.serialize"><a class="viewcode-back" href="../../mod_interfaces.html#py3Gestalt.interfaces.SerialInterface.TransmitThread.serialize">[docs]</a>        <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Convert packet into a string for transmission over a serial port.</span>
 
 <span class="sd">            Uses ASCII characters.</span>

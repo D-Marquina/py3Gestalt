@@ -91,7 +91,8 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">py3Gestalt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">py3Gestalt Modules</a></li>
 </ul>
 
             
@@ -178,7 +179,7 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 
 
-<div class="viewcode-block" id="VirtualMachine"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine">[docs]</a><span class="k">class</span> <span class="nc">VirtualMachine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine">[docs]</a><span class="k">class</span> <span class="nc">VirtualMachine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for all virtual machines.</span>
 
 <span class="sd">    On instantiation, four main attributes are initialized: name, interface,</span>
@@ -254,7 +255,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">init_functions</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_last</span><span class="p">()</span>
 
-<div class="viewcode-block" id="VirtualMachine.set_name"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.set_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.set_name"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.set_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set name of virtual machine.</span>
 
 <span class="sd">        If this function is called without passing an argument, virtual machine&#39;s</span>
@@ -268,7 +269,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.set_interface"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.set_interface">[docs]</a>    <span class="k">def</span> <span class="nf">set_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.set_interface"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.set_interface">[docs]</a>    <span class="k">def</span> <span class="nf">set_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set interface of virtual machine.</span>
 
 <span class="sd">        Args:</span>
@@ -280,7 +281,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;No interface trying to be assigned.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_debug_gui</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.set_debug_gui"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.set_debug_gui">[docs]</a>    <span class="k">def</span> <span class="nf">set_debug_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gui</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.set_debug_gui"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.set_debug_gui">[docs]</a>    <span class="k">def</span> <span class="nf">set_debug_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gui</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set GUI of virtual machine.</span>
 
 <span class="sd">        Args:</span>
@@ -292,7 +293,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;No GUI trying to be assigned.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_debug_gui</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.set_persistence"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.set_persistence">[docs]</a>    <span class="k">def</span> <span class="nf">set_persistence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.set_persistence"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.set_persistence">[docs]</a>    <span class="k">def</span> <span class="nf">set_persistence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set persistence file of virtual machine.</span>
 
 <span class="sd">        &#39;Filename&#39; can be None because the implementation of PersistenceManager</span>
@@ -308,25 +309,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">persistence</span> <span class="o">=</span> <span class="n">PersistenceManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span><span class="p">,</span>
                                               <span class="n">namespace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.init_interfaces"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.init_interfaces">[docs]</a>    <span class="k">def</span> <span class="nf">init_interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.init_interfaces"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.init_interfaces">[docs]</a>    <span class="k">def</span> <span class="nf">init_interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.init_controllers"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.init_controllers">[docs]</a>    <span class="k">def</span> <span class="nf">init_controllers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.init_controllers"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.init_controllers">[docs]</a>    <span class="k">def</span> <span class="nf">init_controllers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.init_coordinates"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.init_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">init_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.init_coordinates"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.init_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">init_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.init_kinematics"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.init_kinematics">[docs]</a>    <span class="k">def</span> <span class="nf">init_kinematics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.init_kinematics"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.init_kinematics">[docs]</a>    <span class="k">def</span> <span class="nf">init_kinematics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.init_functions"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.init_functions">[docs]</a>    <span class="k">def</span> <span class="nf">init_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.init_functions"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.init_functions">[docs]</a>    <span class="k">def</span> <span class="nf">init_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.init"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.init"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="VirtualMachine.init_last"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.machines.VirtualMachine.init_last">[docs]</a>    <span class="k">def</span> <span class="nf">init_last</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VirtualMachine.init_last"><a class="viewcode-back" href="../../mod_machines.html#py3Gestalt.machines.VirtualMachine.init_last">[docs]</a>    <span class="k">def</span> <span class="nf">init_last</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div></div>
 
 

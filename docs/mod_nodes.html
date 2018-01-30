@@ -1,0 +1,466 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Nodes &mdash; Gestalt Framework for Python 3 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Gestalt Framework for Python 3 1 documentation" href="index.html"/>
+        <link rel="up" title="py3Gestalt Modules" href="modules.html"/>
+        <link rel="next" title="Utilities" href="mod_utilities.html"/>
+        <link rel="prev" title="Interfaces" href="mod_interfaces.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Gestalt Framework for Python 3
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">py3Gestalt Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mod_machines.html">Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mod_interfaces.html">Interfaces</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mod_utilities.html">Utilities</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Gestalt Framework for Python 3</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">py3Gestalt Modules</a> &raquo;</li>
+        
+      <li>Nodes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/mod_nodes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-py3Gestalt.nodes">
+<span id="nodes"></span><h1>Nodes<a class="headerlink" href="#module-py3Gestalt.nodes" title="Permalink to this headline">¶</a></h1>
+<p>Nodes module from Gestalt framework for Python 3.</p>
+<p>Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</p>
+<p>This module defines node classes and an node shell classes, which act
+as an intermediary between the virtual nodes and the virtual machine.</p>
+<p>TO-DO list:
+- Complete load_from_module
+- Decide load_from_file procedure
+- Update is_vm_ill_defined based on is_vn_ill_defined
+- Invetigate load_from_URL</p>
+<p>Copyright (c) 2018 Daniel Marquina</p>
+<dl class="class">
+<dt id="py3Gestalt.nodes.BaseNodeShell">
+<em class="property">class </em><code class="descclassname">py3Gestalt.nodes.</code><code class="descname">BaseNodeShell</code><span class="sig-paren">(</span><em>owner</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>The basic container for all nodes.</p>
+<p>Like a room in a hotel, that has different occupants and offers certain
+amenities to its guests. ‘BaseNodeShell’ gets subclassed by more specific
+shells for one of the four types of gestalt nodes:
+-&gt;Solo/Independent: arbitrary interface/ arbitrary protocol
+-&gt;Solo/Gestalt: arbitrary interface/ gestalt protocol
+-&gt;Networked/Gestalt: networked gestalt interface/ gestalt protocol
+-&gt;Managed/Gestalt: hardware synchronized gestalt network/ gestalt protocol</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3Gestalt.machines.VirtualMachine" title="py3Gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a><em> or </em><em>a child</em>) – Virtual machine that aims to own this node shell.</li>
+<li><strong>name</strong> (<em>str</em>) – Name of this node shell.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3Gestalt.machines.VirtualMachine" title="py3Gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a><em> or </em><em>a child</em>) – Virtual machine that owns this node shell.</li>
+<li><strong>name</strong> (<em>str</em>) – Name of this node shell.</li>
+<li><strong>use_debug_gui</strong> (<em>boolean</em>) – Flag indicating use of a debugging GUI.</li>
+<li><strong>debug_gui</strong> – GUI use for debugging purposes. For now it is a Py3GestaltGUI
+object.</li>
+<li><strong>interface</strong> (<a class="reference internal" href="mod_interfaces.html#py3Gestalt.interfaces.InterfaceShell" title="py3Gestalt.interfaces.InterfaceShell"><em>InterfaceShell</em></a>) – Shell to contained owner’s interface.</li>
+<li><strong>vn_class</strong> (<em>Class</em>) – Virtual node’s class. The contained node will be an instance of
+this class.</li>
+<li><strong>node</strong> (<a class="reference internal" href="#py3Gestalt.nodes.BaseVirtualNode" title="py3Gestalt.nodes.BaseVirtualNode"><em>BaseVirtualNode</em></a><em> or </em><em>a child</em>) – Contained or linked node.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.load_vn_from_file">
+<code class="descname">load_vn_from_file</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.load_vn_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.load_vn_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load virtual node from a file.</p>
+<p>This functions gets the text from a file, imports it as a module and
+loads its defined virtual node’.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a file path is being passed, it is recommended to use
+‘os.path.join()’ as it creates a path according to the operating
+system.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) – Name or path to file containing virtual node’s
+definition.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.load_vn_from_url">
+<code class="descname">load_vn_from_url</code><span class="sig-paren">(</span><em>url</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.load_vn_from_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.load_vn_from_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load virtual node from a url.</p>
+<p>This functions gets the text from a provided URL, imports it as a
+module and loads the defined virtual node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>str</em>) – URL directing to virtual node’s definition.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.import_vn_module">
+<code class="descname">import_vn_module</code><span class="sig-paren">(</span><em>module_content</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.import_vn_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.import_vn_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a user-defined virtual node module.</p>
+<p>Makes a temporal package (directory with an ‘__init__.py’ file) called
+‘tmpVN’ with a temporal module (file) which contains a defined virtual
+node and imports it.
+They are assessed as ‘temporal’ because they are deleted every time an
+import action is attempted.</p>
+<p>Note:
+The module’s name is ‘temp_virtual_node_X.py’, where ‘X’ is the number
+of import attempts. Such change of name is necessary in order to avoid
+problems next, when analyzing module’s classes using ‘pyclbr’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Imported virtual node.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">vn_module</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.load_vn_from_module">
+<code class="descname">load_vn_from_module</code><span class="sig-paren">(</span><em>module</em>, <em>checked=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.load_vn_from_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.load_vn_from_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load virtual node from an imported module.</p>
+<p>Instantiates a virtual node from a class defined in provided module.
+Such module must have been already imported and should contain only one
+virtual node class that is a child of ‘nodes.BaseVirtualNode’. That
+last feature can be checked passing an argument ‘checked’ as False.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>module</strong> – Module containing virtual node’s definition.</li>
+<li><strong>checked</strong> (<em>boolean</em>) – A flag indicating whether module’s content (only one
+BaseVirtualNode’s child class) has been checked or not.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.is_vn_ill_defined">
+<code class="descname">is_vn_ill_defined</code><span class="sig-paren">(</span><em>vn_module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.is_vn_ill_defined"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.is_vn_ill_defined" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a virtual node is ill defined or not.</p>
+<p>Makes sure that selected virtual node contains one and only one
+user-defined virtual machine class, child of ‘nodes.BaseVirtualNode’
+class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vn_module</strong> – Virtual node module to be analyzed.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True when selected module contains none or more than a unique
+virtual node. False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseNodeShell.set_node">
+<code class="descname">set_node</code><span class="sig-paren">(</span><em>vn_class</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseNodeShell.set_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseNodeShell.set_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets contained or linked node.</p>
+<p>Creates an instance of selected virtual node class and executes its
+‘init()’ method.
+Owner, name and interface from this shell are passed to contained node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vn_class</strong> (<em>Class</em>) – Virtual node class to be instantiated.</li>
+<li><strong>kwargs</strong> – Arguments to be passed onto the virtual node’s initialization.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3Gestalt.nodes.BaseVirtualNode">
+<em class="property">class </em><code class="descclassname">py3Gestalt.nodes.</code><code class="descname">BaseVirtualNode</code><span class="sig-paren">(</span><em>owner</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseVirtualNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseVirtualNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class for virtual nodes.</p>
+<dl class="docutils">
+<dt>Initialization occurs in three steps:</dt>
+<dd><ol class="first last arabic simple">
+<li>BaseVirtualNode gets initialized when instantiated.</li>
+<li>Node shell loads references into node through ‘set_node()’ method.</li>
+<li>‘init()’ is called by ‘set_node()’ method.</li>
+</ol>
+</dd>
+</dl>
+<p>The purpose of this routine is to initialize the nodes once they already
+have references to their shell.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3Gestalt.machines.VirtualMachine" title="py3Gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a><em> or </em><em>a child</em>) – Virtual machine that instantiates this node.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3Gestalt.machines.VirtualMachine" title="py3Gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a><em> or </em><em>a child</em>) – Virtual machine that instantiates this node.</li>
+<li><strong>shell</strong> (<a class="reference internal" href="#py3Gestalt.nodes.BaseNodeShell" title="py3Gestalt.nodes.BaseNodeShell"><em>BaseNodeShell</em></a><em> or </em><em>a child</em>) – Node shell that contains this node.</li>
+<li><strong>name</strong> (<em>str</em>) – Name of this node shell.</li>
+<li><strong>interface</strong> (<a class="reference internal" href="mod_interfaces.html#py3Gestalt.interfaces.InterfaceShell" title="py3Gestalt.interfaces.InterfaceShell"><em>InterfaceShell</em></a>) – Shell to contained owner’s interface.</li>
+<li><strong>use_debug_gui</strong> (<em>boolean</em>) – Flag indicating use of a debugging GUI.</li>
+<li><strong>debug_gui</strong> – GUI use for debugging purposes. For now it is a Py3GestaltGUI
+object.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="py3Gestalt.nodes.BaseVirtualNode.init">
+<code class="descname">init</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3Gestalt/nodes.html#BaseVirtualNode.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3Gestalt.nodes.BaseVirtualNode.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy initializer for terminal child class.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="mod_utilities.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="mod_interfaces.html" class="btn btn-neutral" title="Interfaces" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Marquina.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -91,7 +91,8 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">py3Gestalt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">py3Gestalt Modules</a></li>
 </ul>
 
             
@@ -188,7 +189,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 
 
-<div class="viewcode-block" id="PersistenceManager"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.utilities.PersistenceManager">[docs]</a><span class="k">class</span> <span class="nc">PersistenceManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PersistenceManager"><a class="viewcode-back" href="../../mod_utilities.html#py3Gestalt.utilities.PersistenceManager">[docs]</a><span class="k">class</span> <span class="nc">PersistenceManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Manager of persistence files.</span>
 
 <span class="sd">    Every time a machine is configured, when addresses of physical nodes are</span>
@@ -210,7 +211,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span> <span class="o">=</span> <span class="n">namespace</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PersistenceManager.__call__"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.utilities.PersistenceManager.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Overrides &#39;__call__()&#39; method.</span>
 
 <span class="sd">        Makes sure that a persistence file exists before trying to use it.</span>
@@ -221,9 +222,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="PersistenceManager.get"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.utilities.PersistenceManager.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="PersistenceManager.get"><a class="viewcode-back" href="../../mod_utilities.html#py3Gestalt.utilities.PersistenceManager.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get a stored node&#39;s address.</span>
 
 <span class="sd">        Looks up in persistence file for a node with the specified name and</span>
@@ -243,7 +244,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="PersistenceManager.store"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.utilities.PersistenceManager.store">[docs]</a>    <span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="PersistenceManager.store"><a class="viewcode-back" href="../../mod_utilities.html#py3Gestalt.utilities.PersistenceManager.store">[docs]</a>    <span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Store a node and/or its address.</span>
 
 <span class="sd">        Stores a new node or updates an existing node&#39;s address.</span>
@@ -257,7 +258,7 @@
         <span class="n">persistence_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">namespace</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">name</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_persistence_dictionary</span><span class="p">(</span><span class="n">persistence_dict</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PersistenceManager.read_persistence_dictionary"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.utilities.PersistenceManager.read_persistence_dictionary">[docs]</a>    <span class="k">def</span> <span class="nf">read_persistence_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PersistenceManager.read_persistence_dictionary"><a class="viewcode-back" href="../../mod_utilities.html#py3Gestalt.utilities.PersistenceManager.read_persistence_dictionary">[docs]</a>    <span class="k">def</span> <span class="nf">read_persistence_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Copy persistence file&#39;s content into a Python dictionary.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">file_object</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rU&#39;</span><span class="p">)</span>
@@ -267,7 +268,7 @@
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{}</span></div>
 
-<div class="viewcode-block" id="PersistenceManager.write_persistence_dictionary"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.utilities.PersistenceManager.write_persistence_dictionary">[docs]</a>    <span class="k">def</span> <span class="nf">write_persistence_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">persistence_dict</span><span class="p">):</span>
+<div class="viewcode-block" id="PersistenceManager.write_persistence_dictionary"><a class="viewcode-back" href="../../mod_utilities.html#py3Gestalt.utilities.PersistenceManager.write_persistence_dictionary">[docs]</a>    <span class="k">def</span> <span class="nf">write_persistence_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">persistence_dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write actual persistence file&#39;s content.</span>
 
 <span class="sd">        Persistence file&#39;s content consists of a title and a Python dictionary.</span>
@@ -287,7 +288,7 @@
         <span class="n">file_object</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="notice"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.utilities.notice">[docs]</a><span class="k">def</span> <span class="nf">notice</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">use_debug_gui</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="notice"><a class="viewcode-back" href="../../mod_utilities.html#py3Gestalt.utilities.notice">[docs]</a><span class="k">def</span> <span class="nf">notice</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">use_debug_gui</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Send a notice to the user.</span>
 
 <span class="sd">    Originally, this method only showed a notice on the console, but for now</span>
@@ -332,7 +333,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="scan_serial_ports"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.utilities.scan_serial_ports">[docs]</a><span class="k">def</span> <span class="nf">scan_serial_ports</span><span class="p">(</span><span class="n">serial_filter_terms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="scan_serial_ports"><a class="viewcode-back" href="../../mod_utilities.html#py3Gestalt.utilities.scan_serial_ports">[docs]</a><span class="k">def</span> <span class="nf">scan_serial_ports</span><span class="p">(</span><span class="n">serial_filter_terms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Scan serial ports.</span>
 
 <span class="sd">    It can filter out ports if a filter term is given.</span>
@@ -368,7 +369,7 @@
     <span class="k">return</span> <span class="n">ports</span></div>
 
 
-<div class="viewcode-block" id="get_available_serial_ports"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.utilities.get_available_serial_ports">[docs]</a><span class="k">def</span> <span class="nf">get_available_serial_ports</span><span class="p">(</span><span class="n">manufacturer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_available_serial_ports"><a class="viewcode-back" href="../../mod_utilities.html#py3Gestalt.utilities.get_available_serial_ports">[docs]</a><span class="k">def</span> <span class="nf">get_available_serial_ports</span><span class="p">(</span><span class="n">manufacturer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get available serial ports.</span>
 
 <span class="sd">    Tries to open PC&#39;s serial ports and filters the available ones.</span>

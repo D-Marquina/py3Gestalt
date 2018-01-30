@@ -1,0 +1,7 @@
+Interfaces
+==========
+
+.. automodule:: py3Gestalt.interfaces
+    :members:
+    :undoc-members:
+    :show-inheritance:

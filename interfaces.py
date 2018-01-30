@@ -38,9 +38,8 @@ class InterfaceShell(object):
     """Intermediary between nodes, node shells and interfaces.
 
     Args:
-        owner:
-            Owner of this interface shell. For now it can be a virtual
-            machine or a virtual node.
+        owner: Owner of this interface shell. For now it can be a virtual
+        machine or a virtual node.
         interface (BaseInterface):
             Interface to be contained by this shell.
 
@@ -102,7 +101,7 @@ class InterfaceShell(object):
         """Forwards attribute calls to the contained interface.
 
         Args:
-            attribute (): Attribute of contained interface.
+            attribute: Attribute of contained interface.
 
         Returns:
             Contained interfaces's attribute.
@@ -114,8 +113,8 @@ class BaseInterface(object):
     """Base class of all interfaces.
 
     Args:
-        owner (VirtualMachine or a child):
-            Virtual machine that aims to own this interface.
+        owner (VirtualMachine or a child): Virtual machine that aims to own
+            this interface.
 
     Attributes:
         owner (VirtualMachine or a child):

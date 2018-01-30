@@ -1,7 +1,11 @@
-py3Gestalt
-==========
+py3Gestalt Modules
+==================
+A short description.
 
 .. toctree::
    :maxdepth: 4
 
-   py3Gestalt
+   mod_machines.rst
+   mod_interfaces.rst
+   mod_nodes.rst
+   mod_utilities.rst

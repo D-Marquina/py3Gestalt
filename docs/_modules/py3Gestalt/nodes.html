@@ -91,7 +91,8 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">py3Gestalt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">py3Gestalt Modules</a></li>
 </ul>
 
             
@@ -192,7 +193,7 @@
 
 
 <span class="c1"># ----NODE SHELLS------------</span>
-<div class="viewcode-block" id="BaseNodeShell"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseNodeShell">[docs]</a><span class="k">class</span> <span class="nc">BaseNodeShell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseNodeShell"><a class="viewcode-back" href="../../mod_nodes.html#py3Gestalt.nodes.BaseNodeShell">[docs]</a><span class="k">class</span> <span class="nc">BaseNodeShell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The basic container for all nodes.</span>
 
 <span class="sd">    Like a room in a hotel, that has different occupants and offers certain</span>
@@ -240,7 +241,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vn_class</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseNodeShell.__getattr__"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseNodeShell.__getattr__">[docs]</a>    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forward any unsupported call to the shell onto the node.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Shell contains a node.</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>  <span class="c1"># node contains requested attribute</span>
@@ -251,9 +252,9 @@
                 <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Node has not been initialized.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_debug_gui</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BaseNodeShell.load_vn_from_file"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseNodeShell.load_vn_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_vn_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseNodeShell.load_vn_from_file"><a class="viewcode-back" href="../../mod_nodes.html#py3Gestalt.nodes.BaseNodeShell.load_vn_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_vn_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load virtual node from a file.</span>
 
 <span class="sd">        This functions gets the text from a file, imports it as a module and</span>
@@ -273,7 +274,7 @@
         <span class="n">file_object</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_vn_from_module</span><span class="p">(</span><span class="n">vn_imported_module</span><span class="p">,</span> <span class="n">checked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BaseNodeShell.load_vn_from_url"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseNodeShell.load_vn_from_url">[docs]</a>    <span class="k">def</span> <span class="nf">load_vn_from_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseNodeShell.load_vn_from_url"><a class="viewcode-back" href="../../mod_nodes.html#py3Gestalt.nodes.BaseNodeShell.load_vn_from_url">[docs]</a>    <span class="k">def</span> <span class="nf">load_vn_from_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load virtual node from a url.</span>
 
 <span class="sd">        This functions gets the text from a provided URL, imports it as a</span>
@@ -287,7 +288,7 @@
         <span class="n">vn_imported_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">import_vn_module</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_vn_from_module</span><span class="p">(</span><span class="n">vn_imported_module</span><span class="p">,</span> <span class="n">checked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BaseNodeShell.import_vn_module"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseNodeShell.import_vn_module">[docs]</a>    <span class="k">def</span> <span class="nf">import_vn_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_content</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseNodeShell.import_vn_module"><a class="viewcode-back" href="../../mod_nodes.html#py3Gestalt.nodes.BaseNodeShell.import_vn_module">[docs]</a>    <span class="k">def</span> <span class="nf">import_vn_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_content</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Import a user-defined virtual node module.</span>
 
 <span class="sd">        Makes a temporal package (directory with an &#39;__init__.py&#39; file) called</span>
@@ -330,7 +331,7 @@
 
         <span class="k">return</span> <span class="n">vn_module</span></div>
 
-<div class="viewcode-block" id="BaseNodeShell.load_vn_from_module"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseNodeShell.load_vn_from_module">[docs]</a>    <span class="k">def</span> <span class="nf">load_vn_from_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">checked</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseNodeShell.load_vn_from_module"><a class="viewcode-back" href="../../mod_nodes.html#py3Gestalt.nodes.BaseNodeShell.load_vn_from_module">[docs]</a>    <span class="k">def</span> <span class="nf">load_vn_from_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">checked</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load virtual node from an imported module.</span>
 
 <span class="sd">        Instantiates a virtual node from a class defined in provided module.</span>
@@ -365,7 +366,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vn_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BaseNodeShell.is_vn_ill_defined"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseNodeShell.is_vn_ill_defined">[docs]</a>    <span class="k">def</span> <span class="nf">is_vn_ill_defined</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vn_module</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseNodeShell.is_vn_ill_defined"><a class="viewcode-back" href="../../mod_nodes.html#py3Gestalt.nodes.BaseNodeShell.is_vn_ill_defined">[docs]</a>    <span class="k">def</span> <span class="nf">is_vn_ill_defined</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vn_module</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check whether a virtual node is ill defined or not.</span>
 
 <span class="sd">        Makes sure that selected virtual node contains one and only one</span>
@@ -405,7 +406,7 @@
 
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="BaseNodeShell.set_node"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseNodeShell.set_node">[docs]</a>    <span class="k">def</span> <span class="nf">set_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vn_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseNodeShell.set_node"><a class="viewcode-back" href="../../mod_nodes.html#py3Gestalt.nodes.BaseNodeShell.set_node">[docs]</a>    <span class="k">def</span> <span class="nf">set_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vn_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sets contained or linked node.</span>
 
 <span class="sd">        Creates an instance of selected virtual node class and executes its</span>
@@ -594,7 +595,7 @@
 <span class="c1"># # ----VIRTUAL NODES------------</span>
 
 
-<div class="viewcode-block" id="BaseVirtualNode"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseVirtualNode">[docs]</a><span class="k">class</span> <span class="nc">BaseVirtualNode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseVirtualNode"><a class="viewcode-back" href="../../mod_nodes.html#py3Gestalt.nodes.BaseVirtualNode">[docs]</a><span class="k">class</span> <span class="nc">BaseVirtualNode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for virtual nodes.</span>
 
 <span class="sd">    Initialization occurs in three steps:</span>
@@ -642,7 +643,7 @@
         <span class="sd">&quot;&quot;&quot;Dummy initializer for child class.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="BaseVirtualNode.init"><a class="viewcode-back" href="../../py3Gestalt.html#py3Gestalt.nodes.BaseVirtualNode.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseVirtualNode.init"><a class="viewcode-back" href="../../mod_nodes.html#py3Gestalt.nodes.BaseVirtualNode.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Dummy initializer for terminal child class.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 
