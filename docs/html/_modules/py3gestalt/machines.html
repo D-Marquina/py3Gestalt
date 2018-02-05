@@ -162,18 +162,18 @@
 <span class="sd">Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</span>
 
 <span class="sd">This module contains classes needed to define a virtual machine and its</span>
-<span class="sd">components according to the real physical machine.</span>
-<span class="sd">&#39;Virtual Machine&#39; class is the main class, all user-defined virtual machine</span>
-<span class="sd">should be its child. It includes some methods in order to show a basic</span>
-<span class="sd">structure of virtual machines. Those methods are supposed to be</span>
-<span class="sd">overridden.</span>
+<span class="sd">components according to user&#39;s real physical machine.</span>
+
+<span class="sd">- &#39;Virtual Machine&#39; class:</span>
+<span class="sd">    The main class, all user-defined virtual machines should be its children. It</span>
+<span class="sd">    includes some methods in order to show a basic structure of virtual</span>
+<span class="sd">    machines. Those methods are supposed to be overridden.</span>
 
 <span class="sd">Copyright (c) 2018 Daniel Marquina</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">py3gestalt.utilities</span> <span class="k">import</span> <span class="n">PersistenceManager</span>
-<span class="kn">from</span> <span class="nn">py3gestalt.utilities</span> <span class="k">import</span> <span class="n">notice</span> <span class="k">as</span> <span class="n">notice</span>
-<span class="kn">import</span> <span class="nn">py3gestalt.interfaces</span> <span class="k">as</span> <span class="nn">interfaces</span>
+<span class="kn">from</span> <span class="nn">py3gestalt</span> <span class="k">import</span> <span class="n">interfaces</span>
+<span class="kn">from</span> <span class="nn">py3gestalt.utilities</span> <span class="k">import</span> <span class="n">PersistenceManager</span><span class="p">,</span> <span class="n">notice</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">math</span>
@@ -185,60 +185,52 @@
 
 <span class="sd">    A virtual machine is basically made of an interface, nodes and machine</span>
 <span class="sd">    elements, all of them are virtual too because they represent the real,</span>
-<span class="sd">    physical machine.</span>
+<span class="sd">    physical machine. Besides, some functions have to be defined in order to</span>
+<span class="sd">    interact with the real machine.</span>
 
-<span class="sd">    Four basic main attributes are needed: name, interface, GUI and</span>
-<span class="sd">    persistence file.</span>
-<span class="sd">    If no name is specified, its path is assigned as its name by default. Its</span>
-<span class="sd">    interface must be defined on &#39;interfaces&#39; module. GUI must have a</span>
-<span class="sd">    &#39;write.debugger(str)&#39; method. The persistence file is always created when</span>
-<span class="sd">    its name is specified and is saved where the user-defined virtual machine&#39;s</span>
-<span class="sd">    file resides.</span>
+<span class="sd">    Three basic main attributes are needed: name, interface and persistence</span>
+<span class="sd">    file. If no name is specified, user&#39;s virtual machine&#39;s file path is</span>
+<span class="sd">    assigned as name by default. The interface must be defined on &#39;interfaces&#39;</span>
+<span class="sd">    module. The persistence file is always created when a name is specified and</span>
+<span class="sd">    is saved where the user-defined virtual machine&#39;s file is located.</span>
 
-<span class="sd">    All methods are empty but are called in initialization because the user</span>
-<span class="sd">    should redefine them according to the real machine&#39;s requirements. While</span>
-<span class="sd">    many machines won&#39;t need every pre-built initializer, they are provided to</span>
-<span class="sd">    introduce some structure to the format of virtual machines.</span>
+<span class="sd">    All &#39;init...&#39; methods are empty but are called on initialization because</span>
+<span class="sd">    the user should override them according to the real machine&#39;s requirements.</span>
+<span class="sd">    While many machines won&#39;t need every pre-built initializer, they are</span>
+<span class="sd">    provided to introduce some structure to the format of virtual machines.</span>
 
 <span class="sd">    Keyword Args:</span>
-<span class="sd">        name (str): Virtual machine&#39;s name.</span>
-<span class="sd">        interface: Virtual machine&#39;s interface, must be defined in interfaces</span>
-<span class="sd">            module.</span>
-<span class="sd">        persistenceFile (str): Persistence file&#39;s name.</span>
+<span class="sd">        name (str): Virtual machine&#39;s to-be name.</span>
+<span class="sd">        interface(InterfaceShell, BaseInterface or a child): Virtual machine&#39;s</span>
+<span class="sd">            to-be interface.</span>
+<span class="sd">        persistenceFile (str): Persistence file&#39;s to-be name.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name (str): Virtual machine&#39;s name.</span>
-<span class="sd">        interface: Virtual machine&#39;s interface, must be defined in interfaces</span>
-<span class="sd">            module.</span>
-<span class="sd">        persistenceFile (str): Persistence file&#39;s name.</span>
+<span class="sd">        interface(InterfaceShell, BaseInterface or a child): Virtual machine&#39;s</span>
+<span class="sd">            interface.</span>
 <span class="sd">        persistence (PersistenceManager): Persistence file&#39;s manager.</span>
+<span class="sd">        node_file_counter (int): Counter of virtual nodes&#39; file copies. Used</span>
+<span class="sd">            when initializing nodes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">persistence</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_file_counter</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Initializing virtual machine...&quot;</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">set_interface</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;interface&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;interface&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">persistence</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="s1">&#39;persistenceFile&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_persistence</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;persistenceFile&#39;</span><span class="p">])</span>
-            <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_persistence</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;persistenceFile&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;persistenceFile&#39;</span>
+                                                          <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;persistenceFile&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="c1"># If no name is provided, and multiple machines share the</span>
                 <span class="c1"># persistence file, this could result in a namespace conflict.</span>
                 <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                        <span class="s1">&#39;Warning: setting persistence without providing a name &#39;</span>
                        <span class="s1">&#39;to the virtual machine can result in a conflict in &#39;</span>
                        <span class="s1">&#39;multi-machine persistence files.&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_persistence</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">node_file_counter</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># Run user initialization</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -262,14 +254,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Name successfully assigned.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Assignation of ill defined name was refused. &quot;</span>
-                         <span class="s2">&quot;Previous name remains&quot;</span><span class="p">)</span></div>
+                         <span class="s2">&quot;Previous name remains.&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VirtualMachine.set_interface"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.set_interface">[docs]</a>    <span class="k">def</span> <span class="nf">set_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set interface of virtual machine.</span>
 
-<span class="sd">        When no interface is specified, an interface shell is assigned as</span>
+<span class="sd">        When no interface is specified, an empty interface shell is assigned as</span>
 <span class="sd">        machine&#39;s interface.</span>
 
 <span class="sd">        Args:</span>
@@ -277,11 +270,12 @@
 <span class="sd">                interfaces module.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">interface</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;No interface trying to be assigned.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">InterfaceShell</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;An empty interface has been assigned.&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="bp">cls</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">)</span>
                  <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;InterfaceShell&quot;</span><span class="p">,</span> <span class="s2">&quot;BaseInterface&quot;</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="n">interface</span>
+            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Interface successfully assigned.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Assignation of ill defined interface was refused. &quot;</span>
                          <span class="s2">&quot;Previous interface remains&quot;</span><span class="p">)</span></div>
@@ -295,18 +289,22 @@
 <span class="sd">        Args:</span>
 <span class="sd">            filename (str): Virtual machine&#39;s persistence file&#39;s name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">filename</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">persistence</span> <span class="o">=</span> <span class="n">PersistenceManager</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;No persistence manager has been assigned.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">persistence</span> <span class="o">=</span> <span class="n">PersistenceManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+                                                  <span class="n">namespace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Persistence manager successfully initialized.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">persistence</span> <span class="o">=</span> <span class="n">PersistenceManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span><span class="p">,</span>
-                                              <span class="n">namespace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Assignation of ill defined persistence manager was &quot;</span>
+                         <span class="s2">&quot;refused. Previous one remains.&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VirtualMachine.init_interfaces"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.init_interfaces">[docs]</a>    <span class="k">def</span> <span class="nf">init_interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialization of interfaces.</span>
 
 <span class="sd">        This method is called on instantiation of virtual machine and should</span>
-<span class="sd">        be overwritten by user.</span>
+<span class="sd">        be overridden by user.</span>
 
 <span class="sd">        Machine interface can be specified either on instantiation, using</span>
 <span class="sd">        &quot;set_interface()&quot; method or here.</span>
@@ -317,11 +315,11 @@
         <span class="sd">&quot;&quot;&quot;Initialization of controllers or nodes.</span>
 
 <span class="sd">        This method is called on instantiation of virtual machine and should</span>
-<span class="sd">        be overwritten by user.</span>
+<span class="sd">        be overridden by user.</span>
 
-<span class="sd">        Every node should be declared on &quot;__init__&quot; fucntion of user-defined</span>
-<span class="sd">        virtual machine, before calling &quot;__init__&quot; function of this class, and</span>
-<span class="sd">        should be defined here.</span>
+<span class="sd">        Every node should be defined here. However, they should first be declared</span>
+<span class="sd">        on &quot;__init__&quot; function of user-defined virtual machine, before calling</span>
+<span class="sd">        its parent class&#39; &quot;__init__&quot; function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
@@ -329,7 +327,7 @@
         <span class="sd">&quot;&quot;&quot;Initialization of coordinates.</span>
 
 <span class="sd">        This method is called on instantiation of virtual machine and should</span>
-<span class="sd">        be overwritten by user.</span>
+<span class="sd">        be overridden by user.</span>
 
 <span class="sd">        Used units are defined here.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -339,7 +337,7 @@
         <span class="sd">&quot;&quot;&quot;Initialization of kinematics.</span>
 
 <span class="sd">        This method is called on instantiation of virtual machine and should</span>
-<span class="sd">        be overwritten by user.</span>
+<span class="sd">        be overridden by user.</span>
 
 <span class="sd">        Mechanical machine elements and kinematics are defined here.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -349,9 +347,9 @@
         <span class="sd">&quot;&quot;&quot;Initialization of functions.</span>
 
 <span class="sd">        This method is called on instantiation of virtual machine and should</span>
-<span class="sd">        be overwritten by user.</span>
+<span class="sd">        be overridden by user.</span>
 
-<span class="sd">        Functions needed for machine operation should be defined here.</span>
+<span class="sd">        Functions needed for machine interaction should be defined here.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
@@ -359,7 +357,7 @@
         <span class="sd">&quot;&quot;&quot;User-defined initialization.</span>
 
 <span class="sd">        This method is called on instantiation of virtual machine and should</span>
-<span class="sd">        be overwritten by user.</span>
+<span class="sd">        be overridden by user.</span>
 
 <span class="sd">        This initialization method can be called any time, should be carefully</span>
 <span class="sd">        written.</span>
@@ -370,7 +368,7 @@
         <span class="sd">&quot;&quot;&quot;Initialization of last.</span>
 
 <span class="sd">        This method is called on instantiation of virtual machine and should</span>
-<span class="sd">        be overwritten by user.</span>
+<span class="sd">        be overridden by user.</span>
 
 <span class="sd">        This methods purpose is still obscure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

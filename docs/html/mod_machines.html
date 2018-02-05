@@ -171,11 +171,16 @@
 <p>Machines module from Gestalt framework for Python 3.</p>
 <p>Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</p>
 <p>This module contains classes needed to define a virtual machine and its
-components according to the real physical machine.
-‘Virtual Machine’ class is the main class, all user-defined virtual machine
-should be its child. It includes some methods in order to show a basic
-structure of virtual machines. Those methods are supposed to be
-overridden.</p>
+components according to user’s real physical machine.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>‘Virtual Machine’ class:</dt>
+<dd>The main class, all user-defined virtual machines should be its children. It
+includes some methods in order to show a basic structure of virtual
+machines. Those methods are supposed to be overridden.</dd>
+</dl>
+</li>
+</ul>
 <p>Copyright (c) 2018 Daniel Marquina</p>
 <dl class="class">
 <dt id="py3gestalt.machines.VirtualMachine">
@@ -184,37 +189,37 @@ overridden.</p>
 <p>Base class for all virtual machines.</p>
 <p>A virtual machine is basically made of an interface, nodes and machine
 elements, all of them are virtual too because they represent the real,
-physical machine.</p>
-<p>Four basic main attributes are needed: name, interface, GUI and
-persistence file.
-If no name is specified, its path is assigned as its name by default. Its
-interface must be defined on ‘interfaces’ module. GUI must have a
-‘write.debugger(str)’ method. The persistence file is always created when
-its name is specified and is saved where the user-defined virtual machine’s
-file resides.</p>
-<p>All methods are empty but are called in initialization because the user
-should redefine them according to the real machine’s requirements. While
-many machines won’t need every pre-built initializer, they are provided to
-introduce some structure to the format of virtual machines.</p>
+physical machine. Besides, some functions have to be defined in order to
+interact with the real machine.</p>
+<p>Three basic main attributes are needed: name, interface and persistence
+file. If no name is specified, user’s virtual machine’s file path is
+assigned as name by default. The interface must be defined on ‘interfaces’
+module. The persistence file is always created when a name is specified and
+is saved where the user-defined virtual machine’s file is located.</p>
+<p>All ‘init…’ methods are empty but are called on initialization because
+the user should override them according to the real machine’s requirements.
+While many machines won’t need every pre-built initializer, they are
+provided to introduce some structure to the format of virtual machines.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
 <tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>str</em>) – Virtual machine’s name.</li>
-<li><strong>interface</strong> – Virtual machine’s interface, must be defined in interfaces
-module.</li>
-<li><strong>persistenceFile</strong> (<em>str</em>) – Persistence file’s name.</li>
+<li><strong>name</strong> (<em>str</em>) – Virtual machine’s to-be name.</li>
+<li><strong>interface</strong> (<em>InterfaceShell, BaseInterface or a child</em>) – Virtual machine’s
+to-be interface.</li>
+<li><strong>persistenceFile</strong> (<em>str</em>) – Persistence file’s to-be name.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
 <li><strong>name</strong> (<em>str</em>) – Virtual machine’s name.</li>
-<li><strong>interface</strong> – Virtual machine’s interface, must be defined in interfaces
-module.</li>
-<li><strong>persistenceFile</strong> (<em>str</em>) – Persistence file’s name.</li>
+<li><strong>interface</strong> (<a class="reference internal" href="mod_interfaces.html#py3gestalt.interfaces.InterfaceShell" title="py3gestalt.interfaces.InterfaceShell"><em>InterfaceShell</em></a><em>, </em><a class="reference internal" href="mod_interfaces.html#py3gestalt.interfaces.BaseInterface" title="py3gestalt.interfaces.BaseInterface"><em>BaseInterface</em></a><em> or </em><em>a child</em>) – Virtual machine’s
+interface.</li>
 <li><strong>persistence</strong> (<a class="reference internal" href="mod_utilities.html#py3gestalt.utilities.PersistenceManager" title="py3gestalt.utilities.PersistenceManager"><em>PersistenceManager</em></a>) – Persistence file’s manager.</li>
+<li><strong>node_file_counter</strong> (<em>int</em>) – Counter of virtual nodes’ file copies. Used
+when initializing nodes.</li>
 </ul>
 </td>
 </tr>
@@ -240,7 +245,7 @@ file’s location is assigned as name.</p>
 <dt id="py3gestalt.machines.VirtualMachine.set_interface">
 <code class="descname">set_interface</code><span class="sig-paren">(</span><em>interface=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.set_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.set_interface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set interface of virtual machine.</p>
-<p>When no interface is specified, an interface shell is assigned as
+<p>When no interface is specified, an empty interface shell is assigned as
 machine’s interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -274,7 +279,7 @@ class foresees a case when no file name was assigned.</p>
 <code class="descname">init_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_interfaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_interfaces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialization of interfaces.</p>
 <p>This method is called on instantiation of virtual machine and should
-be overwritten by user.</p>
+be overridden by user.</p>
 <p>Machine interface can be specified either on instantiation, using
 “set_interface()” method or here.</p>
 </dd></dl>
@@ -284,10 +289,10 @@ be overwritten by user.</p>
 <code class="descname">init_controllers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_controllers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_controllers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialization of controllers or nodes.</p>
 <p>This method is called on instantiation of virtual machine and should
-be overwritten by user.</p>
-<p>Every node should be declared on “__init__” fucntion of user-defined
-virtual machine, before calling “__init__” function of this class, and
-should be defined here.</p>
+be overridden by user.</p>
+<p>Every node should be defined here. However, they should first be declared
+on “__init__” function of user-defined virtual machine, before calling
+its parent class’ “__init__” function.</p>
 </dd></dl>
 
 <dl class="method">
@@ -295,7 +300,7 @@ should be defined here.</p>
 <code class="descname">init_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialization of coordinates.</p>
 <p>This method is called on instantiation of virtual machine and should
-be overwritten by user.</p>
+be overridden by user.</p>
 <p>Used units are defined here.</p>
 </dd></dl>
 
@@ -304,7 +309,7 @@ be overwritten by user.</p>
 <code class="descname">init_kinematics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_kinematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_kinematics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialization of kinematics.</p>
 <p>This method is called on instantiation of virtual machine and should
-be overwritten by user.</p>
+be overridden by user.</p>
 <p>Mechanical machine elements and kinematics are defined here.</p>
 </dd></dl>
 
@@ -313,8 +318,8 @@ be overwritten by user.</p>
 <code class="descname">init_functions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_functions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialization of functions.</p>
 <p>This method is called on instantiation of virtual machine and should
-be overwritten by user.</p>
-<p>Functions needed for machine operation should be defined here.</p>
+be overridden by user.</p>
+<p>Functions needed for machine interaction should be defined here.</p>
 </dd></dl>
 
 <dl class="method">
@@ -322,7 +327,7 @@ be overwritten by user.</p>
 <code class="descname">init</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>User-defined initialization.</p>
 <p>This method is called on instantiation of virtual machine and should
-be overwritten by user.</p>
+be overridden by user.</p>
 <p>This initialization method can be called any time, should be carefully
 written.</p>
 </dd></dl>
@@ -332,7 +337,7 @@ written.</p>
 <code class="descname">init_last</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_last"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_last" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialization of last.</p>
 <p>This method is called on instantiation of virtual machine and should
-be overwritten by user.</p>
+be overridden by user.</p>
 <p>This methods purpose is still obscure.</p>
 </dd></dl>
 

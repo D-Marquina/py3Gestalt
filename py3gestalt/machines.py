@@ -3,18 +3,18 @@
 Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
 
 This module contains classes needed to define a virtual machine and its
-components according to the real physical machine.
-'Virtual Machine' class is the main class, all user-defined virtual machine
-should be its child. It includes some methods in order to show a basic
-structure of virtual machines. Those methods are supposed to be
-overridden.
+components according to user's real physical machine.
+
+- 'Virtual Machine' class:
+    The main class, all user-defined virtual machines should be its children. It
+    includes some methods in order to show a basic structure of virtual
+    machines. Those methods are supposed to be overridden.
 
 Copyright (c) 2018 Daniel Marquina
 """
 
-from py3gestalt.utilities import PersistenceManager
-from py3gestalt.utilities import notice as notice
-import py3gestalt.interfaces as interfaces
+from py3gestalt import interfaces
+from py3gestalt.utilities import PersistenceManager, notice
 import threading
 import inspect
 import math
@@ -26,60 +26,52 @@ class VirtualMachine(object):
 
     A virtual machine is basically made of an interface, nodes and machine
     elements, all of them are virtual too because they represent the real,
-    physical machine.
+    physical machine. Besides, some functions have to be defined in order to
+    interact with the real machine.
 
-    Four basic main attributes are needed: name, interface, GUI and
-    persistence file.
-    If no name is specified, its path is assigned as its name by default. Its
-    interface must be defined on 'interfaces' module. GUI must have a
-    'write.debugger(str)' method. The persistence file is always created when
-    its name is specified and is saved where the user-defined virtual machine's
-    file resides.
+    Three basic main attributes are needed: name, interface and persistence
+    file. If no name is specified, user's virtual machine's file path is
+    assigned as name by default. The interface must be defined on 'interfaces'
+    module. The persistence file is always created when a name is specified and
+    is saved where the user-defined virtual machine's file is located.
 
-    All methods are empty but are called in initialization because the user
-    should redefine them according to the real machine's requirements. While
-    many machines won't need every pre-built initializer, they are provided to
-    introduce some structure to the format of virtual machines.
+    All 'init...' methods are empty but are called on initialization because
+    the user should override them according to the real machine's requirements.
+    While many machines won't need every pre-built initializer, they are
+    provided to introduce some structure to the format of virtual machines.
 
     Keyword Args:
-        name (str): Virtual machine's name.
-        interface: Virtual machine's interface, must be defined in interfaces
-            module.
-        persistenceFile (str): Persistence file's name.
+        name (str): Virtual machine's to-be name.
+        interface(InterfaceShell, BaseInterface or a child): Virtual machine's
+            to-be interface.
+        persistenceFile (str): Persistence file's to-be name.
 
     Attributes:
         name (str): Virtual machine's name.
-        interface: Virtual machine's interface, must be defined in interfaces
-            module.
-        persistenceFile (str): Persistence file's name.
+        interface(InterfaceShell, BaseInterface or a child): Virtual machine's
+            interface.
         persistence (PersistenceManager): Persistence file's manager.
+        node_file_counter (int): Counter of virtual nodes' file copies. Used
+            when initializing nodes.
     """
     def __init__(self, *args, **kwargs):
         self.name = None
         self.interface = None
+        self.persistence = None
+        self.node_file_counter = 0
 
         notice(self, "Initializing virtual machine...")
-
         self.set_name(kwargs['name'] if 'name' in kwargs else None)
-
         self.set_interface(kwargs['interface'] if 'interface' in kwargs else None)
-
-        self.persistenceFilename = None
-        self.persistence = None
-        if 'persistenceFile' in kwargs:
-            self.persistenceFilename = ''
-            self.set_persistence(kwargs['persistenceFile'])
-            if 'name' not in kwargs:
+        self.set_persistence(kwargs['persistenceFile'] if 'persistenceFile'
+                                                          in kwargs else None)
+        if 'persistenceFile' in kwargs and 'name' not in kwargs:
                 # If no name is provided, and multiple machines share the
                 # persistence file, this could result in a namespace conflict.
                 notice(self,
                        'Warning: setting persistence without providing a name '
                        'to the virtual machine can result in a conflict in '
                        'multi-machine persistence files.')
-        else:
-            self.set_persistence()
-
-        self.node_file_counter = 0
 
         # Run user initialization
         self.init(*args, **kwargs)
@@ -103,14 +95,15 @@ class VirtualMachine(object):
             self.name = inspect.getfile(self.__class__)
         elif isinstance(name, str):
             self.name = name
+            notice(self, "Name successfully assigned.")
         else:
             notice(self, "Assignation of ill defined name was refused. "
-                         "Previous name remains")
+                         "Previous name remains.")
 
     def set_interface(self, interface=None):
         """Set interface of virtual machine.
 
-        When no interface is specified, an interface shell is assigned as
+        When no interface is specified, an empty interface shell is assigned as
         machine's interface.
 
         Args:
@@ -118,11 +111,12 @@ class VirtualMachine(object):
                 interfaces module.
         """
         if interface is None:
-            notice(self, "No interface trying to be assigned.")
             self.interface = interfaces.InterfaceShell(self)
+            notice(self, "An empty interface has been assigned.")
         elif any(cls in str(interface.__class__.__mro__)
                  for cls in ("InterfaceShell", "BaseInterface")):
             self.interface = interface
+            notice(self, "Interface successfully assigned.")
         else:
             notice(self, "Assignation of ill defined interface was refused. "
                          "Previous interface remains")
@@ -136,18 +130,22 @@ class VirtualMachine(object):
         Args:
             filename (str): Virtual machine's persistence file's name.
         """
-        if filename:
-            self.persistenceFilename = filename
+        if filename is None:
+            self.persistence = PersistenceManager(namespace=self.name)
+            notice(self, "No persistence manager has been assigned.")
+        elif isinstance(filename, str):
+            self.persistence = PersistenceManager(filename=filename,
+                                                  namespace=self.name)
+            notice(self, "Persistence manager successfully initialized.")
         else:
-            self.persistenceFilename = None
-        self.persistence = PersistenceManager(filename=self.persistenceFilename,
-                                              namespace=self.name)
+            notice(self, "Assignation of ill defined persistence manager was "
+                         "refused. Previous one remains.")
 
     def init_interfaces(self):
         """Initialization of interfaces.
 
         This method is called on instantiation of virtual machine and should
-        be overwritten by user.
+        be overridden by user.
 
         Machine interface can be specified either on instantiation, using
         "set_interface()" method or here.
@@ -158,11 +156,11 @@ class VirtualMachine(object):
         """Initialization of controllers or nodes.
 
         This method is called on instantiation of virtual machine and should
-        be overwritten by user.
+        be overridden by user.
 
-        Every node should be declared on "__init__" fucntion of user-defined
-        virtual machine, before calling "__init__" function of this class, and
-        should be defined here.
+        Every node should be defined here. However, they should first be declared
+        on "__init__" function of user-defined virtual machine, before calling
+        its parent class' "__init__" function.
         """
         pass
 
@@ -170,7 +168,7 @@ class VirtualMachine(object):
         """Initialization of coordinates.
 
         This method is called on instantiation of virtual machine and should
-        be overwritten by user.
+        be overridden by user.
 
         Used units are defined here.
         """
@@ -180,7 +178,7 @@ class VirtualMachine(object):
         """Initialization of kinematics.
 
         This method is called on instantiation of virtual machine and should
-        be overwritten by user.
+        be overridden by user.
 
         Mechanical machine elements and kinematics are defined here.
         """
@@ -190,9 +188,9 @@ class VirtualMachine(object):
         """Initialization of functions.
 
         This method is called on instantiation of virtual machine and should
-        be overwritten by user.
+        be overridden by user.
 
-        Functions needed for machine operation should be defined here.
+        Functions needed for machine interaction should be defined here.
         """
         pass
 
@@ -200,7 +198,7 @@ class VirtualMachine(object):
         """User-defined initialization.
 
         This method is called on instantiation of virtual machine and should
-        be overwritten by user.
+        be overridden by user.
 
         This initialization method can be called any time, should be carefully
         written.
@@ -211,7 +209,7 @@ class VirtualMachine(object):
         """Initialization of last.
 
         This method is called on instantiation of virtual machine and should
-        be overwritten by user.
+        be overridden by user.
 
         This methods purpose is still obscure.
         """

@@ -161,35 +161,35 @@
 
 <span class="sd">Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</span>
 
-<span class="sd">This module defines node classes and an node shell classes, which act</span>
-<span class="sd">as an intermediary between the virtual nodes and the virtual machine.</span>
+<span class="sd">This module defines virtual node and node shell classes, the latter act</span>
+<span class="sd">as an intermediary between the former and the virtual machine.</span>
 
-<span class="sd">TO-DO list:</span>
-<span class="sd">- Complete load_from_module</span>
-<span class="sd">- Decide load_from_file procedure</span>
-<span class="sd">- Update is_vm_ill_defined based on is_vn_ill_defined</span>
-<span class="sd">- Invetigate load_from_URL</span>
+<span class="sd">- &#39;BaseNodeShell&#39; class:</span>
+<span class="sd">    Basic node shell, its function is to provide a mean to load a virtual node</span>
+<span class="sd">    that is not defined in the same file as the virtual machine.</span>
+<span class="sd">- &#39;BaseVirtualNode&#39; class:</span>
+<span class="sd">    Basic virtual node definition.</span>
 
 <span class="sd">Copyright (c) 2018 Daniel Marquina</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">importlib</span>  <span class="c1"># for importing files as modules</span>
+<span class="kn">from</span> <span class="nn">py3gestalt</span> <span class="k">import</span> <span class="n">core</span>
+<span class="kn">from</span> <span class="nn">py3gestalt</span> <span class="k">import</span> <span class="n">packets</span>
+<span class="kn">from</span> <span class="nn">py3gestalt</span> <span class="k">import</span> <span class="n">functions</span>
+<span class="kn">from</span> <span class="nn">py3gestalt</span> <span class="k">import</span> <span class="n">utilities</span>
+<span class="kn">from</span> <span class="nn">py3gestalt</span> <span class="k">import</span> <span class="n">interfaces</span>
+<span class="kn">from</span> <span class="nn">py3gestalt.utilities</span> <span class="k">import</span> <span class="n">notice</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">import</span> <span class="nn">pyclbr</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">py3gestalt.utilities</span> <span class="k">import</span> <span class="n">notice</span> <span class="k">as</span> <span class="n">notice</span>
-<span class="kn">import</span> <span class="nn">py3gestalt.interfaces</span> <span class="k">as</span> <span class="nn">interfaces</span>
-<span class="c1"># from pygestalt import functions</span>
-<span class="c1"># from pygestalt import packets</span>
-<span class="c1"># from pygestalt import utilities</span>
-<span class="c1"># from pygestalt import core</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 
 <span class="c1"># ----NODE SHELLS------------</span>
@@ -197,31 +197,27 @@
     <span class="sd">&quot;&quot;&quot;The basic container for all nodes.</span>
 
 <span class="sd">    Like a room in a hotel, that has different occupants and offers certain</span>
-<span class="sd">    amenities to its guests. &#39;BaseNodeShell&#39; gets subclassed by more specific</span>
+<span class="sd">    amenities to its guests, &#39;BaseNodeShell&#39; gets subclassed by more specific</span>
 <span class="sd">    shells for one of the four types of gestalt nodes:</span>
-<span class="sd">    -&gt;Solo/Independent: arbitrary interface/ arbitrary protocol</span>
-<span class="sd">    -&gt;Solo/Gestalt: arbitrary interface/ gestalt protocol</span>
-<span class="sd">    -&gt;Networked/Gestalt: networked gestalt interface/ gestalt protocol</span>
-<span class="sd">    -&gt;Managed/Gestalt: hardware synchronized gestalt network/ gestalt protocol</span>
+
+<span class="sd">    - Solo/Independent: arbitrary interface/ arbitrary protocol</span>
+<span class="sd">    - Solo/Gestalt: arbitrary interface/ gestalt protocol</span>
+<span class="sd">    - Networked/Gestalt: networked gestalt interface/ gestalt protocol</span>
+<span class="sd">    - Managed/Gestalt: hardware synchronized gestalt network/ gestalt protocol</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        owner (VirtualMachine or a child):</span>
-<span class="sd">            Virtual machine that aims to own this node shell.</span>
-<span class="sd">        name (str):</span>
-<span class="sd">            Name of this node shell.</span>
+<span class="sd">        owner (VirtualMachine or a child): Virtual machine that instantiates</span>
+<span class="sd">            this node shell.</span>
+<span class="sd">        name (str): Name of this node shell.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        owner (VirtualMachine or a child):</span>
-<span class="sd">            Virtual machine that owns this node shell.</span>
-<span class="sd">        name (str):</span>
-<span class="sd">            Name of this node shell.</span>
-<span class="sd">        interface (InterfaceShell):</span>
-<span class="sd">            Shell to contained owner&#39;s interface.</span>
-<span class="sd">        vn_class (Class):</span>
-<span class="sd">            Virtual node&#39;s class. The contained node will be an instance of</span>
-<span class="sd">            this class.</span>
-<span class="sd">        node (BaseVirtualNode or a child):</span>
-<span class="sd">            Contained or linked node.</span>
+<span class="sd">        owner (VirtualMachine or a child): Virtual machine that owns this node</span>
+<span class="sd">            shell.</span>
+<span class="sd">        name (str): Name of this node shell.</span>
+<span class="sd">        interface (InterfaceShell): Shell to contain owner&#39;s interface.</span>
+<span class="sd">        vn_class (Class): Virtual node&#39;s class. The contained node will be an</span>
+<span class="sd">            instance of this class.</span>
+<span class="sd">        node (BaseVirtualNode or a child): Contained or linked node.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
@@ -245,7 +241,7 @@
 <div class="viewcode-block" id="BaseNodeShell.load_vn_from_file"><a class="viewcode-back" href="../../mod_nodes.html#py3gestalt.nodes.BaseNodeShell.load_vn_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_vn_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load virtual node from a file.</span>
 
-<span class="sd">        This functions gets the text from a file, imports it as a module and</span>
+<span class="sd">        This function gets the text from a file, imports it as a module and</span>
 <span class="sd">        loads its defined virtual node&#39;.</span>
 
 <span class="sd">        Note:</span>
@@ -283,12 +279,13 @@
 <span class="sd">        &#39;tmpVN&#39; with a temporal module (file) which contains a defined virtual</span>
 <span class="sd">        node and imports it.</span>
 <span class="sd">        They are assessed as &#39;temporal&#39; because they are deleted every time an</span>
-<span class="sd">        import action is attempted.</span>
+<span class="sd">        import action is attempted or finished.</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">        The module&#39;s name is &#39;temp_virtual_node_X.py&#39;, where &#39;X&#39; is the number</span>
-<span class="sd">        of import attempts. Such change of name is necessary in order to avoid</span>
-<span class="sd">        problems next, when analyzing module&#39;s classes using &#39;pyclbr&#39;.</span>
+<span class="sd">            The module&#39;s name is &#39;temp_virtual_node_X.py&#39;, where &#39;X&#39; is the</span>
+<span class="sd">            number of import attempts. Such change of name is necessary in</span>
+<span class="sd">            order to avoid problems next, when analyzing module&#39;s classes</span>
+<span class="sd">            using &#39;pyclbr&#39;.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            vn_module: Imported virtual node.</span>
@@ -328,11 +325,9 @@
 <span class="sd">        last feature can be checked passing an argument &#39;checked&#39; as False.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            module:</span>
-<span class="sd">                Module containing virtual node&#39;s definition.</span>
-<span class="sd">            checked (boolean):</span>
-<span class="sd">                A flag indicating whether module&#39;s content (only one</span>
-<span class="sd">                BaseVirtualNode&#39;s child class) has been checked or not.</span>
+<span class="sd">            module: Module containing virtual node&#39;s definition.</span>
+<span class="sd">            checked (boolean): A flag indicating whether module&#39;s content (only</span>
+<span class="sd">                one BaseVirtualNode&#39;s child class) has been checked or not.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">checked</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_vn_ill_defined</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span>
@@ -400,10 +395,8 @@
 <span class="sd">        Owner, name and interface from this shell are passed to contained node.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            vn_class (Class):</span>
-<span class="sd">                Virtual node class to be instantiated.</span>
-<span class="sd">            kwargs:</span>
-<span class="sd">                Arguments to be passed onto the virtual node&#39;s initialization.</span>
+<span class="sd">            vn_class (Class): Virtual node class to be instantiated.</span>
+<span class="sd">            kwargs: Arguments to be passed onto the virtual node&#39;s initialization.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">vn_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Node assigned to &#39;&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;&#39; node shell.&quot;</span><span class="p">)</span>
@@ -584,26 +577,24 @@
     <span class="sd">&quot;&quot;&quot;Base class for virtual nodes.</span>
 
 <span class="sd">    Initialization occurs in three steps:</span>
-<span class="sd">            1) BaseVirtualNode gets initialized when instantiated.</span>
-<span class="sd">            2) Node shell loads references into node through &#39;set_node()&#39; method.</span>
-<span class="sd">            3) &#39;init()&#39; is called by &#39;set_node()&#39; method.</span>
+
+<span class="sd">    1) BaseVirtualNode gets initialized when instantiated.</span>
+<span class="sd">    2) Node shell loads references into node through &#39;set_node()&#39; method.</span>
+<span class="sd">    3) &#39;init()&#39; is called by &#39;set_node()&#39; method.</span>
 
 <span class="sd">    The purpose of this routine is to initialize the nodes once they already</span>
 <span class="sd">    have references to their shell.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        owner (VirtualMachine or a child):</span>
-<span class="sd">            Virtual machine that instantiates this node.</span>
+<span class="sd">        owner (VirtualMachine or a child): Virtual machine that instantiates</span>
+<span class="sd">            this node.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        owner (VirtualMachine or a child):</span>
-<span class="sd">            Virtual machine that instantiates this node.</span>
-<span class="sd">        shell (BaseNodeShell or a child):</span>
-<span class="sd">            Node shell that contains this node.</span>
-<span class="sd">        name (str):</span>
-<span class="sd">            Name of this node shell.</span>
-<span class="sd">        interface (InterfaceShell):</span>
-<span class="sd">            Shell to contained owner&#39;s interface.</span>
+<span class="sd">        owner (VirtualMachine or a child): Virtual machine that owns this node.</span>
+<span class="sd">        shell (BaseNodeShell or a child): Node shell that contains this node.</span>
+<span class="sd">        name (str): Name of this node shell.</span>
+<span class="sd">        interface (InterfaceShell): Shell to contained owner&#39;s interface.</span>
+<span class="sd">        initKwargs: Keyword arguments used on instantiation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

@@ -4,13 +4,26 @@ This module extends Gestalt Framework for Python 3's usability by creating a
 GUI that allows the user to select a defined virtual machine, available
 interface and test communication status.
 
-Note: This GUI requires Kivy.
+-'Py3GestaltGUIApp':
+    Main app.
+- 'Py3GestaltGUI':
+    Main box layout.
+- 'VirtualMachineBrowser':
+    A browser that filters out non-Python files
+- 'DebugGUIHandler':
+    Custom handler that prints logging messages in debugger label.
+
+Note:
+    This GUI requires Kivy.
 
 Copyright (c) 2018 Daniel Marquina
 """
 
+from py3gestalt import interfaces
+from py3gestalt.utilities import get_available_serial_ports
 import kivy
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
@@ -18,6 +31,7 @@ from kivy.uix.spinner import Spinner
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty, ObjectProperty
 import importlib
+import logging
 import inspect
 import pyclbr
 import serial
@@ -27,12 +41,7 @@ import glob
 import sys
 import os
 
-import logging
-from kivy.clock import Clock
-
-import py3gestalt.interfaces as interfaces
-from py3gestalt.utilities import get_available_serial_ports
-
+# Kivy requirements
 kivy.require('1.0.1')
 
 # Logging configuration
@@ -90,7 +99,7 @@ class Py3GestaltGUI(BoxLayout):
         self.vm_class = None
         self.vm = None
         self.import_counter = 0
-        log.addHandler(MyLabelHandler(self.debugger_lb, logging.DEBUG))
+        log.addHandler(DebugGUIHandler(self.debugger_lb, logging.DEBUG))
 
     def open_file_browser(self):
         """Open a file browser including a reference to this GUI."""
@@ -287,7 +296,7 @@ class VirtualMachineBrowser(Popup):
         self.dismiss()
 
 
-class MyLabelHandler(logging.Handler):
+class DebugGUIHandler(logging.Handler):
     """A handler for logging.
 
     This handler shows notices in GUI's debugging section' label. It must be
@@ -307,7 +316,7 @@ class MyLabelHandler(logging.Handler):
 
         It uses the Clock module for thread safety with Kivy's main loop.
         """
-        def f():
+        def f(dt=None):
             self.label.text += self.format(record) + '\n\n'
         Clock.schedule_once(f)
 

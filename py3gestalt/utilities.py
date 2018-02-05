@@ -5,31 +5,28 @@ Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
 This module contains various classes and methods needed for the correct
 implementation of this framework.
 
-'PersistenceManager' class defines an object which is in charge of managing the
-creation, writing  and reading of persistence file.
-
-'Notice' method prints information about the execution of the framework,
-either to console or to a GUI.
-
-'Scan_serial_ports' returns a list of all serial ports in the PC.
-
-'Get_available_serial_ports' filters only available serial ports by opening and
-closing them.
-
-TO-DO list:
+- 'PersistenceManager' class:
+    Defines an object which is in charge of managing the creation, writing and
+    reading of persistence file.
+- 'Notice' method:
+    Shows notifications about the execution of the framework using a logger.
+- 'Scan_serial_ports' method:
+    Returns a list of all serial ports in the PC.
+- 'Get_available_serial_ports' method:
+    Returns only available serial ports by opening and closing them.
 
 Copyright (c) 2018 Daniel Marquina
 """
 
+import serial, serial.tools.list_ports
 import datetime
-import serial
-import serial.tools.list_ports
+import logging
 import math
 import glob
 import ast
 import sys
-import logging
 
+# Logging configuration by default
 logging.basicConfig(level=logging.DEBUG, format='%(message)s', stream=sys.stdout)
 log = logging.getLogger("Virtual Machine")
 
@@ -44,12 +41,12 @@ class PersistenceManager(object):
     written as a Python dictionary.
 
     Args:
-        filename (str): Name of persistence file.
-        namespace (str): Machine's name.
+        filename (str): Future name of persistence file.
+        namespace (str): Name of machine that instantiates this class.
 
     Attributes:
         filename (str): Name of persistence file.
-        namespace (str): Machine's name.
+        namespace (str): Name of machine that owns this class.
     """
 
     def __init__(self, filename=None, namespace=None):
@@ -57,7 +54,7 @@ class PersistenceManager(object):
         self.namespace = namespace
 
     def __call__(self):
-        """Overrides '__call__()' method.
+        """Override '__call__()' method.
 
         Makes sure that a persistence file exists before trying to use it.
 
@@ -92,8 +89,8 @@ class PersistenceManager(object):
     def store(self, name, value):
         """Store a node and/or its address.
 
-        Stores a new node or updates an existing node's address.
-        This function is usually called when a node shell is being instantiated.
+        Also updates an existing node's address. This function is usually
+        called when a node shell is being instantiated.
 
         Args:
             name: Node's name.
@@ -120,7 +117,7 @@ class PersistenceManager(object):
 
         Args:
             persistence_dict (dict): Python dictionary containing to-be-stored
-            nodes and their addresses.
+                nodes and their addresses.
         """
         file_object = open(self.filename, 'w')
         file_object.write("# This Gestalt persistence file was auto-generated @ " +
@@ -136,20 +133,13 @@ class PersistenceManager(object):
 def notice(source=None, message=""):
     """Send a notice to the user.
 
-    Originally, this method only showed a notice on the console, but for now
-    it can also show a notice on a user-defined debugger gui as long as such
-    gui meets one requirement:
-    - It must have a write_debugger(str) method
-
-    Note: Eventually, this method could re-route its notice via a web interface.
+    Originally, this method used to inly show a notice on the console, but now
+    it makes use of a logger, that means every notice can be redirected if
+    specified in user-defined virtual machine.
 
     Args:
         source (VirtualMachine, etc.): Object that sends a notice.
         message (str): Message to display.
-        use_debug_gui (boolean): Flag that indicates is a GUI will be used.
-
-    Returns:
-        None after message has been sent to GUI's debugger.
     """
     if hasattr(source, 'name'):
         name = getattr(source, 'name')
@@ -177,15 +167,16 @@ def notice(source=None, message=""):
 def scan_serial_ports(serial_filter_terms=None):
     """Scan serial ports.
 
-    It can filter out ports if a filter term is given.
+    It can filter out ports that do not match given filter terms.
 
     Args:
-        serial_filter_terms (str): Serial device's manufacturer.
+        serial_filter_terms (str): Serial device's information used to filter.
 
     Returns:
         A list containing the names of all serial ports.
 
-    Note: When using glob, your current terminal "/dev/tty" is excluded.
+    Note:
+        When using glob, your current terminal "/dev/tty" is excluded.
     """
     if sys.platform.startswith('win') or \
             sys.platform.startswith('linux') or \
@@ -210,19 +201,18 @@ def scan_serial_ports(serial_filter_terms=None):
     return ports
 
 
-def get_available_serial_ports(manufacturer=None):
+def get_available_serial_ports(filter_term=None):
     """Get available serial ports.
 
     Tries to open PC's serial ports and filters the available ones.
-    For windows, it can filter ports if a manufacturer name is given.
 
     Args:
-        manufacturer (str): Serial device's manufacturer.
+        filter_term (str): Serial device's information used to filter.
 
     Returns:
         A list containing the names of available serial ports.
     """
-    ports = scan_serial_ports(manufacturer)
+    ports = scan_serial_ports(filter_term)
     available_ports = []
     for port in ports:
         try:

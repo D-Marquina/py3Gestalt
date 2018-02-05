@@ -31,8 +31,8 @@ class TestVirtualMachine(machines.VirtualMachine):
             init_message += "Provided interface: True" + '\n'
         else:
             init_message += "Provided interface: False" + '\n'
-        if self.persistenceFilename:
-            init_message += "Persistence file: " + self.persistenceFilename + '\n'
+        if self.persistence:
+            init_message += "Persistence file: " + self.persistence.filename + '\n'
         else:
             init_message += "Persistence file: False" + '\n'
         notice(self, init_message)

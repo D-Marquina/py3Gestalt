@@ -164,20 +164,22 @@
 <span class="sd">This module defines interface classes and an interface shell class, which acts</span>
 <span class="sd">as an intermediary between the interface and nodes.</span>
 
-<span class="sd">&#39;InterfaceShell&#39; class is a wrapper that links the real interface object to</span>
-<span class="sd">classes and methods that try to access it.</span>
-
-<span class="sd">&#39;BaseInterface&#39; class is a basic example of an interface object. Every</span>
-<span class="sd">interface should be based on it.</span>
-
-<span class="sd">&#39;SerialInterface&#39; class defines an interface that uses a serial port.</span>
-
-<span class="sd">TO-DO list:</span>
-<span class="sd">- Add try except AttributeError</span>
+<span class="sd">- &#39;InterfaceShell&#39; class:</span>
+<span class="sd">    A wrapper that links the real interface object to classes and methods that</span>
+<span class="sd">    try to access it.</span>
+<span class="sd">- &#39;BaseInterface&#39; class:</span>
+<span class="sd">    A basic example of an interface object. Every interface should be based on it.</span>
+<span class="sd">- &#39;SerialInterface&#39; class:</span>
+<span class="sd">    Defines an interface that uses a serial port.</span>
 
 <span class="sd">Copyright (c) 2018 Daniel Marquina</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">py3gestalt</span> <span class="k">import</span> <span class="n">core</span>
+<span class="kn">from</span> <span class="nn">py3gestalt</span> <span class="k">import</span> <span class="n">packets</span>
+<span class="kn">from</span> <span class="nn">py3gestalt</span> <span class="k">import</span> <span class="n">functions</span>
+<span class="kn">from</span> <span class="nn">py3gestalt.utilities</span> <span class="k">import</span> <span class="n">notice</span><span class="p">,</span> <span class="n">get_available_serial_ports</span><span class="p">,</span> \
+    <span class="n">scan_serial_ports</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">platform</span>
@@ -187,28 +189,21 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py3gestalt.utilities</span> <span class="k">import</span> <span class="n">notice</span><span class="p">,</span> <span class="n">get_available_serial_ports</span><span class="p">,</span> \
-    <span class="n">scan_serial_ports</span>
-<span class="c1"># from py3gestalt import packets</span>
-<span class="c1"># from py3gestalt import functions</span>
-<span class="c1"># from py3gestalt import core</span>
 
 
 <div class="viewcode-block" id="InterfaceShell"><a class="viewcode-back" href="../../mod_interfaces.html#py3gestalt.interfaces.InterfaceShell">[docs]</a><span class="k">class</span> <span class="nc">InterfaceShell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Intermediary between nodes, node shells and interfaces.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        owner: Owner of this interface shell. For now it can be a virtual</span>
-<span class="sd">            machine or a virtual node.</span>
+<span class="sd">        owner: Object that initializes this interface shell. It could be a</span>
+<span class="sd">            virtual machine, a virtual node, etc.</span>
 <span class="sd">        interface (BaseInterface):</span>
 <span class="sd">            Interface to be contained by this shell.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        owner:</span>
-<span class="sd">            Object that instantiates this shell. Used in the port acquisition</span>
-<span class="sd">            process.</span>
-<span class="sd">        contained_interface (BaseInterface or a child):</span>
-<span class="sd">            Interface contained by this shell.</span>
+<span class="sd">        owner: Object that owns this shell. Used in the port acquisition process.</span>
+<span class="sd">        contained_interface (BaseInterface or a child): Interface contained by</span>
+<span class="sd">            this shell.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">interface</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -217,23 +212,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">interface</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InterfaceShell.set"><a class="viewcode-back" href="../../mod_interfaces.html#py3gestalt.interfaces.InterfaceShell.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Updates the interface contained by the shell.</span>
+        <span class="sd">&quot;&quot;&quot;Update the interface contained by the shell.</span>
 
-<span class="sd">        Updates and initializes contained (or linked) shell. Owner can be</span>
-<span class="sd">        None. It is called when a node is initialized.</span>
+<span class="sd">        Also initializes contained (or linked) shell. Owner can be None. This</span>
+<span class="sd">        method is called when a node is initialized.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            interface (BaseInterface): Interface to be contained by this shell.</span>
-<span class="sd">            owner (VirtualMachine): Virtual machine that owns this interface shell.</span>
+<span class="sd">            owner: Object that will own this interface shell.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">contained_interface</span> <span class="o">=</span> <span class="n">interface</span>
         <span class="k">if</span> <span class="n">interface</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">:</span>
-            <span class="c1"># Set owner of contained interface</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">contained_interface</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
         <span class="k">if</span> <span class="n">interface</span><span class="p">:</span>
-            <span class="c1"># Initializes contained interface</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">contained_interface</span><span class="o">.</span><span class="n">init_after_set</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="InterfaceShell.set_owner"><a class="viewcode-back" href="../../mod_interfaces.html#py3gestalt.interfaces.InterfaceShell.set_owner">[docs]</a>    <span class="k">def</span> <span class="nf">set_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
@@ -243,17 +236,17 @@
 <span class="sd">         Useful when no owner was specified when instantiating.</span>
 
 <span class="sd">         Args:</span>
-<span class="sd">             owner (VirtualMachine):</span>
+<span class="sd">             owner: New owner of this interface shell.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>  <span class="c1"># used in the port acquisition process</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contained_interface</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">contained_interface</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span></div>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Forwards attribute calls to the contained interface.</span>
+        <span class="sd">&quot;&quot;&quot;Forward attribute calls to the contained interface.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            attribute: Attribute of contained interface.</span>
+<span class="sd">            attribute: Contained interface&#39;s attribute to be called.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Contained interfaces&#39;s attribute.</span>
@@ -273,12 +266,10 @@
     <span class="sd">&quot;&quot;&quot;Base class of all interfaces.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        owner (VirtualMachine or a child): Virtual machine that aims to own</span>
-<span class="sd">            this interface.</span>
+<span class="sd">        owner: Object that initializes this interface.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        owner (VirtualMachine or a child):</span>
-<span class="sd">            Virtual machine that owns this interface.</span>
+<span class="sd">        owner: Object that owns this interface.</span>
 
 <span class="sd">    This class presents a basic structure of all interfaces. Currently, it only</span>
 <span class="sd">    has an empty method which will be overridden by a child class defined</span>
@@ -298,44 +289,34 @@
 
 <span class="sd">    The core of this class is a serial object. For data transmission, a queue</span>
 <span class="sd">    stores all data to be sent whereas a thread handles transmission of every</span>
-<span class="sd">    element in that queue. As data reception using a thread requires a defined</span>
+<span class="sd">    element in that queue.</span>
+<span class="sd">    As data reception using a thread requires a defined</span>
 <span class="sd">    protocol, a simple method reads a number of bytes from the input buffer.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        owner (VirtualMachine or child):</span>
-<span class="sd">            Virtual machine that instantiates this interface.</span>
-<span class="sd">        baud_rate (int):</span>
-<span class="sd">            Speed in baud.</span>
-<span class="sd">        port_name (str):</span>
-<span class="sd">            Name of port to connect.</span>
-<span class="sd">        interface_type (str):</span>
-<span class="sd">            Type of interface, &#39;ftdi&#39; or &#39;arduino&#39; for now.</span>
-<span class="sd">        time_out (float):</span>
-<span class="sd">            Time to wait for a new device to be connected, in seconds.</span>
+<span class="sd">        owner: Object that instantiates this interface.</span>
+<span class="sd">        baud_rate (int): Speed in baud.</span>
+<span class="sd">        port_name (str): Name of port to connect.</span>
+<span class="sd">        interface_type (str): Type of interface, &#39;ftdi&#39; or &#39;arduino&#39; for now.</span>
+<span class="sd">        time_out (float): Time to wait for a new device to be connected, in</span>
+<span class="sd">            seconds.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        baudRate (int):</span>
-<span class="sd">            Speed in baud.</span>
-<span class="sd">        portName (str):</span>
-<span class="sd">            Name of connected port.</span>
-<span class="sd">        interfaceType (str):</span>
-<span class="sd">            Type of interface, &#39;ftdi&#39; or &#39;lufa&#39; for now.</span>
-<span class="sd">        owner (VirtualMachine):</span>
-<span class="sd">            Object that owns this interface.</span>
-<span class="sd">        timeOut (float):</span>
-<span class="sd">            Time to wait for a new device to be connected.</span>
-<span class="sd">        isConnected (boolean):</span>
-<span class="sd">            State of connection.</span>
-<span class="sd">        port (serial):</span>
-<span class="sd">            Serial object to use.</span>
-<span class="sd">        transmitQueue (Queue):</span>
-<span class="sd">            A queue to store to-be-transmitted packets from different sources.</span>
-<span class="sd">        transmitter (TransmitThread):</span>
-<span class="sd">            A thread to handle data transmission.</span>
+<span class="sd">        owner (VirtualMachine): Object that owns this interface.</span>
+<span class="sd">        baudRate (int): Speed in baud.</span>
+<span class="sd">        portName (str): Name of connected port.</span>
+<span class="sd">        interfaceType (str): Type of interface, &#39;ftdi&#39; or &#39;lufa&#39; for now.</span>
+<span class="sd">        timeOut (float): Time to wait for a new device to be connected.</span>
+<span class="sd">        isConnected (boolean): State of connection.</span>
+<span class="sd">        port (serial): Serial object to use.</span>
+<span class="sd">        transmitQueue (Queue): A queue to store to-be-transmitted packets from</span>
+<span class="sd">            different sources.</span>
+<span class="sd">        transmitter (TransmitThread): A thread to handle data transmission.</span>
 
-<span class="sd">    Note: Regarding the attribute &#39;interfaceType&#39;, a third value may be used,</span>
-<span class="sd">    &#39;genericSerial&#39;, but its use could potentially cause problems because of</span>
-<span class="sd">    its generic implementation.</span>
+<span class="sd">    Note:</span>
+<span class="sd">        Regarding the attribute &#39;interfaceType&#39;, a third value may be used,</span>
+<span class="sd">        &#39;genericSerial&#39;, but its use could potentially cause problems because of</span>
+<span class="sd">        its generic implementation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">baud_rate</span><span class="p">,</span> <span class="n">port_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interface_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">time_out</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
@@ -402,7 +383,7 @@
 
 <span class="sd">        Tries to detect a serial port based on the provided interface type.</span>
 <span class="sd">        If no serial port is detected, it waits some seconds (10 by default)</span>
-<span class="sd">        for new one to bw created.</span>
+<span class="sd">        for a new one to be created.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">             interface_type (str): Type of interface.</span>
@@ -436,15 +417,17 @@
 <span class="sd">        According to the operating system, selects a type of filter and the</span>
 <span class="sd">        filter term.</span>
 <span class="sd">        For example, in the case of Arduino, the type is &#39;manufacturer&#39; and the</span>
-<span class="sd">        filter term is &#39;Arduino&#39;. This function is implemented like that in</span>
-<span class="sd">        order to include new interfaces.</span>
+<span class="sd">        filter term is &#39;Arduino&#39;. This implementation allows the inclusion of</span>
+<span class="sd">        new interfaces.</span>
 
-<span class="sd">        Note 1: Currently, the type of filter should be one attribute of</span>
-<span class="sd">        serial.tools.list_ports.ListPortInfo class, supported by your operating</span>
-<span class="sd">        system (Windows, Linux os MacOS).</span>
+<span class="sd">        Note:</span>
+<span class="sd">            Currently, the type of filter should be one attribute of</span>
+<span class="sd">            serial.tools.list_ports.ListPortInfo class, supported by your operating</span>
+<span class="sd">            system (Windows, Linux os MacOS).</span>
 
-<span class="sd">        Note 2: The use of interface type &#39;genericSerial&#39; should be avoided</span>
-<span class="sd">        because many devices could share the provided filter term.</span>
+<span class="sd">        Note:</span>
+<span class="sd">            The use of interface type &#39;genericSerial&#39; should be avoided</span>
+<span class="sd">            because many devices could share the provided filter term.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            interface_type (str): Type of interface, &#39;ftdi&#39; for FTDI devices,</span>
@@ -483,14 +466,14 @@
 <div class="viewcode-block" id="SerialInterface.wait_for_new_port"><a class="viewcode-back" href="../../mod_interfaces.html#py3gestalt.interfaces.SerialInterface.wait_for_new_port">[docs]</a>    <span class="k">def</span> <span class="nf">wait_for_new_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_term</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait for a new port to be created.</span>
 
-<span class="sd">        This functions waits for the user to connect an interface device and</span>
+<span class="sd">        This function waits for the user to connect an interface device and</span>
 <span class="sd">        returns its new serial port.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filter_term (str): Optional serial port filter, depends on</span>
-<span class="sd">            interface type and operating system.</span>
+<span class="sd">                interface type and operating system.</span>
 <span class="sd">            time_limit (float): Maximum number of seconds to wait for a new</span>
-<span class="sd">            port to be created.</span>
+<span class="sd">                port to be created.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A list of new serial ports. False, otherwise.</span>
@@ -526,7 +509,7 @@
 
 <span class="sd">        As a thread handles data transmission, it continuously checks the</span>
 <span class="sd">        transmit queue and sends data when added by this function.</span>
-<span class="sd">        Data as a string is converted to a list by default.</span>
+<span class="sd">        String data is converted to a list by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConnected</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transmitQueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -557,18 +540,14 @@
         <span class="sd">&quot;&quot;&quot;A thread to handle data transmission data over a serial port.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            owner (SerialInterface):</span>
-<span class="sd">                Interface that instantiate this thread.</span>
-<span class="sd">            transmit_queue (Queue):</span>
-<span class="sd">                Queue that stores to-be-transmitted packets.</span>
-<span class="sd">            port (Serial):</span>
-<span class="sd">                Serial port to be used.</span>
+<span class="sd">            owner (SerialInterface): Interface that instantiates this thread.</span>
+<span class="sd">            transmit_queue (Queue): Queue that stores to-be-transmitted packets.</span>
+<span class="sd">            port (Serial): Serial port to be used.</span>
 
 <span class="sd">        Attributes:</span>
-<span class="sd">            transmitQueue (Queue):</span>
-<span class="sd">                Queue that stores to-be-transmitted packets.</span>
-<span class="sd">            port (Serial):</span>
-<span class="sd">                Serial port to be used.</span>
+<span class="sd">            owner (SerialInterface): Interface that owns this thread.</span>
+<span class="sd">            transmitQueue (Queue): Queue that stores to-be-transmitted packets.</span>
+<span class="sd">            port (Serial): Serial port to be used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">transmit_queue</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">SerialInterface</span><span class="o">.</span><span class="n">TransmitThread</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -579,7 +558,7 @@
 <div class="viewcode-block" id="SerialInterface.TransmitThread.run"><a class="viewcode-back" href="../../mod_interfaces.html#py3gestalt.interfaces.SerialInterface.TransmitThread.run">[docs]</a>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Define code to be ran by the transmit thread.</span>
 
-<span class="sd">            Gets a packet from transmit queue, converts it to a string and</span>
+<span class="sd">            Gets a packet from transmit queue, converts it into a string and</span>
 <span class="sd">            transmits it.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>

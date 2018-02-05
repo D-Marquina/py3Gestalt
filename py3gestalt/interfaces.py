@@ -5,20 +5,22 @@ Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
 This module defines interface classes and an interface shell class, which acts
 as an intermediary between the interface and nodes.
 
-'InterfaceShell' class is a wrapper that links the real interface object to
-classes and methods that try to access it.
-
-'BaseInterface' class is a basic example of an interface object. Every
-interface should be based on it.
-
-'SerialInterface' class defines an interface that uses a serial port.
-
-TO-DO list:
-- Add try except AttributeError
+- 'InterfaceShell' class:
+    A wrapper that links the real interface object to classes and methods that
+    try to access it.
+- 'BaseInterface' class:
+    A basic example of an interface object. Every interface should be based on it.
+- 'SerialInterface' class:
+    Defines an interface that uses a serial port.
 
 Copyright (c) 2018 Daniel Marquina
 """
 
+from py3gestalt import core
+from py3gestalt import packets
+from py3gestalt import functions
+from py3gestalt.utilities import notice, get_available_serial_ports, \
+    scan_serial_ports
 import threading
 import itertools
 import platform
@@ -28,28 +30,21 @@ import queue
 import time
 import sys
 import os
-from py3gestalt.utilities import notice, get_available_serial_ports, \
-    scan_serial_ports
-# from py3gestalt import packets
-# from py3gestalt import functions
-# from py3gestalt import core
 
 
 class InterfaceShell(object):
     """Intermediary between nodes, node shells and interfaces.
 
     Args:
-        owner: Owner of this interface shell. For now it can be a virtual
-            machine or a virtual node.
+        owner: Object that initializes this interface shell. It could be a
+            virtual machine, a virtual node, etc.
         interface (BaseInterface):
             Interface to be contained by this shell.
 
     Attributes:
-        owner:
-            Object that instantiates this shell. Used in the port acquisition
-            process.
-        contained_interface (BaseInterface or a child):
-            Interface contained by this shell.
+        owner: Object that owns this shell. Used in the port acquisition process.
+        contained_interface (BaseInterface or a child): Interface contained by
+            this shell.
 
     """
     def __init__(self, owner, interface=None):
@@ -58,23 +53,21 @@ class InterfaceShell(object):
         self.set(interface, owner)
 
     def set(self, interface, owner=None):
-        """Updates the interface contained by the shell.
+        """Update the interface contained by the shell.
 
-        Updates and initializes contained (or linked) shell. Owner can be
-        None. It is called when a node is initialized.
+        Also initializes contained (or linked) shell. Owner can be None. This
+        method is called when a node is initialized.
 
         Args:
             interface (BaseInterface): Interface to be contained by this shell.
-            owner (VirtualMachine): Virtual machine that owns this interface shell.
+            owner: Object that will own this interface shell.
         """
         if owner:
             self.owner = owner
         self.contained_interface = interface
         if interface and self.owner:
-            # Set owner of contained interface
             self.contained_interface.owner = self.owner
         if interface:
-            # Initializes contained interface
             self.contained_interface.init_after_set()
 
     def set_owner(self, owner):
@@ -84,17 +77,17 @@ class InterfaceShell(object):
          Useful when no owner was specified when instantiating.
 
          Args:
-             owner (VirtualMachine):
+             owner: New owner of this interface shell.
         """
         self.owner = owner  # used in the port acquisition process
         if self.contained_interface:
             self.contained_interface.owner = owner
 
     def __getattr__(self, attribute):
-        """Forwards attribute calls to the contained interface.
+        """Forward attribute calls to the contained interface.
 
         Args:
-            attribute: Attribute of contained interface.
+            attribute: Contained interface's attribute to be called.
 
         Returns:
             Contained interfaces's attribute.
@@ -114,12 +107,10 @@ class BaseInterface(object):
     """Base class of all interfaces.
 
     Args:
-        owner (VirtualMachine or a child): Virtual machine that aims to own
-            this interface.
+        owner: Object that initializes this interface.
 
     Attributes:
-        owner (VirtualMachine or a child):
-            Virtual machine that owns this interface.
+        owner: Object that owns this interface.
 
     This class presents a basic structure of all interfaces. Currently, it only
     has an empty method which will be overridden by a child class defined
@@ -139,44 +130,34 @@ class SerialInterface(BaseInterface):
 
     The core of this class is a serial object. For data transmission, a queue
     stores all data to be sent whereas a thread handles transmission of every
-    element in that queue. As data reception using a thread requires a defined
+    element in that queue.
+    As data reception using a thread requires a defined
     protocol, a simple method reads a number of bytes from the input buffer.
 
     Args:
-        owner (VirtualMachine or child):
-            Virtual machine that instantiates this interface.
-        baud_rate (int):
-            Speed in baud.
-        port_name (str):
-            Name of port to connect.
-        interface_type (str):
-            Type of interface, 'ftdi' or 'arduino' for now.
-        time_out (float):
-            Time to wait for a new device to be connected, in seconds.
+        owner: Object that instantiates this interface.
+        baud_rate (int): Speed in baud.
+        port_name (str): Name of port to connect.
+        interface_type (str): Type of interface, 'ftdi' or 'arduino' for now.
+        time_out (float): Time to wait for a new device to be connected, in
+            seconds.
 
     Attributes:
-        baudRate (int):
-            Speed in baud.
-        portName (str):
-            Name of connected port.
-        interfaceType (str):
-            Type of interface, 'ftdi' or 'lufa' for now.
-        owner (VirtualMachine):
-            Object that owns this interface.
-        timeOut (float):
-            Time to wait for a new device to be connected.
-        isConnected (boolean):
-            State of connection.
-        port (serial):
-            Serial object to use.
-        transmitQueue (Queue):
-            A queue to store to-be-transmitted packets from different sources.
-        transmitter (TransmitThread):
-            A thread to handle data transmission.
+        owner (VirtualMachine): Object that owns this interface.
+        baudRate (int): Speed in baud.
+        portName (str): Name of connected port.
+        interfaceType (str): Type of interface, 'ftdi' or 'lufa' for now.
+        timeOut (float): Time to wait for a new device to be connected.
+        isConnected (boolean): State of connection.
+        port (serial): Serial object to use.
+        transmitQueue (Queue): A queue to store to-be-transmitted packets from
+            different sources.
+        transmitter (TransmitThread): A thread to handle data transmission.
 
-    Note: Regarding the attribute 'interfaceType', a third value may be used,
-    'genericSerial', but its use could potentially cause problems because of
-    its generic implementation.
+    Note:
+        Regarding the attribute 'interfaceType', a third value may be used,
+        'genericSerial', but its use could potentially cause problems because of
+        its generic implementation.
     """
     def __init__(self, owner, baud_rate, port_name=None, interface_type=None,
                  time_out=0.2):
@@ -243,7 +224,7 @@ class SerialInterface(BaseInterface):
 
         Tries to detect a serial port based on the provided interface type.
         If no serial port is detected, it waits some seconds (10 by default)
-        for new one to bw created.
+        for a new one to be created.
 
         Args:
              interface_type (str): Type of interface.
@@ -277,15 +258,17 @@ class SerialInterface(BaseInterface):
         According to the operating system, selects a type of filter and the
         filter term.
         For example, in the case of Arduino, the type is 'manufacturer' and the
-        filter term is 'Arduino'. This function is implemented like that in
-        order to include new interfaces.
+        filter term is 'Arduino'. This implementation allows the inclusion of
+        new interfaces.
 
-        Note 1: Currently, the type of filter should be one attribute of
-        serial.tools.list_ports.ListPortInfo class, supported by your operating
-        system (Windows, Linux os MacOS).
+        Note:
+            Currently, the type of filter should be one attribute of
+            serial.tools.list_ports.ListPortInfo class, supported by your operating
+            system (Windows, Linux os MacOS).
 
-        Note 2: The use of interface type 'genericSerial' should be avoided
-        because many devices could share the provided filter term.
+        Note:
+            The use of interface type 'genericSerial' should be avoided
+            because many devices could share the provided filter term.
 
         Args:
             interface_type (str): Type of interface, 'ftdi' for FTDI devices,
@@ -324,14 +307,14 @@ class SerialInterface(BaseInterface):
     def wait_for_new_port(self, filter_term=None, time_limit=10):
         """Wait for a new port to be created.
 
-        This functions waits for the user to connect an interface device and
+        This function waits for the user to connect an interface device and
         returns its new serial port.
 
         Args:
             filter_term (str): Optional serial port filter, depends on
-            interface type and operating system.
+                interface type and operating system.
             time_limit (float): Maximum number of seconds to wait for a new
-            port to be created.
+                port to be created.
 
         Returns:
             A list of new serial ports. False, otherwise.
@@ -367,7 +350,7 @@ class SerialInterface(BaseInterface):
 
         As a thread handles data transmission, it continuously checks the
         transmit queue and sends data when added by this function.
-        Data as a string is converted to a list by default.
+        String data is converted to a list by default.
         """
         if self.isConnected:
             self.transmitQueue.put(data)
@@ -398,18 +381,14 @@ class SerialInterface(BaseInterface):
         """A thread to handle data transmission data over a serial port.
 
         Args:
-            owner (SerialInterface):
-                Interface that instantiate this thread.
-            transmit_queue (Queue):
-                Queue that stores to-be-transmitted packets.
-            port (Serial):
-                Serial port to be used.
+            owner (SerialInterface): Interface that instantiates this thread.
+            transmit_queue (Queue): Queue that stores to-be-transmitted packets.
+            port (Serial): Serial port to be used.
 
         Attributes:
-            transmitQueue (Queue):
-                Queue that stores to-be-transmitted packets.
-            port (Serial):
-                Serial port to be used.
+            owner (SerialInterface): Interface that owns this thread.
+            transmitQueue (Queue): Queue that stores to-be-transmitted packets.
+            port (Serial): Serial port to be used.
         """
         def __init__(self, owner, transmit_queue, port):
             super(SerialInterface.TransmitThread, self).__init__()
@@ -420,7 +399,7 @@ class SerialInterface(BaseInterface):
         def run(self):
             """Define code to be ran by the transmit thread.
 
-            Gets a packet from transmit queue, converts it to a string and
+            Gets a packet from transmit queue, converts it into a string and
             transmits it.
             """
             while True:

@@ -2,35 +2,35 @@
 
 Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.
 
-This module defines node classes and an node shell classes, which act
-as an intermediary between the virtual nodes and the virtual machine.
+This module defines virtual node and node shell classes, the latter act
+as an intermediary between the former and the virtual machine.
 
-TO-DO list:
-- Complete load_from_module
-- Decide load_from_file procedure
-- Update is_vm_ill_defined based on is_vn_ill_defined
-- Invetigate load_from_URL
+- 'BaseNodeShell' class:
+    Basic node shell, its function is to provide a mean to load a virtual node
+    that is not defined in the same file as the virtual machine.
+- 'BaseVirtualNode' class:
+    Basic virtual node definition.
 
 Copyright (c) 2018 Daniel Marquina
 """
 
-import importlib  # for importing files as modules
+from py3gestalt import core
+from py3gestalt import packets
+from py3gestalt import functions
+from py3gestalt import utilities
+from py3gestalt import interfaces
+from py3gestalt.utilities import notice
+import importlib
+import threading
+import requests
 import inspect
 import shutil
-import requests
 import random
-import threading
-import time
-import os
 import urllib
 import pyclbr
+import time
 import math
-from py3gestalt.utilities import notice as notice
-import py3gestalt.interfaces as interfaces
-# from pygestalt import functions
-# from pygestalt import packets
-# from pygestalt import utilities
-# from pygestalt import core
+import os
 
 
 # ----NODE SHELLS------------
@@ -38,31 +38,27 @@ class BaseNodeShell(object):
     """The basic container for all nodes.
 
     Like a room in a hotel, that has different occupants and offers certain
-    amenities to its guests. 'BaseNodeShell' gets subclassed by more specific
+    amenities to its guests, 'BaseNodeShell' gets subclassed by more specific
     shells for one of the four types of gestalt nodes:
-    ->Solo/Independent: arbitrary interface/ arbitrary protocol
-    ->Solo/Gestalt: arbitrary interface/ gestalt protocol
-    ->Networked/Gestalt: networked gestalt interface/ gestalt protocol
-    ->Managed/Gestalt: hardware synchronized gestalt network/ gestalt protocol
+
+    - Solo/Independent: arbitrary interface/ arbitrary protocol
+    - Solo/Gestalt: arbitrary interface/ gestalt protocol
+    - Networked/Gestalt: networked gestalt interface/ gestalt protocol
+    - Managed/Gestalt: hardware synchronized gestalt network/ gestalt protocol
 
     Args:
-        owner (VirtualMachine or a child):
-            Virtual machine that aims to own this node shell.
-        name (str):
-            Name of this node shell.
+        owner (VirtualMachine or a child): Virtual machine that instantiates
+            this node shell.
+        name (str): Name of this node shell.
 
     Attributes:
-        owner (VirtualMachine or a child):
-            Virtual machine that owns this node shell.
-        name (str):
-            Name of this node shell.
-        interface (InterfaceShell):
-            Shell to contained owner's interface.
-        vn_class (Class):
-            Virtual node's class. The contained node will be an instance of
-            this class.
-        node (BaseVirtualNode or a child):
-            Contained or linked node.
+        owner (VirtualMachine or a child): Virtual machine that owns this node
+            shell.
+        name (str): Name of this node shell.
+        interface (InterfaceShell): Shell to contain owner's interface.
+        vn_class (Class): Virtual node's class. The contained node will be an
+            instance of this class.
+        node (BaseVirtualNode or a child): Contained or linked node.
     """
     def __init__(self, owner, name):
         self.owner = owner
@@ -86,7 +82,7 @@ class BaseNodeShell(object):
     def load_vn_from_file(self, filename, **kwargs):
         """Load virtual node from a file.
 
-        This functions gets the text from a file, imports it as a module and
+        This function gets the text from a file, imports it as a module and
         loads its defined virtual node'.
 
         Note:
@@ -124,12 +120,13 @@ class BaseNodeShell(object):
         'tmpVN' with a temporal module (file) which contains a defined virtual
         node and imports it.
         They are assessed as 'temporal' because they are deleted every time an
-        import action is attempted.
+        import action is attempted or finished.
 
         Note:
-        The module's name is 'temp_virtual_node_X.py', where 'X' is the number
-        of import attempts. Such change of name is necessary in order to avoid
-        problems next, when analyzing module's classes using 'pyclbr'.
+            The module's name is 'temp_virtual_node_X.py', where 'X' is the
+            number of import attempts. Such change of name is necessary in
+            order to avoid problems next, when analyzing module's classes
+            using 'pyclbr'.
 
         Returns:
             vn_module: Imported virtual node.
@@ -169,11 +166,9 @@ class BaseNodeShell(object):
         last feature can be checked passing an argument 'checked' as False.
 
         Args:
-            module:
-                Module containing virtual node's definition.
-            checked (boolean):
-                A flag indicating whether module's content (only one
-                BaseVirtualNode's child class) has been checked or not.
+            module: Module containing virtual node's definition.
+            checked (boolean): A flag indicating whether module's content (only
+                one BaseVirtualNode's child class) has been checked or not.
         """
         if not checked:
             if self.is_vn_ill_defined(module.__name__):
@@ -241,10 +236,8 @@ class BaseNodeShell(object):
         Owner, name and interface from this shell are passed to contained node.
 
         Args:
-            vn_class (Class):
-                Virtual node class to be instantiated.
-            kwargs:
-                Arguments to be passed onto the virtual node's initialization.
+            vn_class (Class): Virtual node class to be instantiated.
+            kwargs: Arguments to be passed onto the virtual node's initialization.
         """
         self.node = vn_class(self.owner, **kwargs)
         notice(self, "Node assigned to '" + self.name + "' node shell.")
@@ -425,26 +418,24 @@ class BaseVirtualNode(object):
     """Base class for virtual nodes.
 
     Initialization occurs in three steps:
-            1) BaseVirtualNode gets initialized when instantiated.
-            2) Node shell loads references into node through 'set_node()' method.
-            3) 'init()' is called by 'set_node()' method.
+
+    1) BaseVirtualNode gets initialized when instantiated.
+    2) Node shell loads references into node through 'set_node()' method.
+    3) 'init()' is called by 'set_node()' method.
 
     The purpose of this routine is to initialize the nodes once they already
     have references to their shell.
 
     Args:
-        owner (VirtualMachine or a child):
-            Virtual machine that instantiates this node.
+        owner (VirtualMachine or a child): Virtual machine that instantiates
+            this node.
 
     Attributes:
-        owner (VirtualMachine or a child):
-            Virtual machine that instantiates this node.
-        shell (BaseNodeShell or a child):
-            Node shell that contains this node.
-        name (str):
-            Name of this node shell.
-        interface (InterfaceShell):
-            Shell to contained owner's interface.
+        owner (VirtualMachine or a child): Virtual machine that owns this node.
+        shell (BaseNodeShell or a child): Node shell that contains this node.
+        name (str): Name of this node shell.
+        interface (InterfaceShell): Shell to contained owner's interface.
+        initKwargs: Keyword arguments used on instantiation.
     """
 
     def __init__(self, owner, **kwargs):

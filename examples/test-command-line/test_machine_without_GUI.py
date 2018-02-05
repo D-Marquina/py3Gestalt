@@ -1,10 +1,8 @@
-"""Virtual Machine for Testing without a GUI
+"""Virtual Machine for Testing purposes without a GUI
 
 This virtual machine is intended to be run from console, its purpose is to find
 problems or incongruities between the use of GUI or console. After all, this
 framework was originally intended to be run from console.
-
-Eventually, this file wil be moved to examples.
 
 Copyright (c) 2018 Daniel Marquina
 """
@@ -36,8 +34,8 @@ class TestVirtualMachine(machines.VirtualMachine):
             init_message += "Provided interface: True" + '\n'
         else:
             init_message += "Provided interface: False" + '\n'
-        if self.persistenceFilename:
-            init_message += "Persistence file: " + self.persistenceFilename + '\n'
+        if self.persistence:
+            init_message += "Persistence file: " + self.persistence.filename + '\n'
         else:
             init_message += "Persistence file: False" + '\n'
         notice(self, init_message)
