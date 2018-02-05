@@ -1,0 +1,582 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Interfaces &mdash; Gestalt Framework for Python 3 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Gestalt Framework for Python 3 1 documentation" href="index.html"/>
+        <link rel="up" title="py3Gestalt Modules" href="modules.html"/>
+        <link rel="next" title="Nodes" href="mod_nodes.html"/>
+        <link rel="prev" title="Machines" href="mod_machines.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Gestalt Framework for Python 3
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">py3Gestalt Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mod_machines.html">Machines</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mod_nodes.html">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mod_utilities.html">Utilities</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Gestalt Framework for Python 3</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">py3Gestalt Modules</a> &raquo;</li>
+        
+      <li>Interfaces</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/mod_interfaces.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-py3gestalt.interfaces">
+<span id="interfaces"></span><h1>Interfaces<a class="headerlink" href="#module-py3gestalt.interfaces" title="Permalink to this headline">¶</a></h1>
+<p>Interfaces module from Gestalt framework for Python 3.</p>
+<p>Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</p>
+<p>This module defines interface classes and an interface shell class, which acts
+as an intermediary between the interface and nodes.</p>
+<p>‘InterfaceShell’ class is a wrapper that links the real interface object to
+classes and methods that try to access it.</p>
+<p>‘BaseInterface’ class is a basic example of an interface object. Every
+interface should be based on it.</p>
+<p>‘SerialInterface’ class defines an interface that uses a serial port.</p>
+<p>TO-DO list:
+- Add try except AttributeError</p>
+<p>Copyright (c) 2018 Daniel Marquina</p>
+<dl class="class">
+<dt id="py3gestalt.interfaces.InterfaceShell">
+<em class="property">class </em><code class="descclassname">py3gestalt.interfaces.</code><code class="descname">InterfaceShell</code><span class="sig-paren">(</span><em>owner</em>, <em>interface=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#InterfaceShell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.InterfaceShell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Intermediary between nodes, node shells and interfaces.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>owner</strong> – Owner of this interface shell. For now it can be a virtual
+machine or a virtual node.</li>
+<li><strong>interface</strong> (<a class="reference internal" href="#py3gestalt.interfaces.BaseInterface" title="py3gestalt.interfaces.BaseInterface"><em>BaseInterface</em></a>) – Interface to be contained by this shell.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>owner</strong> – Object that instantiates this shell. Used in the port acquisition
+process.</li>
+<li><strong>contained_interface</strong> (<a class="reference internal" href="#py3gestalt.interfaces.BaseInterface" title="py3gestalt.interfaces.BaseInterface"><em>BaseInterface</em></a><em> or </em><em>a child</em>) – Interface contained by this shell.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="py3gestalt.interfaces.InterfaceShell.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>interface</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#InterfaceShell.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.InterfaceShell.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the interface contained by the shell.</p>
+<p>Updates and initializes contained (or linked) shell. Owner can be
+None. It is called when a node is initialized.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>interface</strong> (<a class="reference internal" href="#py3gestalt.interfaces.BaseInterface" title="py3gestalt.interfaces.BaseInterface"><em>BaseInterface</em></a>) – Interface to be contained by this shell.</li>
+<li><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3gestalt.machines.VirtualMachine" title="py3gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a>) – Virtual machine that owns this interface shell.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.InterfaceShell.set_owner">
+<code class="descname">set_owner</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#InterfaceShell.set_owner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.InterfaceShell.set_owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set owner.</p>
+<p>Updates owner of this shell and its contained interface.
+Useful when no owner was specified when instantiating.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3gestalt.machines.VirtualMachine" title="py3gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3gestalt.interfaces.BaseInterface">
+<em class="property">class </em><code class="descclassname">py3gestalt.interfaces.</code><code class="descname">BaseInterface</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#BaseInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.BaseInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class of all interfaces.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3gestalt.machines.VirtualMachine" title="py3gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a><em> or </em><em>a child</em>) – Virtual machine that aims to own
+this interface.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3gestalt.machines.VirtualMachine" title="py3gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a><em> or </em><em>a child</em>) – Virtual machine that owns this interface.</td>
+</tr>
+</tbody>
+</table>
+<p>This class presents a basic structure of all interfaces. Currently, it only
+has an empty method which will be overridden by a child class defined
+later.</p>
+<dl class="method">
+<dt id="py3gestalt.interfaces.BaseInterface.init_after_set">
+<code class="descname">init_after_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#BaseInterface.init_after_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.BaseInterface.init_after_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to interface after it was assigned to an interface shell.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py3gestalt.interfaces.SerialInterface">
+<em class="property">class </em><code class="descclassname">py3gestalt.interfaces.</code><code class="descname">SerialInterface</code><span class="sig-paren">(</span><em>owner</em>, <em>baud_rate</em>, <em>port_name=None</em>, <em>interface_type=None</em>, <em>time_out=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3gestalt.interfaces.BaseInterface" title="py3gestalt.interfaces.BaseInterface"><code class="xref py py-class docutils literal"><span class="pre">py3gestalt.interfaces.BaseInterface</span></code></a></p>
+<p>Serial communication interface.</p>
+<p>The core of this class is a serial object. For data transmission, a queue
+stores all data to be sent whereas a thread handles transmission of every
+element in that queue. As data reception using a thread requires a defined
+protocol, a simple method reads a number of bytes from the input buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3gestalt.machines.VirtualMachine" title="py3gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a><em> or </em><em>child</em>) – Virtual machine that instantiates this interface.</li>
+<li><strong>baud_rate</strong> (<em>int</em>) – Speed in baud.</li>
+<li><strong>port_name</strong> (<em>str</em>) – Name of port to connect.</li>
+<li><strong>interface_type</strong> (<em>str</em>) – Type of interface, ‘ftdi’ or ‘arduino’ for now.</li>
+<li><strong>time_out</strong> (<em>float</em>) – Time to wait for a new device to be connected, in seconds.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>baudRate</strong> (<em>int</em>) – Speed in baud.</li>
+<li><strong>portName</strong> (<em>str</em>) – Name of connected port.</li>
+<li><strong>interfaceType</strong> (<em>str</em>) – Type of interface, ‘ftdi’ or ‘lufa’ for now.</li>
+<li><strong>owner</strong> (<a class="reference internal" href="mod_machines.html#py3gestalt.machines.VirtualMachine" title="py3gestalt.machines.VirtualMachine"><em>VirtualMachine</em></a>) – Object that owns this interface.</li>
+<li><strong>timeOut</strong> (<em>float</em>) – Time to wait for a new device to be connected.</li>
+<li><strong>isConnected</strong> (<em>boolean</em>) – State of connection.</li>
+<li><strong>port</strong> (<em>serial</em>) – Serial object to use.</li>
+<li><strong>transmitQueue</strong> (<em>Queue</em>) – A queue to store to-be-transmitted packets from different sources.</li>
+<li><strong>transmitter</strong> (<a class="reference internal" href="#py3gestalt.interfaces.SerialInterface.TransmitThread" title="py3gestalt.interfaces.SerialInterface.TransmitThread"><em>TransmitThread</em></a>) – A thread to handle data transmission.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note: Regarding the attribute ‘interfaceType’, a third value may be used,
+‘genericSerial’, but its use could potentially cause problems because of
+its generic implementation.</p>
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.init_after_set">
+<code class="descname">init_after_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.init_after_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.init_after_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize after setting.</p>
+<p>Begins connection procedure. First, it tries to connect to provided
+port name; if there is no port name, it waits for a new port to be
+created based on a provided interface type.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><em>port_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to serial port.</p>
+<p>Connects to specified port name. Tries to connect to port assigned on
+instantiation if no port is specified as argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>port_name</strong> (<em>str</em>) – Name of serial port.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.acquire_port_and_connect">
+<code class="descname">acquire_port_and_connect</code><span class="sig-paren">(</span><em>interface_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.acquire_port_and_connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.acquire_port_and_connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire a serial port and connect to it.</p>
+<p>Tries to detect a serial port based on the provided interface type.
+If no serial port is detected, it waits some seconds (10 by default)
+for new one to bw created.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interface_type</strong> (<em>str</em>) – Type of interface.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Call to connect function if a port was detected. Exits, otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.get_serial_filter_terms">
+<code class="descname">get_serial_filter_terms</code><span class="sig-paren">(</span><em>interface_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.get_serial_filter_terms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.get_serial_filter_terms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get filter terms for serial ports.</p>
+<p>According to the operating system, selects a type of filter and the
+filter term.
+For example, in the case of Arduino, the type is ‘manufacturer’ and the
+filter term is ‘Arduino’. This function is implemented like that in
+order to include new interfaces.</p>
+<p>Note 1: Currently, the type of filter should be one attribute of
+serial.tools.list_ports.ListPortInfo class, supported by your operating
+system (Windows, Linux os MacOS).</p>
+<p>Note 2: The use of interface type ‘genericSerial’ should be avoided
+because many devices could share the provided filter term.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interface_type</strong> (<em>str</em>) – Type of interface, ‘ftdi’ for FTDI devices,
+‘Arduino’ for Arduino and ‘generic serial’ for others.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of filter type and filter term respectively, if found on
+the dictionary. False, otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.wait_for_new_port">
+<code class="descname">wait_for_new_port</code><span class="sig-paren">(</span><em>filter_term=None</em>, <em>time_limit=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.wait_for_new_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.wait_for_new_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for a new port to be created.</p>
+<p>This functions waits for the user to connect an interface device and
+returns its new serial port.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filter_term</strong> (<em>str</em>) – Optional serial port filter, depends on</li>
+<li><strong>type and operating system.</strong> (<em>interface</em>) – </li>
+<li><strong>time_limit</strong> (<em>float</em>) – Maximum number of seconds to wait for a new</li>
+<li><strong>to be created.</strong> (<em>port</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of new serial ports. False, otherwise.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.start_transmitter">
+<code class="descname">start_transmitter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.start_transmitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.start_transmitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the transmit thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.transmit">
+<code class="descname">transmit</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.transmit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.transmit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add data to transmit queue.</p>
+<p>As a thread handles data transmission, it continuously checks the
+transmit queue and sends data when added by this function.
+Data as a string is converted to a list by default.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.read_bytes">
+<code class="descname">read_bytes</code><span class="sig-paren">(</span><em>bytes_to_read=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.read_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.read_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a number of bytes from the serial port’s input buffer.</p>
+<p>If there are less bytes available, read only the available ones.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bytes_to_read</strong> (<em>int</em>) – Number of bytes to grab.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Read bytes, if received. None, otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="py3gestalt.interfaces.SerialInterface.TransmitThread">
+<em class="property">class </em><code class="descname">TransmitThread</code><span class="sig-paren">(</span><em>owner</em>, <em>transmit_queue</em>, <em>port</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.TransmitThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.TransmitThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<p>A thread to handle data transmission data over a serial port.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>owner</strong> (<a class="reference internal" href="#py3gestalt.interfaces.SerialInterface" title="py3gestalt.interfaces.SerialInterface"><em>SerialInterface</em></a>) – Interface that instantiate this thread.</li>
+<li><strong>transmit_queue</strong> (<em>Queue</em>) – Queue that stores to-be-transmitted packets.</li>
+<li><strong>port</strong> (<em>Serial</em>) – Serial port to be used.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>transmitQueue</strong> (<em>Queue</em>) – Queue that stores to-be-transmitted packets.</li>
+<li><strong>port</strong> (<em>Serial</em>) – Serial port to be used.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.TransmitThread.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.TransmitThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.TransmitThread.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define code to be ran by the transmit thread.</p>
+<p>Gets a packet from transmit queue, converts it to a string and
+transmits it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.TransmitThread.get_transmit_packet">
+<code class="descname">get_transmit_packet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.TransmitThread.get_transmit_packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.TransmitThread.get_transmit_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a to-be-transmitted packet from the transmit queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True and first packet from transmit queue, if it was not empty.
+False and None, otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.interfaces.SerialInterface.TransmitThread.serialize">
+<code class="descname">serialize</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/interfaces.html#SerialInterface.TransmitThread.serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.interfaces.SerialInterface.TransmitThread.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert packet into a string for transmission over a serial port.</p>
+<p>Uses ASCII characters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Packet as string if it was a list or a string. False, otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="mod_nodes.html" class="btn btn-neutral float-right" title="Nodes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="mod_machines.html" class="btn btn-neutral" title="Machines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Marquina.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

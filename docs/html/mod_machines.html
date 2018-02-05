@@ -1,0 +1,415 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Machines &mdash; Gestalt Framework for Python 3 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Gestalt Framework for Python 3 1 documentation" href="index.html"/>
+        <link rel="up" title="py3Gestalt Modules" href="modules.html"/>
+        <link rel="next" title="Interfaces" href="mod_interfaces.html"/>
+        <link rel="prev" title="py3Gestalt Modules" href="modules.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Gestalt Framework for Python 3
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">py3Gestalt Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mod_interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mod_nodes.html">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mod_utilities.html">Utilities</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Gestalt Framework for Python 3</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">py3Gestalt Modules</a> &raquo;</li>
+        
+      <li>Machines</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/mod_machines.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-py3gestalt.machines">
+<span id="machines"></span><h1>Machines<a class="headerlink" href="#module-py3gestalt.machines" title="Permalink to this headline">¶</a></h1>
+<p>Machines module from Gestalt framework for Python 3.</p>
+<p>Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</p>
+<p>This module contains classes needed to define a virtual machine and its
+components according to the real physical machine.
+‘Virtual Machine’ class is the main class, all user-defined virtual machine
+should be its child. It includes some methods in order to show a basic
+structure of virtual machines. Those methods are supposed to be
+overridden.</p>
+<p>Copyright (c) 2018 Daniel Marquina</p>
+<dl class="class">
+<dt id="py3gestalt.machines.VirtualMachine">
+<em class="property">class </em><code class="descclassname">py3gestalt.machines.</code><code class="descname">VirtualMachine</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class for all virtual machines.</p>
+<p>A virtual machine is basically made of an interface, nodes and machine
+elements, all of them are virtual too because they represent the real,
+physical machine.</p>
+<p>Four basic main attributes are needed: name, interface, GUI and
+persistence file.
+If no name is specified, its path is assigned as its name by default. Its
+interface must be defined on ‘interfaces’ module. GUI must have a
+‘write.debugger(str)’ method. The persistence file is always created when
+its name is specified and is saved where the user-defined virtual machine’s
+file resides.</p>
+<p>All methods are empty but are called in initialization because the user
+should redefine them according to the real machine’s requirements. While
+many machines won’t need every pre-built initializer, they are provided to
+introduce some structure to the format of virtual machines.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – Virtual machine’s name.</li>
+<li><strong>interface</strong> – Virtual machine’s interface, must be defined in interfaces
+module.</li>
+<li><strong>persistenceFile</strong> (<em>str</em>) – Persistence file’s name.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) – Virtual machine’s name.</li>
+<li><strong>interface</strong> – Virtual machine’s interface, must be defined in interfaces
+module.</li>
+<li><strong>persistenceFile</strong> (<em>str</em>) – Persistence file’s name.</li>
+<li><strong>persistence</strong> (<a class="reference internal" href="mod_utilities.html#py3gestalt.utilities.PersistenceManager" title="py3gestalt.utilities.PersistenceManager"><em>PersistenceManager</em></a>) – Persistence file’s manager.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.set_name">
+<code class="descname">set_name</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set name of virtual machine.</p>
+<p>If this function is called without passing an argument, virtual machine’s
+file’s location is assigned as name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) – Virtual machine’s new name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.set_interface">
+<code class="descname">set_interface</code><span class="sig-paren">(</span><em>interface=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.set_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.set_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set interface of virtual machine.</p>
+<p>When no interface is specified, an interface shell is assigned as
+machine’s interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interface</strong> – Virtual machine’s interface, must be defined in
+interfaces module.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.set_persistence">
+<code class="descname">set_persistence</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.set_persistence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.set_persistence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set persistence file of virtual machine.</p>
+<p>‘Filename’ can be None because the implementation of PersistenceManager
+class foresees a case when no file name was assigned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) – Virtual machine’s persistence file’s name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.init_interfaces">
+<code class="descname">init_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_interfaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization of interfaces.</p>
+<p>This method is called on instantiation of virtual machine and should
+be overwritten by user.</p>
+<p>Machine interface can be specified either on instantiation, using
+“set_interface()” method or here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.init_controllers">
+<code class="descname">init_controllers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_controllers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_controllers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization of controllers or nodes.</p>
+<p>This method is called on instantiation of virtual machine and should
+be overwritten by user.</p>
+<p>Every node should be declared on “__init__” fucntion of user-defined
+virtual machine, before calling “__init__” function of this class, and
+should be defined here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.init_coordinates">
+<code class="descname">init_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization of coordinates.</p>
+<p>This method is called on instantiation of virtual machine and should
+be overwritten by user.</p>
+<p>Used units are defined here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.init_kinematics">
+<code class="descname">init_kinematics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_kinematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_kinematics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization of kinematics.</p>
+<p>This method is called on instantiation of virtual machine and should
+be overwritten by user.</p>
+<p>Mechanical machine elements and kinematics are defined here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.init_functions">
+<code class="descname">init_functions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_functions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization of functions.</p>
+<p>This method is called on instantiation of virtual machine and should
+be overwritten by user.</p>
+<p>Functions needed for machine operation should be defined here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.init">
+<code class="descname">init</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>User-defined initialization.</p>
+<p>This method is called on instantiation of virtual machine and should
+be overwritten by user.</p>
+<p>This initialization method can be called any time, should be carefully
+written.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py3gestalt.machines.VirtualMachine.init_last">
+<code class="descname">init_last</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/py3gestalt/machines.html#VirtualMachine.init_last"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#py3gestalt.machines.VirtualMachine.init_last" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization of last.</p>
+<p>This method is called on instantiation of virtual machine and should
+be overwritten by user.</p>
+<p>This methods purpose is still obscure.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="mod_interfaces.html" class="btn btn-neutral float-right" title="Interfaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="py3Gestalt Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Marquina.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,3 +1,0 @@
-py3Gestalf
-==========
-A short description, overview, something

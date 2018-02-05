@@ -1,0 +1,781 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>py3gestalt.machines &mdash; Gestalt Framework for Python 3 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Gestalt Framework for Python 3 1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Gestalt Framework for Python 3
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">py3Gestalt Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Gestalt Framework for Python 3</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>py3gestalt.machines</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for py3gestalt.machines</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Machines module from Gestalt framework for Python 3.</span>
+
+<span class="sd">Originally written by Ilan Moyer in 2013 and modified by Nadya Peek in 2015.</span>
+
+<span class="sd">This module contains classes needed to define a virtual machine and its</span>
+<span class="sd">components according to the real physical machine.</span>
+<span class="sd">&#39;Virtual Machine&#39; class is the main class, all user-defined virtual machine</span>
+<span class="sd">should be its child. It includes some methods in order to show a basic</span>
+<span class="sd">structure of virtual machines. Those methods are supposed to be</span>
+<span class="sd">overridden.</span>
+
+<span class="sd">Copyright (c) 2018 Daniel Marquina</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">py3gestalt.utilities</span> <span class="k">import</span> <span class="n">PersistenceManager</span>
+<span class="kn">from</span> <span class="nn">py3gestalt.utilities</span> <span class="k">import</span> <span class="n">notice</span> <span class="k">as</span> <span class="n">notice</span>
+<span class="kn">import</span> <span class="nn">py3gestalt.interfaces</span> <span class="k">as</span> <span class="nn">interfaces</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+
+<div class="viewcode-block" id="VirtualMachine"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine">[docs]</a><span class="k">class</span> <span class="nc">VirtualMachine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for all virtual machines.</span>
+
+<span class="sd">    A virtual machine is basically made of an interface, nodes and machine</span>
+<span class="sd">    elements, all of them are virtual too because they represent the real,</span>
+<span class="sd">    physical machine.</span>
+
+<span class="sd">    Four basic main attributes are needed: name, interface, GUI and</span>
+<span class="sd">    persistence file.</span>
+<span class="sd">    If no name is specified, its path is assigned as its name by default. Its</span>
+<span class="sd">    interface must be defined on &#39;interfaces&#39; module. GUI must have a</span>
+<span class="sd">    &#39;write.debugger(str)&#39; method. The persistence file is always created when</span>
+<span class="sd">    its name is specified and is saved where the user-defined virtual machine&#39;s</span>
+<span class="sd">    file resides.</span>
+
+<span class="sd">    All methods are empty but are called in initialization because the user</span>
+<span class="sd">    should redefine them according to the real machine&#39;s requirements. While</span>
+<span class="sd">    many machines won&#39;t need every pre-built initializer, they are provided to</span>
+<span class="sd">    introduce some structure to the format of virtual machines.</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        name (str): Virtual machine&#39;s name.</span>
+<span class="sd">        interface: Virtual machine&#39;s interface, must be defined in interfaces</span>
+<span class="sd">            module.</span>
+<span class="sd">        persistenceFile (str): Persistence file&#39;s name.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name (str): Virtual machine&#39;s name.</span>
+<span class="sd">        interface: Virtual machine&#39;s interface, must be defined in interfaces</span>
+<span class="sd">            module.</span>
+<span class="sd">        persistenceFile (str): Persistence file&#39;s name.</span>
+<span class="sd">        persistence (PersistenceManager): Persistence file&#39;s manager.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Initializing virtual machine...&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_interface</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;interface&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;interface&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">persistence</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s1">&#39;persistenceFile&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_persistence</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;persistenceFile&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="c1"># If no name is provided, and multiple machines share the</span>
+                <span class="c1"># persistence file, this could result in a namespace conflict.</span>
+                <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                       <span class="s1">&#39;Warning: setting persistence without providing a name &#39;</span>
+                       <span class="s1">&#39;to the virtual machine can result in a conflict in &#39;</span>
+                       <span class="s1">&#39;multi-machine persistence files.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_persistence</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_file_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Run user initialization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_interfaces</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_controllers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_coordinates</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_kinematics</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_functions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_last</span><span class="p">()</span>
+
+<div class="viewcode-block" id="VirtualMachine.set_name"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.set_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set name of virtual machine.</span>
+
+<span class="sd">        If this function is called without passing an argument, virtual machine&#39;s</span>
+<span class="sd">        file&#39;s location is assigned as name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Virtual machine&#39;s new name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Assignation of ill defined name was refused. &quot;</span>
+                         <span class="s2">&quot;Previous name remains&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirtualMachine.set_interface"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.set_interface">[docs]</a>    <span class="k">def</span> <span class="nf">set_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set interface of virtual machine.</span>
+
+<span class="sd">        When no interface is specified, an interface shell is assigned as</span>
+<span class="sd">        machine&#39;s interface.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interface: Virtual machine&#39;s interface, must be defined in</span>
+<span class="sd">                interfaces module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">interface</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;No interface trying to be assigned.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">InterfaceShell</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="bp">cls</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">)</span>
+                 <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;InterfaceShell&quot;</span><span class="p">,</span> <span class="s2">&quot;BaseInterface&quot;</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="n">interface</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">notice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Assignation of ill defined interface was refused. &quot;</span>
+                         <span class="s2">&quot;Previous interface remains&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirtualMachine.set_persistence"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.set_persistence">[docs]</a>    <span class="k">def</span> <span class="nf">set_persistence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set persistence file of virtual machine.</span>
+
+<span class="sd">        &#39;Filename&#39; can be None because the implementation of PersistenceManager</span>
+<span class="sd">        class foresees a case when no file name was assigned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): Virtual machine&#39;s persistence file&#39;s name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">persistence</span> <span class="o">=</span> <span class="n">PersistenceManager</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">persistenceFilename</span><span class="p">,</span>
+                                              <span class="n">namespace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirtualMachine.init_interfaces"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.init_interfaces">[docs]</a>    <span class="k">def</span> <span class="nf">init_interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization of interfaces.</span>
+
+<span class="sd">        This method is called on instantiation of virtual machine and should</span>
+<span class="sd">        be overwritten by user.</span>
+
+<span class="sd">        Machine interface can be specified either on instantiation, using</span>
+<span class="sd">        &quot;set_interface()&quot; method or here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="VirtualMachine.init_controllers"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.init_controllers">[docs]</a>    <span class="k">def</span> <span class="nf">init_controllers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization of controllers or nodes.</span>
+
+<span class="sd">        This method is called on instantiation of virtual machine and should</span>
+<span class="sd">        be overwritten by user.</span>
+
+<span class="sd">        Every node should be declared on &quot;__init__&quot; fucntion of user-defined</span>
+<span class="sd">        virtual machine, before calling &quot;__init__&quot; function of this class, and</span>
+<span class="sd">        should be defined here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="VirtualMachine.init_coordinates"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.init_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">init_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization of coordinates.</span>
+
+<span class="sd">        This method is called on instantiation of virtual machine and should</span>
+<span class="sd">        be overwritten by user.</span>
+
+<span class="sd">        Used units are defined here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="VirtualMachine.init_kinematics"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.init_kinematics">[docs]</a>    <span class="k">def</span> <span class="nf">init_kinematics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization of kinematics.</span>
+
+<span class="sd">        This method is called on instantiation of virtual machine and should</span>
+<span class="sd">        be overwritten by user.</span>
+
+<span class="sd">        Mechanical machine elements and kinematics are defined here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="VirtualMachine.init_functions"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.init_functions">[docs]</a>    <span class="k">def</span> <span class="nf">init_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization of functions.</span>
+
+<span class="sd">        This method is called on instantiation of virtual machine and should</span>
+<span class="sd">        be overwritten by user.</span>
+
+<span class="sd">        Functions needed for machine operation should be defined here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="VirtualMachine.init"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;User-defined initialization.</span>
+
+<span class="sd">        This method is called on instantiation of virtual machine and should</span>
+<span class="sd">        be overwritten by user.</span>
+
+<span class="sd">        This initialization method can be called any time, should be carefully</span>
+<span class="sd">        written.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="VirtualMachine.init_last"><a class="viewcode-back" href="../../mod_machines.html#py3gestalt.machines.VirtualMachine.init_last">[docs]</a>    <span class="k">def</span> <span class="nf">init_last</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization of last.</span>
+
+<span class="sd">        This method is called on instantiation of virtual machine and should</span>
+<span class="sd">        be overwritten by user.</span>
+
+<span class="sd">        This methods purpose is still obscure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+
+<span class="c1"># # --COORDINATES-----</span>
+<span class="c1"># class coordinates():</span>
+<span class="c1">#     &#39;&#39;&#39;Components pertinent to storing and manipulating position information.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#     class uFloat(float):</span>
+<span class="c1">#         &#39;&#39;&#39;A floating-point number which also has units.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __new__(self, value, units=None):</span>
+<span class="c1">#             return float.__new__(self, value)</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, value, units=None):</span>
+<span class="c1">#             self.units = units</span>
+<span class="c1">#             self.conversionDictionary = &#39;&#39;</span>
+<span class="c1">#             if units == &#39;mm&#39;: self.conversionDictionary = {&#39;in&#39;: 1.0 / 25.4}</span>
+<span class="c1">#             if units == &#39;in&#39;: self.conversionDictionary = {&#39;mm&#39;: 25.4}</span>
+<span class="c1">#             if units == &#39;deg&#39;: self.conversionDictionary = {&#39;rad&#39;: 2 * math.pi / 360.0}</span>
+<span class="c1">#             if units == &#39;rad&#39;: self.conversionDictionary = {&#39;deg&#39;: 360.0 / (2.0 * math.pi)}</span>
+<span class="c1">#</span>
+<span class="c1">#         def convertUnits(self, targetUnits):</span>
+<span class="c1">#             if targetUnits in self.conversionDictionary:</span>
+<span class="c1">#                 return coordinates.uFloat(self * self.conversionDictionary[targetUnits], targetUnits)</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 return False</span>
+<span class="c1">#</span>
+<span class="c1">#     def uFloatSubtract(self, term1, term2):</span>
+<span class="c1">#         &#39;&#39;&#39;Returns a list containing term1 - term2 with units.&#39;&#39;&#39;</span>
+<span class="c1">#         return [uFloat(x - y, x.units) for (x, y) in zip(term1, term2)]</span>
+<span class="c1">#</span>
+<span class="c1">#     class baseCoordinate(object):</span>
+<span class="c1">#         &#39;&#39;&#39;A set of ordinates which can be used to define positions of various machine elements.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, inputList):</span>
+<span class="c1">#             self.baseList = [coordinates.uFloat(0, elementUnit) for elementUnit in inputList]</span>
+<span class="c1">#</span>
+<span class="c1">#         def __call__(self):</span>
+<span class="c1">#             return self.baseList</span>
+<span class="c1">#</span>
+<span class="c1">#         def get(self):</span>
+<span class="c1">#             return self.baseList</span>
+<span class="c1">#</span>
+<span class="c1">#         def set(self, valueArray):</span>
+<span class="c1">#             if len(valueArray) != len(self.baseList):</span>
+<span class="c1">#                 notice(self, &#39;input array length must match coordinate length.&#39;)</span>
+<span class="c1">#                 return False</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 for index, item in enumerate(valueArray):</span>
+<span class="c1">#                     # any None input will not modify value</span>
+<span class="c1">#                     self.baseList[index] = coordinates.uFloat(item, self.baseList[index].units) if item != None else \</span>
+<span class="c1">#                     self.baseList[index]</span>
+<span class="c1">#                 return True</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># # --MACHINE STATE-----</span>
+<span class="c1"># class state():</span>
+<span class="c1">#     &#39;&#39;&#39;Elements which help keep track of machine state.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#     class coordinate(object):</span>
+<span class="c1">#         &#39;&#39;&#39;A collection of coordinates which stores both actual (real-time) and future (buffered) machine positions.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, inputList):</span>
+<span class="c1">#             self.actual = coordinates.baseCoordinate(inputList)</span>
+<span class="c1">#             self.future = coordinates.baseCoordinate(inputList)</span>
+<span class="c1">#</span>
+<span class="c1">#         def update(self, inputList):</span>
+<span class="c1">#             &#39;&#39;&#39;Updates last known real-time coordinate of machine.&#39;&#39;&#39;</span>
+<span class="c1">#             return self.actual.set(inputList)</span>
+<span class="c1">#</span>
+<span class="c1">#         def commit(self, inputList):</span>
+<span class="c1">#             &#39;&#39;&#39;Updates most recent change to machine position used for calculating future moves.&#39;&#39;&#39;</span>
+<span class="c1">#             return self.future.set(inputList)</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># # --ELEMENTS-----</span>
+<span class="c1"># class elements():</span>
+<span class="c1">#     class element(object):</span>
+<span class="c1">#         &#39;&#39;&#39;Base class for mechanical elements.</span>
+<span class="c1">#         In essence, elements scale and/or convert between units.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         @classmethod</span>
+<span class="c1">#         def forward(thisClass, inputParameter):</span>
+<span class="c1">#             newInstance = thisClass(inputParameter)  # instantiates a new class with the specified input parameter</span>
+<span class="c1">#             setattr(newInstance, &#39;forward&#39;,</span>
+<span class="c1">#                     newInstance.transformForward)  # replaces reference to forward for future function calls</span>
+<span class="c1">#             setattr(newInstance, &#39;reverse&#39;,</span>
+<span class="c1">#                     newInstance.transformReverse)  # replaces reference to reverse for future function calls</span>
+<span class="c1">#             return newInstance</span>
+<span class="c1">#</span>
+<span class="c1">#         @classmethod</span>
+<span class="c1">#         def reverse(thisClass, inputParameter):</span>
+<span class="c1">#             newInstance = thisClass(inputParameter)  # instantiates a new class with the specified input parameter</span>
+<span class="c1">#             setattr(newInstance, &#39;forward&#39;,</span>
+<span class="c1">#                     newInstance.transformForward)  # replaces reference to forward for future function calls</span>
+<span class="c1">#             setattr(newInstance, &#39;reverse&#39;,</span>
+<span class="c1">#                     newInstance.transformReverse)  # replaces reference to reverse for future function calls</span>
+<span class="c1">#             if type(newInstance.transformation) == int or type(</span>
+<span class="c1">#                     newInstance.transformation) == float:  # make sure not to reverse a list of elements</span>
+<span class="c1">#                 newInstance.transformation = 1.0 / float(newInstance.transformation)  # invert transformation</span>
+<span class="c1">#                 newInstance.inputUnits, newInstance.outputUnits = newInstance.outputUnits, newInstance.inputUnits  # flip units</span>
+<span class="c1">#             if type(newInstance.transformation) == list: newInstance.transformation.reverse()  # flip element list</span>
+<span class="c1">#             return newInstance</span>
+<span class="c1">#</span>
+<span class="c1">#         def init(self, inputUnits=None, outputUnits=None, transformation=None):</span>
+<span class="c1">#             self.inputUnits = inputUnits</span>
+<span class="c1">#             self.outputUnits = outputUnits</span>
+<span class="c1">#             self.transformation = transformation</span>
+<span class="c1">#</span>
+<span class="c1">#         def transformForward(self,</span>
+<span class="c1">#                              value):  # NOTE: THIS GETS REASSIGNED TO THE NAME &quot;forward&quot; ON INSTANTIATION BY CLASSMETHOD &quot;forward&quot;</span>
+<span class="c1">#             if type(self.transformation) == list:  # transformation is a list of elements</span>
+<span class="c1">#                 for element in self.transformation:  # transform value thru elements in forwards direction</span>
+<span class="c1">#                     value = element.forward(value)</span>
+<span class="c1">#                 return value</span>
+<span class="c1">#</span>
+<span class="c1">#             elif type(value) == coordinates.uFloat:  # input value is a uFloat, transform directly</span>
+<span class="c1">#                 if value.units == self.inputUnits:  # input units match</span>
+<span class="c1">#                     return coordinates.uFloat(value * self.transformation,</span>
+<span class="c1">#                                               self.outputUnits)  # return a transformed uFloat in output units</span>
+<span class="c1">#                 elif self.inputUnits:  # input units are specified for this element, enforce match</span>
+<span class="c1">#                     newValue = value.convertUnits(self.inputUnits)  # try to convert to input units. i.e. mm to inch</span>
+<span class="c1">#                     if newValue:</span>
+<span class="c1">#                         return coordinates.uFloat(newValue * self.transformation,</span>
+<span class="c1">#                                                   self.outputUnits)  # conversion successful, return a transformed uFloat in output units</span>
+<span class="c1">#                     else:</span>
+<span class="c1">#                         notice(self,</span>
+<span class="c1">#                                &#39;provided units &#39; + str(value.units) + &#39; but this element works in units of &#39; + str(</span>
+<span class="c1">#                                    self.inputUnits) + &#39; in the forward direction.&#39;)</span>
+<span class="c1">#                         return False</span>
+<span class="c1">#                 else:  # no input units specified, transform anyways</span>
+<span class="c1">#                     return coordinates.uFloat(value * self.transformation,</span>
+<span class="c1">#                                               value.units)  # return a transformed uFloat in same units as input value</span>
+<span class="c1">#</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 notice(self, &#39;expected an input of type uFloat but instead got &#39; + str(type(value)))</span>
+<span class="c1">#                 return False</span>
+<span class="c1">#</span>
+<span class="c1">#         def transformReverse(self,</span>
+<span class="c1">#                              value):  # NOTE: THIS GETS REASSIGNED TO THE NAME &quot;reverse&quot; ON INSTANTIATION BY CLASSMETHOD &quot;reverse&quot;</span>
+<span class="c1">#             if type(self.transformation) == list:  # transformation is a list of elements</span>
+<span class="c1">#                 reverseTransformation = copy.copy(self.transformation)</span>
+<span class="c1">#                 reverseTransformation.reverse()</span>
+<span class="c1">#                 for element in reverseTransformation:  # transform value thru elements in forwards direction</span>
+<span class="c1">#                     value = element.reverse(value)</span>
+<span class="c1">#                 return value</span>
+<span class="c1">#</span>
+<span class="c1">#             elif type(value) == coordinates.uFloat:  # input value is a uFloat, transform directly</span>
+<span class="c1">#                 if value.units == self.outputUnits:  # output units match (going in reverse!)</span>
+<span class="c1">#                     return coordinates.uFloat(value / float(self.transformation),</span>
+<span class="c1">#                                               self.inputUnits)  # return a transformed uFloat in input units</span>
+<span class="c1">#                 elif self.inputUnits:  # input units are specified for this element, enforce match</span>
+<span class="c1">#                     newValue = value.convertUnits(self.outputUnits)  # try to convert to input units. i.e. mm to inch</span>
+<span class="c1">#                     if newValue:</span>
+<span class="c1">#                         return coordinates.uFloat(newValue / float(self.transformation),</span>
+<span class="c1">#                                                   self.inputUnits)  # conversion successful, return a transformed uFloat in output units</span>
+<span class="c1">#                     else:</span>
+<span class="c1">#                         notice(self,</span>
+<span class="c1">#                                &#39;provided units &#39; + str(value.units) + &#39; but this element works in units of &#39; + str(</span>
+<span class="c1">#                                    self.outputUnits) + &#39; in the reverse direction.&#39;)</span>
+<span class="c1">#                         return False</span>
+<span class="c1">#                 else:  # no input units specified, transform anyways</span>
+<span class="c1">#                     return coordinates.uFloat(value / float(self.transformation),</span>
+<span class="c1">#                                               value.units)  # return a transformed uFloat in same units as input value</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 notice(self, &#39;expected an input of type uFloat but instead got &#39; + str(type(value)))</span>
+<span class="c1">#                 return False</span>
+<span class="c1">#</span>
+<span class="c1">#     class elementChain(element):</span>
+<span class="c1">#         def __init__(self, elements):</span>
+<span class="c1">#             if type(elements) == list:</span>
+<span class="c1">#                 self.init(transformation=elements)</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 notice(self, &#39;expected input of type list but instead got &#39; + str(type(elements)))</span>
+<span class="c1">#                 return None</span>
+<span class="c1">#</span>
+<span class="c1">#     class microstep(element):</span>
+<span class="c1">#         def __init__(self, microstepCount):</span>
+<span class="c1">#             self.init(inputUnits=&#39;usteps&#39;, outputUnits=&#39;steps&#39;,</span>
+<span class="c1">#                       transformation=1 / float(microstepCount))  # microsteps -&gt; 1/microstepCount -&gt; steps</span>
+<span class="c1">#             self.steps = self.transformForward</span>
+<span class="c1">#             self.usteps = self.transformReverse</span>
+<span class="c1">#</span>
+<span class="c1">#     class stepper(element):</span>
+<span class="c1">#         def __init__(self, stepAngle):</span>
+<span class="c1">#             self.init(inputUnits=&#39;steps&#39;, outputUnits=&#39;rev&#39;,</span>
+<span class="c1">#                       transformation=stepAngle / 360.0)  # steps -&gt; stepAngle/360 -&gt; revolutions</span>
+<span class="c1">#             self.revolutions = self.transformForward  # (steps)</span>
+<span class="c1">#             self.steps = self.transformReverse  # (revolutions)</span>
+<span class="c1">#</span>
+<span class="c1">#     class leadscrew(element):</span>
+<span class="c1">#         def __init__(self, lead):</span>
+<span class="c1">#             self.init(inputUnits=&#39;rev&#39;, outputUnits=&#39;mm&#39;, transformation=float(lead))  # revolutions -&gt; lead -&gt; travel</span>
+<span class="c1">#             self.travel = self.transformForward  # (revolutions)</span>
+<span class="c1">#             self.revolutions = self.transformReverse  # (travel)</span>
+<span class="c1">#</span>
+<span class="c1">#     class pulley(element):</span>
+<span class="c1">#         def __init__(self, pitchDiameter):</span>
+<span class="c1">#             self.init(inputUnits=&#39;rev&#39;, outputUnits=&#39;mm&#39;,</span>
+<span class="c1">#                       transformation=float(math.pi * pitchDiameter))  # revolutions -&gt; pitch circumference -&gt; travel</span>
+<span class="c1">#             self.travel = self.transformForward  # (revolutions)</span>
+<span class="c1">#             self.revolutions = self.transformReverse  # (travel)</span>
+<span class="c1">#</span>
+<span class="c1">#     class invert(element):</span>
+<span class="c1">#         def __init__(self, invert=False):</span>
+<span class="c1">#             if not invert:</span>
+<span class="c1">#                 self.init(transformation=1.0)</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 self.init(transformation=-1.0)</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># # ---KINEMATICS-----</span>
+<span class="c1"># class kinematics():</span>
+<span class="c1">#     class matrix(object):</span>
+<span class="c1">#         &#39;&#39;&#39;A base class for defining transformation matrices.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, array):</span>
+<span class="c1">#             self.array = array</span>
+<span class="c1">#             self.length = len(array[0])  # the number of columns of the array</span>
+<span class="c1">#</span>
+<span class="c1">#         def __call__(self, inputVector):</span>
+<span class="c1">#             return self.transform(inputVector)</span>
+<span class="c1">#</span>
+<span class="c1">#         def transform(self, inputVector):</span>
+<span class="c1">#             if len(inputVector) != len(self.array[0]):  # check to make sure that vectors match</span>
+<span class="c1">#                 notice(self, &#39;vector length mismatch&#39;)</span>
+<span class="c1">#                 return False</span>
+<span class="c1">#             return [self.dot(row, inputVector) for row in self.array]</span>
+<span class="c1">#</span>
+<span class="c1">#         def dot(self, array1, array2):</span>
+<span class="c1">#             # array1 is a dimensionless vector</span>
+<span class="c1">#             # array2 has dimensions</span>
+<span class="c1">#             dotProduct = 0.0</span>
+<span class="c1">#             units = None</span>
+<span class="c1">#             for index, value in enumerate(array1):</span>
+<span class="c1">#                 dotProduct += float(array1[index]) * float(array2[index])</span>
+<span class="c1">#                 if value != 0: units = array2[</span>
+<span class="c1">#                     index].units  # takes on the units of the last vector whose value has contributed to the dot product</span>
+<span class="c1">#             return coordinates.uFloat(dotProduct, units)</span>
+<span class="c1">#</span>
+<span class="c1">#     class identityMatrix(matrix):</span>
+<span class="c1">#         &#39;&#39;&#39;A square matrix of size = order with 1&#39;s on the diagonal and zeros elsewhere.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, order):</span>
+<span class="c1">#             self.array = [[1 if i == j else 0 for j in range(order)] for i in range(order)]</span>
+<span class="c1">#             self.length = order</span>
+<span class="c1">#</span>
+<span class="c1">#     class routeForwardMatrix(matrix):</span>
+<span class="c1">#         &#39;&#39;&#39;A square matrix which routes according to the provided routing list.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, routingList):</span>
+<span class="c1">#             self.array = [[1 if index == value else 0 for index in range(len(routingList))] for value in routingList]</span>
+<span class="c1">#             self.length = len(routingList)</span>
+<span class="c1">#</span>
+<span class="c1">#     class routeReverseMatrix(matrix):</span>
+<span class="c1">#         &#39;&#39;&#39;A square matrix which routes according to the inverse of the provided routing list.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, routingList):</span>
+<span class="c1">#             self.array = [[1 if index == value else 0 for value in routingList] for index in range(len(routingList))]</span>
+<span class="c1">#             self.length = len(routingList)</span>
+<span class="c1">#</span>
+<span class="c1">#     class compoundMatrix(matrix):</span>
+<span class="c1">#         &#39;&#39;&#39;A matrix which is composed of several matrices arranged along the diagonal.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, inputMatrices):</span>
+<span class="c1">#             if type(inputMatrices) != list:  # make sure that input is a list</span>
+<span class="c1">#                 notice(self, &#39;expected input of type list but instead got type &#39; + str(list))</span>
+<span class="c1">#                 return False</span>
+<span class="c1">#             self.arrays = inputMatrices</span>
+<span class="c1">#             self.lengths = [array.length for array in inputMatrices]  # stores lengths of each array</span>
+<span class="c1">#             self.length = sum(self.lengths)</span>
+<span class="c1">#</span>
+<span class="c1">#         def transform(self, inputVector):</span>
+<span class="c1">#             splitInput = []</span>
+<span class="c1">#             originPosition = 0</span>
+<span class="c1">#             # split input vector into sections corresponding to transform array</span>
+<span class="c1">#             for sectionLength in self.lengths:</span>
+<span class="c1">#                 splitInput += [inputVector[originPosition:originPosition + sectionLength]]</span>
+<span class="c1">#                 originPosition += sectionLength</span>
+<span class="c1">#             # transform each section separately</span>
+<span class="c1">#             transformedOutput = []</span>
+<span class="c1">#             for index, input in enumerate(splitInput):</span>
+<span class="c1">#                 transformedOutput += self.arrays[index].transform(input)</span>
+<span class="c1">#             return transformedOutput</span>
+<span class="c1">#</span>
+<span class="c1">#     class transform(object):</span>
+<span class="c1">#         &#39;&#39;&#39;Contains methods for transforming in the forwards and reverse directions.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, forwardMatrix, reverseMatrix):</span>
+<span class="c1">#             self.forwardMatrix = forwardMatrix</span>
+<span class="c1">#             self.reverseMatrix = reverseMatrix</span>
+<span class="c1">#</span>
+<span class="c1">#         def forward(self, inputVector):</span>
+<span class="c1">#             return self.forwardMatrix.transform(inputVector)</span>
+<span class="c1">#</span>
+<span class="c1">#         def reverse(self, inputVector):</span>
+<span class="c1">#             return self.reverseMatrix.transform(inputVector)</span>
+<span class="c1">#</span>
+<span class="c1">#     class direct(transform):</span>
+<span class="c1">#         def __init__(self, order):</span>
+<span class="c1">#             self.forwardMatrix = kinematics.identityMatrix(order)</span>
+<span class="c1">#             self.reverseMatrix = kinematics.identityMatrix(order)</span>
+<span class="c1">#</span>
+<span class="c1">#     class route(transform):</span>
+<span class="c1">#         def __init__(self, routingList):</span>
+<span class="c1">#             self.forwardMatrix = kinematics.routeForwardMatrix(routingList)</span>
+<span class="c1">#             self.reverseMatrix = kinematics.routeReverseMatrix(routingList)</span>
+<span class="c1">#</span>
+<span class="c1">#     class compound(transform):</span>
+<span class="c1">#         def __init__(self, inputTransforms):</span>
+<span class="c1">#             self.forwardMatrix = kinematics.compoundMatrix([transform.forwardMatrix for transform in inputTransforms])</span>
+<span class="c1">#             self.reverseMatrix = kinematics.compoundMatrix([transform.reverseMatrix for transform in inputTransforms])</span>
+<span class="c1">#</span>
+<span class="c1">#     class hbot(transform):</span>
+<span class="c1">#         def __init__(self, invertX=False, invertY=False):</span>
+<span class="c1">#             invertX = {True: -1, False: 1}[invertX]</span>
+<span class="c1">#             invertY = {True: -1, False: 1}[invertY]</span>
+<span class="c1">#</span>
+<span class="c1">#             self.forwardMatrix = kinematics.matrix([[0.5 * invertX, 0.5 * invertX], [0.5 * invertY, -0.5 * invertY]])</span>
+<span class="c1">#             self.reverseMatrix = kinematics.matrix([[1 * invertX, 1 * invertY], [1 * invertX, -1 * invertY]])</span>
+<span class="c1">#</span>
+<span class="c1">#     class chain(transform):</span>
+<span class="c1">#         &#39;&#39;&#39;Allows a series of kinematics to be chained together.&#39;&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#         def __init__(self, forwardChain):</span>
+<span class="c1">#             self.forwardChain = forwardChain</span>
+<span class="c1">#             self.reverseChain = copy.copy(forwardChain)  # makes a shallow copy</span>
+<span class="c1">#             self.reverseChain.reverse()  # reverses inputChain</span>
+<span class="c1">#</span>
+<span class="c1">#         def forward(self, inputVector):</span>
+<span class="c1">#             for transform in self.forwardChain:</span>
+<span class="c1">#                 inputVector = transform.forward(inputVector)</span>
+<span class="c1">#             return inputVector</span>
+<span class="c1">#</span>
+<span class="c1">#         def reverse(self, inputVector):</span>
+<span class="c1">#             for transform in self.reverseChain:</span>
+<span class="c1">#                 inputVector = transform.reverse(inputVector)</span>
+<span class="c1">#             return inputVector</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel Marquina.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
