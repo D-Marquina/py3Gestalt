@@ -379,17 +379,6 @@ filter term.
 For example, in the case of Arduino, the type is ‘manufacturer’ and the
 filter term is ‘Arduino’. This implementation allows the inclusion of
 new interfaces.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Currently, the type of filter should be one attribute of
-serial.tools.list_ports.ListPortInfo class, supported by your operating
-system (Windows, Linux os MacOS).</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The use of interface type ‘genericSerial’ should be avoided
-because many devices could share the provided filter term.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -402,6 +391,17 @@ the dictionary. False, otherwise.</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently, the type of filter should be one attribute of
+‘serial.tools.list_ports.ListPortInfo’ class, supported by your
+operating system (Windows, Linux os MacOS).</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The use of interface type ‘genericSerial’ should be avoided
+because many devices could share the provided filter term.</p>
+</div>
 </dd></dl>
 
 <dl class="method">

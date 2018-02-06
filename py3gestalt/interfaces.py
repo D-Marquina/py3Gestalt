@@ -261,15 +261,6 @@ class SerialInterface(BaseInterface):
         filter term is 'Arduino'. This implementation allows the inclusion of
         new interfaces.
 
-        Note:
-            Currently, the type of filter should be one attribute of
-            serial.tools.list_ports.ListPortInfo class, supported by your operating
-            system (Windows, Linux os MacOS).
-
-        Note:
-            The use of interface type 'genericSerial' should be avoided
-            because many devices could share the provided filter term.
-
         Args:
             interface_type (str): Type of interface, 'ftdi' for FTDI devices,
                 'Arduino' for Arduino and 'generic serial' for others.
@@ -277,6 +268,15 @@ class SerialInterface(BaseInterface):
         Returns:
             A list of filter type and filter term respectively, if found on
             the dictionary. False, otherwise.
+
+        Note:
+            Currently, the type of filter should be one attribute of
+            'serial.tools.list_ports.ListPortInfo' class, supported by your
+            operating system (Windows, Linux os MacOS).
+
+        Note:
+            The use of interface type 'genericSerial' should be avoided
+            because many devices could share the provided filter term.
         """
         ftdi_terms = {'Windows': ['manufacturer', 'FTDI'],
                       'Linux': ['manufacturer', 'FTDI'],

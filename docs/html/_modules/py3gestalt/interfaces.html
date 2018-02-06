@@ -420,15 +420,6 @@
 <span class="sd">        filter term is &#39;Arduino&#39;. This implementation allows the inclusion of</span>
 <span class="sd">        new interfaces.</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            Currently, the type of filter should be one attribute of</span>
-<span class="sd">            serial.tools.list_ports.ListPortInfo class, supported by your operating</span>
-<span class="sd">            system (Windows, Linux os MacOS).</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            The use of interface type &#39;genericSerial&#39; should be avoided</span>
-<span class="sd">            because many devices could share the provided filter term.</span>
-
 <span class="sd">        Args:</span>
 <span class="sd">            interface_type (str): Type of interface, &#39;ftdi&#39; for FTDI devices,</span>
 <span class="sd">                &#39;Arduino&#39; for Arduino and &#39;generic serial&#39; for others.</span>
@@ -436,6 +427,15 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A list of filter type and filter term respectively, if found on</span>
 <span class="sd">            the dictionary. False, otherwise.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Currently, the type of filter should be one attribute of</span>
+<span class="sd">            &#39;serial.tools.list_ports.ListPortInfo&#39; class, supported by your</span>
+<span class="sd">            operating system (Windows, Linux os MacOS).</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The use of interface type &#39;genericSerial&#39; should be avoided</span>
+<span class="sd">            because many devices could share the provided filter term.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ftdi_terms</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Windows&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;manufacturer&#39;</span><span class="p">,</span> <span class="s1">&#39;FTDI&#39;</span><span class="p">],</span>
                       <span class="s1">&#39;Linux&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;manufacturer&#39;</span><span class="p">,</span> <span class="s1">&#39;FTDI&#39;</span><span class="p">],</span>
